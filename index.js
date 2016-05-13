@@ -52,8 +52,8 @@ app.post('/webhook/', function (req, res) {
         sender = event.sender.id;
         if (event.message && event.message.text) {
             text = event.message.text;
-            if (text.substring(0,10) == "@challenge") {
-                words = text.split(" ");
+            words = text.split(" ");
+            if (words[0] == "@challenge") {
                 username = words[words.length - 1];
                 q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                 pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -66,7 +66,7 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Username not found. Please try again.");
                             }
                             else {
-                                challenge_id = parseInt(result.rows[0].id);
+                                challenge_id = parseInt(rowsesult.rows[0].id);
                                 getUsername(sender, challenge_id, username);
                                 // sender_username = getUsername(sender);
                                 // if (sender_username) {
@@ -80,6 +80,14 @@ app.post('/webhook/', function (req, res) {
                     });
                 });
                 continue;
+            }
+            else if (words[0] == "@accept") {
+                username = words[words.length - 1];
+                respondToChallenge(sender, username, true);
+            }
+            else if (words[0] == "@reject") {
+                username = words[words.length - 1];
+                respondToChallenge(sender, username, false);
             }
             sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
         }
@@ -144,7 +152,7 @@ function sendGenericMessage(sender) {
                 }]
             }
         }
-    }
+    };
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
@@ -208,6 +216,28 @@ function getUsername(s, r, ru) {
     });
 }
 
+function getUserId(s, r, ru) {
+    q = 'SELECT name FROM user_table where id= \'' + s + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                sendTextMessage(s, "Error in username lookup.");
+            }
+            else {
+                if (result.rows.length === 0) {
+                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
+                }
+                else {
+                    username = result.rows[0].name;
+                    sendChallenge(s, r, username, ru);
+                }
+            }
+        });
+    });
+}
+
+// sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
     q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -224,6 +254,43 @@ function sendChallenge(s, r, su, ru) {
             else {
                 sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
                 sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+            }
+        });
+    });
+}
+
+function respondToChallenge(s, r, ru, su, response) {
+    q = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                sendTextMessage(s, "Error in challenge lookup. (1)");
+            }
+            else {
+                if (result.rows.length === 0) {
+                    sendTextMessage(r, "This challenge request has expired or does not exist.");
+                }
+                else {
+                    q2 = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+                    client.query(q2, function(err, result) {
+                        done();
+                        if (err) {
+                            sendTextMessage(s, "Error in challenge lookup. (2)");
+                        }
+                        else {
+                            if (response) {
+                                // start duel
+                                sendTextMessage(s, ru + " has accepted your request! Starting duel...");
+                                sendTextMessage(r, "Request accepted. Starting duel...");
+                            }
+                            else {
+                                sendTextMessage(s, ru + " has rejected your request.");
+                                sendTextMessage(r, "Request rejected.");
+                            }
+                        }
+                    });
+                }
             }
         });
     });
