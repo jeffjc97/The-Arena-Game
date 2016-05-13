@@ -55,7 +55,22 @@ app.post('/webhook/', function (req, res) {
                 sendGenericMessage(sender)
                 continue
             }
-            sendTextMessage(sender, "ID: " + sender + ", Text received, echo: " + text.substring(0, 200))
+            else if (text.substring(0,10) == "@challenge") {
+                words = text.split(" ")
+                username = words[words.length - 1]
+                challenge_id = ""
+                pg.connect(process.env.DATABASE_URL, function(err, client) {
+                    if (err) throw err;
+                    client
+                        .query("SELECT id FROM user_table where name ='" + username + "'")
+                        .on('row', function(row) {
+                            challenge_id = JSON.stringify(row));
+                        });
+                });
+                sendTextMessage(sender, "lols: " + challenge_id)
+                continue
+            }
+            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
         }
         if (event.postback) {
             text = JSON.stringify(event.postback)
