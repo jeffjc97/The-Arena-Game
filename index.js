@@ -59,7 +59,8 @@ app.post('/webhook/', function (req, res) {
                 words = text.split(" ")
                 username = words[words.length - 1]
                 challenge_id = username
-                q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
+                // q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
+                q = 'SELECT * FROM user_table'
                 pg.connect(process.env.DATABASE_URL, function(err, client) {
                     if (err) 
                         sendTextMessage(sender, "Error in challenge.")
