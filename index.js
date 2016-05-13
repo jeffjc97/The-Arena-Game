@@ -186,8 +186,12 @@ function sendChallenge(s, r, u) {
         client.query(q, function(err, result) {
             done();
             if (err) {
-                sendTextMessage(sender, JSON.stringify(err).substring(0,200));
-                sendTextMessage(sender, "Error in sending challenge.");
+                if (err.detail.indexOf("already exists") > -1) {
+                    sendTextMessage(sender, "Challenge already pending, please wait.");
+                }
+                else {
+                    sendTextMessage(sender, "Error in sending challenge.");
+                }
             }
             else {
                 sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
