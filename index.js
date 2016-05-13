@@ -188,13 +188,8 @@ function sendChallenge(s, r, u) {
             if (err)
                 sendTextMessage(sender, "Error in sending challenge.");
             else {
-                if (result.rows.length === 0) {
-                    sendTextMessage(sender, "Username not found. Please try again.");
-                }
-                else {
-                    sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
-                    sendTextMessage(parseInt(r), "Someone has challenged you to a duel!");
-                }
+                sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
+                sendTextMessage(parseInt(r), "Someone has challenged you to a duel!");
             }
         });
     });
