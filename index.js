@@ -60,14 +60,20 @@ app.post('/webhook/', function (req, res) {
                     client.query(q, function(err, result) {
                         done();
                         if (err)
-                            sendTextMessage(sender, "Error in challenge.");
+                            sendTextMessage(sender, "Error in challenge. Please try again.");
                         else {
                             if (result.rows.length === 0) {
                                 sendTextMessage(sender, "Username not found. Please try again.");
                             }
                             else {
                                 challenge_id = parseInt(result.rows[0].id);
-                                sendChallenge(sender, challenge_id, username);
+                                sender_username = getUsername(sender);
+                                if (sender_username) {
+                                    sendChallenge(sender, challenge_id, sender_username, username);
+                                }
+                                else {
+                                    sendTextMessage(sender, "Error in challenge. Please try again.");
+                                }
                             }
                         }
                     });
@@ -148,11 +154,11 @@ function sendGenericMessage(sender) {
         }
     }, function(error, response, body) {
         if (error) {
-            console.log('Error sending messages: ', error)
+            console.log('Error sending messages: ', error);
         } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
+            console.log('Error: ', response.body.error);
         }
-    })
+    });
 }
 
 function mysql_real_escape_string (str) {
@@ -180,7 +186,28 @@ function mysql_real_escape_string (str) {
     });
 }
 
-function sendChallenge(s, r, u) {
+function getUsername(s) {
+    q = 'SELECT name FROM user_table where id= \'' + s + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                sendTextMessage(sender, "Error in username lookup.");
+            }
+            else {
+                if (result.rows.length === 0) {
+                    return false;
+                }
+                else {
+                    username = result.rows[0].name;
+                    return username;
+                }
+            }
+        });
+    });
+}
+
+function sendChallenge(s, r, su, ru) {
     q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -194,8 +221,8 @@ function sendChallenge(s, r, u) {
                 }
             }
             else {
-                sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
-                sendTextMessage(parseInt(r), "Someone has challenged you to a duel!");
+                sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
+                sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su " to respond.");
             }
         });
     });
