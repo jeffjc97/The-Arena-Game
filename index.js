@@ -66,6 +66,7 @@ app.post('/webhook/', function (req, res) {
                             sendTextMessage(sender, "Error in challenge.")
                         else {
                             challenge_id += result
+                            sendTextMessage(sender, "ok???")
                             sendTextMessage(sender, result)
                         }
                     });
