@@ -59,7 +59,6 @@ app.post('/webhook/', function (req, res) {
             else if (text.substring(0,10) == "@challenge") {
                 words = text.split(" ")
                 username = words[words.length - 1]
-                challenge_id = username
                 q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
                 // q = 'SELECT * FROM user_table;'
                 pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -68,14 +67,11 @@ app.post('/webhook/', function (req, res) {
                         if (err)
                             sendTextMessage(sender, "Error in challenge.")
                         else {
-                            challenge_id += JSON.stringify(result)
-                            sendTextMessage(sender, "A: " + JSON.stringify(result).substring(0, 300))
-                            sendTextMessage(sender, "ok???")
+                            sendTextMessage(sender, "Challenge sent! Waiting for " + username + " to respond..."
+                            sendTextMessage(sender, JSON.stringify(result).rows[0].id)
                         }
                     });
                 });
-                sendTextMessage(sender, q)
-                sendTextMessage(sender, "ok: " + challenge_id)
                 continue
             }
             sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
