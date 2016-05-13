@@ -4,6 +4,7 @@ var request = require('request')
 var pg = require('pg')
 var app = express()
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD"
+pg.defaults.ssl = true;
 
 app.set('port', (process.env.PORT || 5000))
 app.set('view engine', 'ejs')
@@ -62,7 +63,7 @@ app.post('/webhook/', function (req, res) {
                 // q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
                 q = 'SELECT * FROM user_table'
                 pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-                    client.query(q, function(err, result) {
+                    client.query('SELECT * FROM user_table', function(err, result) {
                         done()
                         if (err)
                             sendTextMessage(sender, "Error in challenge.")
