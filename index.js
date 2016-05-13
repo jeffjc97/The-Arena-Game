@@ -61,7 +61,7 @@ app.post('/webhook/', function (req, res) {
                 challenge_id = username
                 // q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
                 q = 'SELECT * FROM user_table'
-                pg.connect(process.env.DATABASE_URL, function(err, client) {
+                pg.connect(process.env.DATABASE_URL, function(err, client, done) {
                     if (err) 
                         sendTextMessage(sender, "Error in challenge.")
                     else {
@@ -69,6 +69,7 @@ app.post('/webhook/', function (req, res) {
                             if (err)
                                 sendTextMessage(sender, "Error in challenge.")
                             else {
+                                done()
                                 challenge_id += result
                                 sendTextMessage(sender, "A: ", result)
                                 sendTextMessage(sender, "ok???")
