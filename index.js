@@ -185,9 +185,10 @@ function sendChallenge(s, r, u) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
-            if (err)
+            if (err) {
                 sendTextMessage(sender, err);
                 sendTextMessage(sender, "Error in sending challenge.");
+            }
             else {
                 sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
                 sendTextMessage(parseInt(r), "Someone has challenged you to a duel!");
