@@ -67,8 +67,8 @@ app.post('/webhook/', function (req, res) {
                         if (err)
                             sendTextMessage(sender, "Error in challenge.")
                         else {
-                            sendTextMessage(sender, "Challenge sent! Waiting for " + username + " to respond...")
-                            sendTextMessage(sender, JSON.stringify(result).rows[0].id)
+                            // sendTextMessage(sender, "Challenge sent! Waiting for " + username + " to respond...")
+                            sendTextMessage(sender, "wtf: " + JSON.stringify(result).rows[0].id)
                         }
                     });
                 });
