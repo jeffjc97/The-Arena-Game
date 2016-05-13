@@ -84,10 +84,12 @@ app.post('/webhook/', function (req, res) {
             else if (words[0] == "@accept") {
                 username = words[words.length - 1];
                 respondToChallenge(sender, username, true);
+                continue;
             }
             else if (words[0] == "@reject") {
                 username = words[words.length - 1];
                 respondToChallenge(sender, username, false);
+                continue;
             }
             sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
         }
