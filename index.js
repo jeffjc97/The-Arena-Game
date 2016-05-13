@@ -58,13 +58,13 @@ app.post('/webhook/', function (req, res) {
             else if (text.substring(0,10) == "@challenge") {
                 words = text.split(" ")
                 username = words[words.length - 1]
-                challenge_id = ""
+                challenge_id = username
                 pg.connect(process.env.DATABASE_URL, function(err, client) {
                     if (err) throw err;
                     client
                         .query("SELECT id FROM user_table WHERE name = " + username)
                         .on('row', function(row) {
-                            challenge_id = JSON.stringify(row);
+                            challenge_id += row;
                         });
                 });
                 sendTextMessage(sender, "lols: " + challenge_id)
