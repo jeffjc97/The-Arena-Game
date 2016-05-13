@@ -60,7 +60,7 @@ app.post('/webhook/', function (req, res) {
                     client.query(q, function(err, result) {
                         done();
                         if (err)
-                            sendTextMessage(sender, "Error in challenge. Please try again.");
+                            sendTextMessage(sender, "Error in challenge. Please try again. (1)");
                         else {
                             if (result.rows.length === 0) {
                                 sendTextMessage(sender, "Username not found. Please try again.");
@@ -72,7 +72,7 @@ app.post('/webhook/', function (req, res) {
                                     sendChallenge(sender, challenge_id, sender_username, username);
                                 }
                                 else {
-                                    sendTextMessage(sender, "Error in challenge. Please try again.");
+                                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
                                 }
                             }
                         }
