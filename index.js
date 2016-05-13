@@ -68,8 +68,8 @@ app.post('/webhook/', function (req, res) {
                         if (err)
                             sendTextMessage(sender, "Error in challenge.")
                         else {
-                            challenge_id += result
-                            sendTextMessage(sender, "A: ", result)
+                            challenge_id += JSON.stringify(result)
+                            sendTextMessage(sender, "A: " + JSON.stringify(result)
                             sendTextMessage(sender, "ok???")
                         }
                     });
