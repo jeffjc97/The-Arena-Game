@@ -186,6 +186,7 @@ function sendChallenge(s, r, u) {
         client.query(q, function(err, result) {
             done();
             if (err)
+                sendTextMessage(sender, err);
                 sendTextMessage(sender, "Error in sending challenge.");
             else {
                 sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
