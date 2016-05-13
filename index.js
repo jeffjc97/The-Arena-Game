@@ -299,7 +299,7 @@ function respondToChallenge(s, r, su, ru, response) {
                                 sendTextMessage(r, "Request accepted. Starting duel...");
                             }
                             else {
-                                sendTextMessage(s, ru + " has rejected your request.");
+                                sendTextMessage(s, ru + " has rejected your challenge request.");
                                 sendTextMessage(r, "Request rejected.");
                             }
                         }
