@@ -53,38 +53,39 @@ app.post('/webhook/', function (req, res) {
         if (event.message && event.message.text) {
             text = event.message.text;
             words = text.split(" ");
-            if (words[0] == "@challenge") {
-                username = words[words.length - 1];
-                q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
-                pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-                    client.query(q, function(err, result) {
-                        done();
-                        if (err)
-                            sendTextMessage(sender, "Error in challenge. Please try again. (1)");
-                        else {
-                            if (result.rows.length === 0) {
-                                sendTextMessage(sender, "Username not found. Please try again.");
-                            }
+            switch(words[0]){
+                case "@challenge":
+                    username = words[words.length - 1];
+                    q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
+                    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+                        client.query(q, function(err, result) {
+                            done();
+                            if (err)
+                                sendTextMessage(sender, "Error in challenge. Please try again. (1)");
                             else {
-                                challenge_id = parseInt(result.rows[0].id);
-                                getUsername(sender, challenge_id, username);
+                                if (result.rows.length === 0) {
+                                    sendTextMessage(sender, "Username not found. Please try again.");
+                                }
+                                else {
+                                    challenge_id = parseInt(result.rows[0].id);
+                                    getUsername(sender, challenge_id, username);
+                                }
                             }
-                        }
+                        });
                     });
-                });
-                continue;
+                    break;
+                case "@accept":
+                    username = words[words.length - 1];
+                    respondToChallengeSetup(username, sender, true);
+                    break;
+                case "@reject":
+                    username = words[words.length - 1];
+                    respondToChallengeSetup(username, sender, false);
+                    break;
+                default:
+                    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
+                    break;
             }
-            else if (words[0] == "@accept") {
-                username = words[words.length - 1];
-                respondToChallengeSetup(username, sender, true);
-                continue;
-            }
-            else if (words[0] == "@reject") {
-                username = words[words.length - 1];
-                respondToChallengeSetup(username, sender, false);
-                continue;
-            }
-            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
         }
         if (event.postback) {
             text = JSON.stringify(event.postback);
