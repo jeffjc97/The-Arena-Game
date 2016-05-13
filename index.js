@@ -64,7 +64,7 @@ app.post('/webhook/', function (req, res) {
                     client
                         .query("SELECT id FROM user_table where name ='" + username + "'")
                         .on('row', function(row) {
-                            challenge_id = JSON.stringify(row));
+                            challenge_id = JSON.stringify(row);
                         });
                 });
                 sendTextMessage(sender, "lols: " + challenge_id)
