@@ -59,10 +59,11 @@ app.post('/webhook/', function (req, res) {
                 words = text.split(" ")
                 username = words[words.length - 1]
                 challenge_id = username
+                q = mysql_real_escape_string('SELECT id FROM user_table WHERE name = ' + username)
                 pg.connect(process.env.DATABASE_URL, function(err, client) {
                     if (err) throw err;
                     client
-                        .query('SELECT id FROM user_table WHERE name = ' + username)
+                        .query(q)
                         .on('row', function(row) {
                             challenge_id += row;
                         });
@@ -149,4 +150,29 @@ function sendGenericMessage(sender) {
             console.log('Error: ', response.body.error)
         }
     })
+}
+
+function mysql_real_escape_string (str) {
+    return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+        switch (char) {
+            case "\0":
+                return "\\0";
+            case "\x08":
+                return "\\b";
+            case "\x09":
+                return "\\t";
+            case "\x1a":
+                return "\\z";
+            case "\n":
+                return "\\n";
+            case "\r":
+                return "\\r";
+            case "\"":
+            case "'":
+            case "\\":
+            case "%":
+                return "\\"+char; // prepends a backslash to backslash, percent,
+                                  // and double/single quotes
+        }
+    });
 }
