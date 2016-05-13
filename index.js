@@ -68,13 +68,6 @@ app.post('/webhook/', function (req, res) {
                             else {
                                 challenge_id = parseInt(result.rows[0].id);
                                 getUsername(sender, challenge_id, username);
-                                // sender_username = getUsername(sender);
-                                // if (sender_username) {
-                                //     sendChallenge(sender, challenge_id, sender_username, username);
-                                // }
-                                // else {
-                                //     sendTextMessage(sender, "Error in challenge. Please try again. (2)");
-                                // }
                             }
                         }
                     });
@@ -83,12 +76,12 @@ app.post('/webhook/', function (req, res) {
             }
             else if (words[0] == "@accept") {
                 username = words[words.length - 1];
-                respondToChallenge(sender, username, true);
+                respondToChallengeSetup(username, sender, true);
                 continue;
             }
             else if (words[0] == "@reject") {
                 username = words[words.length - 1];
-                respondToChallenge(sender, username, false);
+                respondToChallengeSetup(username, sender, false);
                 continue;
             }
             sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
@@ -218,27 +211,6 @@ function getUsername(s, r, ru) {
     });
 }
 
-function getUserId(s, r, ru) {
-    q = 'SELECT name FROM user_table where id= \'' + s + '\'';
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
-            done();
-            if (err) {
-                sendTextMessage(s, "Error in username lookup.");
-            }
-            else {
-                if (result.rows.length === 0) {
-                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
-                }
-                else {
-                    username = result.rows[0].name;
-                    sendChallenge(s, r, username, ru);
-                }
-            }
-        });
-    });
-}
-
 // sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
     q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
@@ -261,7 +233,47 @@ function sendChallenge(s, r, su, ru) {
     });
 }
 
-function respondToChallenge(s, r, ru, su, response) {
+function respondToChallengeSetup(su, r, response) {
+    // get recipient username
+    // get sender id
+    q = 'SELECT name FROM user_table where id= \'' + r + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                sendTextMessage(r, "Error in responding to challenge. Please try again. (1)");
+            }
+            else {
+                if (result.rows.length === 0) {
+                    sendTextMessage(r, "Error in responding to challenge. Please try again. (2)");
+                }
+                else {
+                    ru = result.rows[0].name;
+                    q2 = 'SELECT id FROM user_table where name = \'' + su + '\'';
+                    client.query(q2, function(err, result) {
+                        done();
+                        if (err) {
+                            sendTextMessage(r, "Error in responding to challenge. Please try again. (3)");
+                        }
+                        else {
+                            if (result.rows.length === 0) {
+                                sendTextMessage(r, "Error in responding to challenge. Please try again. (4)");
+                            }
+                            else {
+                                s = result.rows[0].id;
+                                respondToChallenge(s, r, su, ru, response);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+}
+
+function respondToChallenge(s, r, su, ru, response) {
+    // validate
+    // make changes/start game
     q = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
