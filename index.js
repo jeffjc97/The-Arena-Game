@@ -59,7 +59,7 @@ app.post('/webhook/', function (req, res) {
             else if (text.substring(0,10) == "@challenge") {
                 words = text.split(" ")
                 username = words[words.length - 1]
-                q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
+                q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\''
                 // q = 'SELECT * FROM user_table;'
                 pg.connect(process.env.DATABASE_URL, function(err, client, done) {
                     client.query(q, function(err, result) {
