@@ -1,100 +1,94 @@
-var express = require('express')
-var bodyParser = require('body-parser')
-var request = require('request')
-var pg = require('pg')
-var app = express()
-var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD"
+var express = require('express');;
+var bodyParser = require('body-parser');
+var request = require('request');
+var pg = require('pg');
+var app = express();
+var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
 pg.defaults.ssl = true;
 
-app.set('port', (process.env.PORT || 5000))
-app.set('view engine', 'ejs')
+app.set('port', (process.env.PORT || 5000));
+app.set('view engine', 'ejs');
 
 // Process application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: false}));
 
 // Process application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 // Index route
 app.get('/', function (req, res) {
-    res.send('Hello world, I am a chat bot')
-})
+    res.send('Hello world, I am a chat bot');
+});
 
-app.get('/db', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-    client.query('SELECT * FROM user_table', function(err, result) {
-      done();
-      if (err)
-       { console.error(err); response.send("Error " + err); }
-      else
-       { response.render('pages/db', {results: result.rows} ); }
-    });
-  });
-})
+// app.get('/db', function (request, response) {
+//   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+//     client.query('SELECT * FROM user_table', function(err, result) {
+//       done();
+//       if (err)
+//        { console.error(err); response.send("Error " + err); }
+//       else
+//        { response.render('pages/db', {results: result.rows} ); }
+//     });
+//   });
+// })
 
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
-        res.send(req.query['hub.challenge'])
+        res.send(req.query['hub.challenge']);
     }
-    res.send('Error, wrong token')
-})
+    res.send('Error, wrong token');
+});
 
 // Spin up the server
 app.listen(app.get('port'), function() {
-    console.log('running on port', app.get('port'))
-})
+    console.log('running on port', app.get('port'));
+});
 
 app.post('/webhook/', function (req, res) {
-    messaging_events = req.body.entry[0].messaging
+    messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
-        event = req.body.entry[0].messaging[i]
-        sender = event.sender.id
+        event = req.body.entry[0].messaging[i];
+        sender = event.sender.id;
         if (event.message && event.message.text) {
-            text = event.message.text
-            if (text === 'Generic') {
-                sendGenericMessage(sender)
-                continue
-            }
-            else if (text.substring(0,10) == "@challenge") {
-                words = text.split(" ")
-                username = words[words.length - 1]
-                q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\''
-                // q = 'SELECT * FROM user_table;'
+            text = event.message.text;
+            if (text.substring(0,10) == "@challenge") {
+                words = text.split(" ");
+                username = words[words.length - 1];
+                q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                 pg.connect(process.env.DATABASE_URL, function(err, client, done) {
                     client.query(q, function(err, result) {
-                        done()
+                        done();
                         if (err)
-                            sendTextMessage(sender, "Error in challenge.")
+                            sendTextMessage(sender, "Error in challenge.");
                         else {
-                            if (result.rows.length == 0) {
-                                sendTextMessage(sender, "Username not found. Please try again.")
+                            if (result.rows.length === 0) {
+                                sendTextMessage(sender, "Username not found. Please try again.");
                             }
                             else {
-                                challenge_id = result.rows[0].id
-                                sendTextMessage(sender, "Challenge sent! Waiting for " + username + " to respond...")
-                                sendTextMessage(parseInt(challenge_id), "Someone has challenged you to a duel!") 
-                            }                            
+                                challenge_id = parseInt(result.rows[0].id);
+                                sendChallenge(sender, challenge_id, username);
+                            }
                         }
                     });
                 });
-                continue
+                continue;
             }
-            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
         }
         if (event.postback) {
-            text = JSON.stringify(event.postback)
-            sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token)
-            continue
+            text = JSON.stringify(event.postback);
+            sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token);
+            continue;
         }
     }
-    res.sendStatus(200)
-})
+    res.sendStatus(200);
+});
 
 function sendTextMessage(sender, text) {
     messageData = {
         text:text
-    }
+    };
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
@@ -105,11 +99,11 @@ function sendTextMessage(sender, text) {
         }
     }, function(error, response, body) {
         if (error) {
-            console.log('Error sending messages: ', error)
+            console.log('Error sending messages: ', error);
         } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
+            console.log('Error: ', response.body.error);
         }
-    })
+    });
 }
 
 function sendGenericMessage(sender) {
@@ -183,5 +177,25 @@ function mysql_real_escape_string (str) {
                 return "\\"+char; // prepends a backslash to backslash, percent,
                                   // and double/single quotes
         }
+    });
+}
+
+function sendChallenge(s, r, u) {
+    q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err)
+                sendTextMessage(sender, "Error in sending challenge.");
+            else {
+                if (result.rows.length === 0) {
+                    sendTextMessage(sender, "Username not found. Please try again.");
+                }
+                else {
+                    sendTextMessage(s, "Challenge sent! Waiting for " + u + " to respond...");
+                    sendTextMessage(parseInt(r), "Someone has challenged you to a duel!");
+                }
+            }
+        });
     });
 }
