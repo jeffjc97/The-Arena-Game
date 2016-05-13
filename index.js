@@ -68,7 +68,7 @@ app.post('/webhook/', function (req, res) {
                             sendTextMessage(sender, "Error in challenge.")
                         else {
                             if (result.rows.length == 0) {
-                                sendTextMessage(sender, "Username not found.")
+                                sendTextMessage(sender, "Username not found. Please try again.")
                             }
                             else {
                                 challenge_id = result.rows[0].id
