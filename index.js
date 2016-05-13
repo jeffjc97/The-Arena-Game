@@ -62,7 +62,7 @@ app.post('/webhook/', function (req, res) {
                 pg.connect(process.env.DATABASE_URL, function(err, client) {
                     if (err) throw err;
                     client
-                        .query("SELECT id FROM user_table where name ='" + username + "'")
+                        .query("SELECT id FROM user_table WHERE name = " + username)
                         .on('row', function(row) {
                             challenge_id = JSON.stringify(row);
                         });
