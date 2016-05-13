@@ -186,7 +186,7 @@ function sendChallenge(s, r, u) {
         client.query(q, function(err, result) {
             done();
             if (err) {
-                sendTextMessage(sender, err);
+                sendTextMessage(sender, JSON.stringify(err).substring(0,200));
                 sendTextMessage(sender, "Error in sending challenge.");
             }
             else {
