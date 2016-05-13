@@ -66,9 +66,11 @@ app.post('/webhook/', function (req, res) {
                         .query(q)
                         .on('row', function(row) {
                             challenge_id += row;
+                            sendTextMessage(sender, row)
                         });
                 });
-                sendTextMessage(sender, "lols: " + challenge_id)
+                sendTextMessage(sender, q)
+                sendTextMessage(sender, "ok: " + challenge_id)
                 continue
             }
             sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
