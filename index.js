@@ -67,13 +67,14 @@ app.post('/webhook/', function (req, res) {
                             }
                             else {
                                 challenge_id = parseInt(result.rows[0].id);
-                                sender_username = getUsername(sender);
-                                if (sender_username) {
-                                    sendChallenge(sender, challenge_id, sender_username, username);
-                                }
-                                else {
-                                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
-                                }
+                                getUsername(sender, challenge_id, username);
+                                // sender_username = getUsername(sender);
+                                // if (sender_username) {
+                                //     sendChallenge(sender, challenge_id, sender_username, username);
+                                // }
+                                // else {
+                                //     sendTextMessage(sender, "Error in challenge. Please try again. (2)");
+                                // }
                             }
                         }
                     });
@@ -186,7 +187,7 @@ function mysql_real_escape_string (str) {
     });
 }
 
-function getUsername(s) {
+function getUsername(s, r, ru) {
     q = 'SELECT name FROM user_table where id= \'' + s + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -198,12 +199,11 @@ function getUsername(s) {
             else {
                 sendTextMessage(s, q);
                 if (result.rows.length === 0) {
-                    sendTextMessage(s, "length 0");
-                    return false;
+                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
                 }
                 else {
                     username = result.rows[0].name;
-                    return username;
+                    sendChallenge(s, r, username, ru);
                 }
             }
         });
