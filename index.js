@@ -193,11 +193,9 @@ function getUsername(s, r, ru) {
         client.query(q, function(err, result) {
             done();
             if (err) {
-                sendTextMessage(s, JSON.stringify(err).substring(0,200));
                 sendTextMessage(s, "Error in username lookup.");
             }
             else {
-                sendTextMessage(s, q);
                 if (result.rows.length === 0) {
                     sendTextMessage(sender, "Error in challenge. Please try again. (2)");
                 }
