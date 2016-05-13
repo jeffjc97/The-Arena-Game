@@ -70,7 +70,7 @@ app.post('/webhook/', function (req, res) {
                             // sendTextMessage(sender, "Challenge sent! Waiting for " + username + " to respond...")
                             challenge_id = result.rows[0].id
                             sendTextMessage(sender, "wtf: " + challenge_id)
-                            sendTextMessage(parseInt(challenge_id), "I challenge you to a duel")
+                            sendTextMessage(parseInt(challenge_id), "I fuck you to a duel")
                         }
                     });
                 });
