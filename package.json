@@ -18,6 +18,7 @@
   "homepage": "https://github.com/jeffjc97/messenger-bot#readme",
   "dependencies": {
     "pg": "4.x",
+    "ejs": "2.3.3",
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
     "request": "^2.72.0"
