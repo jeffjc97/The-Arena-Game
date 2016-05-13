@@ -66,7 +66,7 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Username not found. Please try again.");
                             }
                             else {
-                                challenge_id = parseInt(rowsesult.rows[0].id);
+                                challenge_id = parseInt(result.rows[0].id);
                                 getUsername(sender, challenge_id, username);
                                 // sender_username = getUsername(sender);
                                 // if (sender_username) {
