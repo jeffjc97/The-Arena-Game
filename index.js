@@ -61,15 +61,19 @@ app.post('/webhook/', function (req, res) {
                 challenge_id = username
                 q = 'SELECT id FROM user_table WHERE name = \'' + username + '\''
                 pg.connect(process.env.DATABASE_URL, function(err, client) {
-                    client.query(q, function(err, result) {
-                        if (err)
-                            sendTextMessage(sender, "Error in challenge.")
-                        else {
-                            challenge_id += result
-                            sendTextMessage(sender, "ok???")
-                            sendTextMessage(sender, result)
-                        }
-                    });
+                    if (err) 
+                        sendTextMessage(sender, "Error in challenge.")
+                    else {
+                        client.query(q, function(err, result) {
+                            if (err)
+                                sendTextMessage(sender, "Error in challenge.")
+                            else {
+                                challenge_id += result
+                                sendTextMessage(sender, "ok???")
+                                sendTextMessage(sender, result)
+                            }
+                        });
+                    }
                 });
                 sendTextMessage(sender, q)
                 sendTextMessage(sender, "ok: " + challenge_id)
