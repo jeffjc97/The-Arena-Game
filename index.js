@@ -233,7 +233,7 @@ function sendChallenge(s, r, su, ru) {
                     done();
                     if (err) {
                         if (err.detail.indexOf("already exists") > -1) {
-                            sendTextMessage(s, "Challenge already pending, please wait.");
+                            sendTextMessage(s, "Challenge already pending, please wait...");
                         }
                         else {
                             sendTextMessage(s, "Error in sending challenge.");
