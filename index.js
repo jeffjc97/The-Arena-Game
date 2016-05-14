@@ -248,6 +248,7 @@ function registerUser(s, username) {
         q_add_username = 'INSERT INTO user_table(id, name) VALUES (\'' + s + '\', \'' + username + '\')';
         sendTextMessage(s, q_add_username);
         e = function(err) {
+            sendTextMessage(s, JSON.stringify(err).substring(0,200));
             if (err.detail.indexOf("already exists") > -1) {
                 sendError(s, 29, "Username already exists, please try another.");
             }
