@@ -90,8 +90,11 @@ app.post('/webhook/', function (req, res) {
                                             sendError(sender, 2, "Username not found. Please try again.");
                                         }
                                         else {
-                                            challenge_id = parseInt(result.rows[0].id);
-                                            getUsername(sender, challenge_id, username);
+                                            challenge_id = result.rows[0].id;
+                                            if (challenge_id == sender+"") {
+                                                sendTextMessage(sender, "You cannot challenge yourself!");
+                                            }else
+                                                getUsername(sender, challenge_id, username);
                                         }
                                     }
                                 });
