@@ -57,8 +57,10 @@ app.post('/webhook/', function (req, res) {
             switch(words[0]){
                 case "@generic":
                     sendGenericMessage(sender);
+                    break;
                 case "@register":
                     registerUser(sender, username);
+                    break;
                 case "@challenge":
                     q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
