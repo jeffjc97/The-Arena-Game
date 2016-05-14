@@ -237,8 +237,11 @@ function sendChallenge(s, r, su, ru) {
                     else if (result.rows.length === 0) {
                         sendTextMessage(s, "Error in finding user.");   
                     }
-                    else {
-                        sendTextMessage(s, result.rows[0].in_duel);
+                    else if(result.rows[0].in_duel){
+                        sendTextMessage(r, "here1");
+                    }
+                    else{
+                        sendTextMessage(r, "here2");
                     }
                     //TODO
                     //     sendTextMessage(s, ru + "is already in a duel.");      
