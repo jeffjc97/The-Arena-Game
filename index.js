@@ -187,6 +187,8 @@ function sendGenericMessage(sender) {
               {
                 "title":"Classic White T-Shirt",
                 "subtitle":"100% Soft and Luxurious Cotton",
+                "title":"Classic Gray T-Shirt",
+                "subtitle":"100% Soft and Luxurious Cotton",
                 // "quantity":2,
                 // "price":50,
                 // "currency":"USD",
