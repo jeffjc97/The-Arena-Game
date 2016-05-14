@@ -236,6 +236,7 @@ function registerUser(s, username) {
     s = function(result) {
         sendTextMessage(s, "Username successfully registered!");
     };
+    makeQuery(q_add_username, e, s);
 
 }
 
