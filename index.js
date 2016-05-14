@@ -538,8 +538,7 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
                 done();
                 sendTextMessage(defender_id, "sdfsdfsd3");
                 sendTextMessage(attacker_id, "sdfsdfsd3");
-                if (err || result.rows.length !== 1) {
-                    sendTextMessage(attacker_id, JSON.stringify(result.rows));
+                if (err) {
                     sendTextMessage(attacker_id, JSON.stringify(err).substring(0, 200));
                 }else{
                     sendTextMessage(defender_id, "sdfsdfsd4");
