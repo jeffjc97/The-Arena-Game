@@ -306,6 +306,7 @@ function respondToChallenge(s, r, su, ru, response) {
                         else {
                             if (response) {
                                 // start duel
+                                setupDuel(s, r);
                                 sendTextMessage(s, ru + " has accepted your request! Starting duel...");
                                 sendTextMessage(r, "Request accepted. Starting duel...");
                             }
