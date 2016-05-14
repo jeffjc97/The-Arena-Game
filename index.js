@@ -229,6 +229,7 @@ function registerUser(s, username) {
         sendTextMessage(s, q_add_username);
         e = function(err) {
             sendTextMessage(s, JSON.stringify(err).substring(0,200));
+            // sendTextMessage(s, "wtf");
             // if (err.detail.indexOf("already exists") > -1) {
             //     sendError(s, 29, "Username already exists, please try another.");
             // }
@@ -236,10 +237,10 @@ function registerUser(s, username) {
             //     sendError(s, 30);
             // }
         };
-        s = function(result) {
+        s_add_username = function(result) {
             sendTextMessage(s, "Username successfully registered!");
         };
-        makeQuery(q_add_username, e, s);
+        makeQuery(q_add_username, e, s_add_username);
     }
 }
 
