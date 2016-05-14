@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="duel table user table FKv1" directorySegmentName="seg_0" id="C80A59BE-18F4-08DE-1032-278FC80C8505">
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="duel_table_user_table_FKv1" directorySegmentName="seg_0" id="C80A59BE-18F4-08DE-1032-278FC80C8505">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:12:34 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>

@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="4A633D62-9DDB-2847-061B-2B24A57C7B94" name="moves table">
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="4A633D62-9DDB-2847-061B-2B24A57C7B94" name="moves_table">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:24:22 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
@@ -28,7 +28,7 @@
 <dataTypeSize>255</dataTypeSize>
 <ownDataTypeParameters>255,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="made by" id="60A64242-E25B-0432-862A-E330DAFE94F3">
+<Attribute name="made_by" id="60A64242-E25B-0432-862A-E330DAFE94F3">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:26:37 UTC</createdTime>
 <generatorID>781043EF-83F2-7093-967D-39CCA94B6490</generatorID>

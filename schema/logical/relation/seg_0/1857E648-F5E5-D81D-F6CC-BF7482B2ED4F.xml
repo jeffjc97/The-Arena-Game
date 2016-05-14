@@ -1,10 +1,10 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="moves table duel table FK" directorySegmentName="seg_0" id="1857E648-F5E5-D81D-F6CC-BF7482B2ED4F">
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="moves_table_duel_table_FK" directorySegmentName="seg_0" id="1857E648-F5E5-D81D-F6CC-BF7482B2ED4F">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:26:43 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <sourcePk>90ED1842-0B59-5FAB-3BF4-9083515C62E5</sourcePk>
 <identifying>false</identifying>
