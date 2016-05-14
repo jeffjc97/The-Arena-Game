@@ -55,6 +55,8 @@ app.post('/webhook/', function (req, res) {
             words = text.split(" ");
             username = words[words.length - 1];
             switch(words[0]){
+                case "@generic":
+                    sendGenericMessage(sender);
                 case "@challenge":
                     q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -104,7 +106,8 @@ app.post('/webhook/', function (req, res) {
                     makeQuery(q, e, s);
                     break;
                 default:
-                    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
+                    sendNormalMessage(sender, text);
+                    // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
                     break;
             }
         }
@@ -232,21 +235,6 @@ function getUsername(s, r, ru) {
         });
     });
 }
-
-// function getUsernameFromId(id){
-//     q = 'SELECT name FROM user_table where id= \'' + id + '\'';
-//     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-//         client.query(q, function(err, result) {
-//             done();
-//             if (err || result.rows.length !== 1) {
-//                 return "error";
-//             }
-//             else {
-//                 return result.rows[0].name;
-//             }
-//         });
-//     });
-// }
 
 // sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
@@ -479,9 +467,7 @@ function makeMoveSetup(s){
                         data = result.rows[0];
                         turn_id = data.user_turn;
                         if (s != turn_id) {
-                            sendTextMessage(s, "It's not your turn Please wait...!");
-                            sendTextMessage(s, s +"||"+ turn_id);
-                            sendTextMessage(s, s != turn_id+"");
+                            sendTextMessage(s, "It's not your turn. Please wait.");
                         }
                         else{
                             //we know s is attacker. Is s sender_id or recipient_id?
@@ -602,4 +588,31 @@ function loseDuel(lid, wid, lname, wname, did) {
         makeQuery(q_update_w, e, s_update_w);
     }
     makeQuery(q_update_d, e, s_update_d);
+}
+
+function sendNormalMessage(s, text) {
+    duel_id = -1
+    q_get_user_info = "SELECT name, in_duel from user_table WHERE id = \'" + s + "\'";
+    q_get_duel_info = "SELECT sender_id, recipient_id FROM duel_table WHERE duel_id = " + duel_id;
+
+    e = function(err) {
+        sendError(s, 28);
+    };
+    s_get_duel_info = function(result) {
+        data = result.rows[0];
+        message_to = data.sender_id;
+        if (message_to == s) { message_to = data.recipient_id; }
+        sendTextMessage(message_to, text);
+    };
+    s_get_user_info = function(result) {
+        data = result.rows[0];
+        if (data.in_duel) {
+            duel_id = data.in_duel;
+            makeQuery(q_get_duel_info, e, s_get_duel_info);
+        }
+        else {
+            sendTextMessage(s, "Why are you talking to yourself? \"" + text + "\"");
+        }
+    };
+    makeQuery(q_get_user_info, e, s_get_user_info);
 }
