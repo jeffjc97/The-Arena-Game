@@ -165,7 +165,7 @@ function sendTextMessage(sender, text) {
     });
 }
 
-/*function sendGenericMessage(sender) {
+function sendGenericMessage(sender) {
     messageData = {
         "attachment": {
             "type": "template",
@@ -212,7 +212,7 @@ function sendTextMessage(sender, text) {
             console.log('Error: ', response.body.error);
         }
     });
-}*/
+}
 
 function mysql_real_escape_string (str) {
     return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
