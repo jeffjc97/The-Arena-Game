@@ -230,7 +230,7 @@ function sendChallenge(s, r, su, ru) {
                 //verify that user isn't already in a duel
                 q_induel = 'SELECT * from user_table WHERE id = \'' + r + '\'';
                 sendTextMessage(r, r);
-                client.query(q_induel, function(err, result){
+                /*client.query(q_induel, function(err, result){
                     done();
                     if (err) {
                         sendTextMessage(s, "Error in finding user.");
@@ -248,7 +248,7 @@ function sendChallenge(s, r, su, ru) {
                     //     sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
                     //     sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
                     // }
-                });
+                });*/
             }
         });
     });
