@@ -457,7 +457,7 @@ function startDuel(s, r, f_id) {
 }
 
 
-function makeMoveSetup(su, s){
+function makeMoveSetup(s){
     q = 'SELECT name, id, in_duel FROM user_table where id= \'' + s + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -502,8 +502,6 @@ function makeMoveSetup(su, s){
                                     sendTextMessage(s, "error (7)");
                                 }
                                 else{
-                                    sendTextMessage(defender_id, "sdfsdf3sd");
-                                    sendTextMessage(attacker_id, "sdfsdf3sd");
                                     makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
                                 }
                             });
@@ -526,32 +524,32 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
         loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id);
     }else{
         new_health_def = health_defender - attack_value;
-        //update the duel
-        // sendTextMessage(defender_id, "sdfsdfsd");
-        // sendTextMessage(attacker_id, "sdfsdfsd");
-        // q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
-        // if (attacker_is_sender) {
-        //     q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
-        // }
-        // sendTextMessage(defender_id, "sdfsdfsd2");
-        // sendTextMessage(attacker_id, "sdfsdfsd2");
-        // pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        //     client.query(q, function(err, result) {
-        //         done();
-        //         sendTextMessage(defender_id, "sdfsdfsd3");
-        //         sendTextMessage(attacker_id, "sdfsdfsd3");
-        //         if (err || result.rows.length !== 1) {
-        //             sendTextMessage(attacker_id, "error (8)");
-        //         }else{
-        sendTextMessage(defender_id, "sdfsdfsd4");
-        sendTextMessage(attacker_id, "sdfsdfsd4");
-        sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
-        sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
-        sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-        sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-        //         }
-        //     });
-        // });
+        // update the duel
+        sendTextMessage(defender_id, "sdfsdfsd");
+        sendTextMessage(attacker_id, "sdfsdfsd");
+        q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
+        if (attacker_is_sender) {
+            q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
+        }
+        sendTextMessage(defender_id, "sdfsdfsd2");
+        sendTextMessage(attacker_id, "sdfsdfsd2");
+        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+            client.query(q, function(err, result) {
+                done();
+                sendTextMessage(defender_id, "sdfsdfsd3");
+                sendTextMessage(attacker_id, "sdfsdfsd3");
+                if (err || result.rows.length !== 1) {
+                    sendTextMessage(attacker_id, "error (8)");
+                }else{
+                    sendTextMessage(defender_id, "sdfsdfsd4");
+                    sendTextMessage(attacker_id, "sdfsdfsd4");
+                    sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
+                    sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
+                    sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                    sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                }
+            });
+        });
     }
 }
 
