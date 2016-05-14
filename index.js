@@ -598,10 +598,10 @@ function sendNormalMessage(s, text) {
     };
     s_get_duel_info = function(result) {
         data = result.rows[0];
-        sendTextMessage(s, JSON.stringify(data));
-        // message_to = data.sender_id;
-        // if (message_to == s) { message_to = data.recipient_id; }
-        // sendTextMessage(message_to, text);
+        // sendTextMessage(s, JSON.stringify(data));
+        message_to = data.sender_id;
+        if (message_to == s) { message_to = data.recipient_id; }
+        sendTextMessage(message_to, text);
     };
     s_get_user_info = function(result) {
         data = result.rows[0];
