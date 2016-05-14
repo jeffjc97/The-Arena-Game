@@ -185,10 +185,8 @@ function sendGenericMessage(sender) {
             // "timestamp":"1428444852", 
             "elements":[
               {
-                "title":"Classic White T-Shirt",
-                "subtitle":"100% Soft and Luxurious Cotton",
-                "title":"Classic Gray T-Shirt",
-                "subtitle":"100% Soft and Luxurious Cotton",
+                "title":"Help",
+                "subtitle":"100% Soft and Luxurious Cotton\nlolol\nlolol",
                 // "quantity":2,
                 // "price":50,
                 // "currency":"USD",
