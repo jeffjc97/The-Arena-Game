@@ -397,12 +397,12 @@ function setupDuel(s, r) {
                         first = s
                         if (Math.random() > 0.5)
                             first = r
-                        q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\')';
+                        q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
                         client.query(q3, function(err, result) {
                             done();
                             if (err) {
-                                // sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
-                                sendTextMessage(s, JSON.stringify(err).substring(0, 200));
+                                sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
+                                // sendTextMessage(s, JSON.stringify(err).substring(0, 200));
                             }
                             else {
                                 startDuel(s,r, first);
