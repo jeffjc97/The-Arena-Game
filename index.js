@@ -410,7 +410,7 @@ function setupDuel(s, r) {
             }
             else {
                 duel_id = result.rows[0].duel_id;
-                q = 'UPDATE user_table SET in_duel = '+duel_id' WHERE id = \'' + s + '\'';
+                q = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + s + '\'';
                 client.query(q, function(err, result) {
                     done();
                     if (err) {
