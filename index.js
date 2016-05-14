@@ -254,7 +254,7 @@ function sendChallenge(s, r, su, ru) {
 function respondToChallengeSetup(su, r, response) {
     // get recipient username
     // get sender id
-    q = 'SELECT name FROM user_table where id= \'' + r + '\'';
+    q = 'SELECT name, in_duel FROM user_table where id= \'' + r + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
