@@ -216,7 +216,7 @@ function getUsername(s, r, ru) {
 function sendChallenge(s, r, su, ru) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         q_validate = 'SELECT name, in_duel FROM user_table where id= \'' + s + '\'';
-        client.query(q, function(err, result) {
+        client.query(q_validate, function(err, result) {
             done();
             if (err) {
                 sendTextMessage(s, "Error in sending challenge");
