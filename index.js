@@ -237,19 +237,13 @@ function sendChallenge(s, r, su, ru) {
                     else if (result.rows.length === 0) {
                         sendTextMessage(s, "Error in finding user.");   
                     }
-                    else if(result.rows[0].in_duel){
-                        sendTextMessage(r, "here1");
+                    else if(result.rows[0].in_duel === '1'){
+                        sendTextMessage(s, ru + "is already in a duel.");      
                     }
                     else{
-                        sendTextMessage(r, "here2");
+                        sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
+                        sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
                     }
-                    //TODO
-                    //     sendTextMessage(s, ru + "is already in a duel.");      
-                    // }
-                    // else{
-                    //     sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
-                    //     sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
-                    // }
                 });
             }
         });
