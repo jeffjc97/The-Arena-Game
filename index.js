@@ -591,9 +591,7 @@ function loseDuel(lid, wid, lname, wname, did) {
 }
 
 function sendNormalMessage(s, text) {
-    duel_id = -1
     q_get_user_info = "SELECT name, in_duel from user_table WHERE id = \'" + s + "\'";
-    q_get_duel_info = "SELECT sender_id, recipient_id FROM duel_table WHERE duel_id = " + duel_id;
 
     e = function(err) {
         sendError(s, 28);
@@ -609,6 +607,7 @@ function sendNormalMessage(s, text) {
         data = result.rows[0];
         if (data.in_duel) {
             duel_id = data.in_duel;
+            q_get_duel_info = "SELECT sender_id, recipient_id FROM duel_table WHERE duel_id = " + duel_id
             makeQuery(q_get_duel_info, e, s_get_duel_info);
         }
         else {
