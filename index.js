@@ -57,6 +57,8 @@ app.post('/webhook/', function (req, res) {
             switch(words[0]){
                 case "@generic":
                     sendGenericMessage(sender);
+                case "@register":
+                    registerUser(sender, username);
                 case "@challenge":
                     q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -213,6 +215,25 @@ function mysql_real_escape_string (str) {
                                   // and double/single quotes
         }
     });
+}
+
+function registerUser(s, username) {
+    if (username.charAt(0) == "@" || username.length === 0) {
+        sendTextMessage(s, "Invalid username. Please try again.");
+    }
+    q_add_username = "INSERT INTO user_table(id, name) VALUES (\'" + s + "\', \'" + username + "\')";
+    e = function(err) {
+        if (err.detail.indexOf("already exists") > -1) {
+            sendError(s, 29, "Username already exists, please try another.");
+        }
+        else {
+            sendError(s, 30);
+        }
+    };
+    s = function(result) {
+        sendTextMessage(s, "Username successfully registered!");
+    };
+
 }
 
 function getUsername(s, r, ru) {
@@ -599,7 +620,6 @@ function sendNormalMessage(s, text) {
     };
     s_get_duel_info = function(result) {
         data = result.rows[0];
-        // sendTextMessage(s, JSON.stringify(data));
         message_to = data.sender_id;
         if (message_to == s) { message_to = data.recipient_id; }
         sendTextMessage(message_to, name + ": " + text);
