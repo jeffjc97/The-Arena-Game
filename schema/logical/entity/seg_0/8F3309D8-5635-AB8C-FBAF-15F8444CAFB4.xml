@@ -4,7 +4,7 @@
 <createdTime>2016-05-14 00:07:49 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <adequatelyNormalized>NO</adequatelyNormalized>
 <expectedVolumes>0</expectedVolumes>
@@ -20,7 +20,7 @@
 <createdTime>2016-05-14 00:08:32 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
@@ -34,7 +34,7 @@
 <createdTime>2016-05-14 00:08:58 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
@@ -48,14 +48,14 @@
 <generatorID>C80A59BE-18F4-08DE-1032-278FC80C8505</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="sender id" id="0DF35230-3F8B-AF0D-111F-C19E0AF3B466">
 <createdBy>Roy</createdBy>
@@ -63,21 +63,21 @@
 <generatorID>FE4D1438-90BE-C521-990D-2B179A70FD62</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="health sender" id="F8C05DC7-D79E-E182-06AB-A471BBCC205C">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 01:16:07 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -89,7 +89,7 @@
 <createdTime>2016-05-14 01:16:51 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -101,7 +101,7 @@
 <createdTime>2016-05-14 01:17:12 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -114,21 +114,21 @@
 <generatorID>CF566EDC-F1DB-8D19-D0ED-2AD28762C595</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="duel_id" id="25C54FDE-9A6C-E928-623B-7E40EDBF1C6F">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 02:35:11 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -142,7 +142,7 @@
 <createdTime>2016-05-14 00:23:25 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <pk>true</pk>
 <usedAttributes>

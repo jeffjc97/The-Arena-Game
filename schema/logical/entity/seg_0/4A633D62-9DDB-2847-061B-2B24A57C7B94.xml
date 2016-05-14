@@ -4,7 +4,7 @@
 <createdTime>2016-05-14 00:24:22 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <adequatelyNormalized>NO</adequatelyNormalized>
 <expectedVolumes>0</expectedVolumes>
@@ -20,7 +20,7 @@
 <createdTime>2016-05-14 00:24:33 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -34,14 +34,14 @@
 <generatorID>781043EF-83F2-7093-967D-39CCA94B6490</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="duel_id" id="DD87148C-ED51-D142-D28C-68871922862C">
 <createdBy>Roy</createdBy>
@@ -49,9 +49,10 @@
 <generatorID>1857E648-F5E5-D81D-F6CC-BF7482B2ED4F</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>25C54FDE-9A6C-E928-623B-7E40EDBF1C6F</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
