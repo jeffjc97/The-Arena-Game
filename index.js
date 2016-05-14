@@ -460,7 +460,7 @@ function makeMoveSetup(su, s){
         client.query(q, function(err, result) {
             done();
             if (err || result.rows.length !== 1) {
-                sendTextMessage(s, "Error in starting duel (3)");
+                sendTextMessage(s, json.stringify(err).substring(0,200));
             }
             else {
                 duel_id = result.rows[0].in_duel;
