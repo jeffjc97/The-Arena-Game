@@ -214,6 +214,8 @@ function getUsername(s, r, ru) {
 
 // sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
+    //validate that user isn't already in a challenge
+    
     q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -234,6 +236,7 @@ function sendChallenge(s, r, su, ru) {
     });
 }
 
+//r (id) is responding to challenge from su (name) with response 
 function respondToChallengeSetup(su, r, response) {
     // get recipient username
     // get sender id
@@ -249,6 +252,7 @@ function respondToChallengeSetup(su, r, response) {
                     sendTextMessage(r, "Error in responding to challenge. Please try again. (2)");
                 }
                 else {
+                    //username of the responder
                     ru = result.rows[0].name;
                     q2 = 'SELECT id FROM user_table where name = \'' + su + '\'';
                     client.query(q2, function(err, result) {
@@ -260,6 +264,9 @@ function respondToChallengeSetup(su, r, response) {
                             if (result.rows.length === 0) {
                                 sendTextMessage(r, "Error in responding to challenge. Please try again. (4)");
                             }
+                            else if (result.rows.length > 1) {
+                                sendTextMessage(r, su+ "is not a unique id. Please try again. (5)");
+                            };
                             else {
                                 s = result.rows[0].id;
                                 respondToChallenge(s, r, su, ru, response);
@@ -274,6 +281,7 @@ function respondToChallengeSetup(su, r, response) {
 
 function respondToChallenge(s, r, su, ru, response) {
     // validate
+        //make sure neither responder nor challenger are in duel currently
     // make changes/start game
     q = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -285,6 +293,9 @@ function respondToChallenge(s, r, su, ru, response) {
             else {
                 if (result.rows.length === 0) {
                     sendTextMessage(r, "This challenge request has expired or does not exist.");
+                }
+                else if (result.rows.length > 1){
+                    sendTextMessage(r, "Error. This is not a unique challenge request. Please contact support.");   
                 }
                 else {
                     q2 = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
@@ -305,6 +316,7 @@ function respondToChallenge(s, r, su, ru, response) {
                             }
                         }
                     });
+                    q3 = ''
                 }
             }
         });
