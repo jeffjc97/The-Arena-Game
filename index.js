@@ -223,12 +223,13 @@ function registerUser(s, username) {
     }
     q_add_username = "INSERT INTO user_table(id, name) VALUES (\'" + s + "\', \'" + username + "\')";
     e = function(err) {
-        if (err.detail.indexOf("already exists") > -1) {
-            sendError(s, 29, "Username already exists, please try another.");
-        }
-        else {
-            sendError(s, 30);
-        }
+        sendTextMessage(s, JSON.stringify(err).substring(0,200));
+        // if (err.detail.indexOf("already exists") > -1) {
+        //     sendError(s, 29, "Username already exists, please try another.");
+        // }
+        // else {
+        //     sendError(s, 30);
+        // }
     };
     s = function(result) {
         sendTextMessage(s, "Username successfully registered!");
