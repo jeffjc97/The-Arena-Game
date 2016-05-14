@@ -299,7 +299,7 @@
 		<engineer_coordinates value="true"/>
 		<engineer_generated value="true"/>
 		<show_engineering_intree value="false"/>
-		<apply_naming_std value="true"/>
+		<apply_naming_std value="false"/>
 		<use_pref_abbreviation value="true"/>
 		<upload_directory value=""/>
 		<date_format value="YYYY/MM/DD HH24:MI:SS"/>
@@ -389,7 +389,7 @@
 	<model_compare_storage_props_filter>
 	</model_compare_storage_props_filter>
 	<naming_options>
-		<model_options objectid="AA9622A4-CA78-24CC-070E-711B0931FD3E">
+		<model_options objectid="F3203026-C442-DD8E-1F85-E9AC0A737736">
 			<naming_option class_name="oracle.dbtools.crest.model.design.relational.Table" max_name_length="30" case_type="2" valid_characters="" all_valid="true" />
 			<naming_option class_name="oracle.dbtools.crest.model.design.relational.Column" max_name_length="30" case_type="2" valid_characters="" all_valid="true" />
 			<naming_option class_name="oracle.dbtools.crest.model.design.relational.TableView" max_name_length="30" case_type="2" valid_characters="" all_valid="true" />

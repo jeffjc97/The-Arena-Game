@@ -117,7 +117,7 @@ function sendTextMessage(sender, text) {
     });
 }
 
-function sendGenericMessage(sender) {
+/*function sendGenericMessage(sender) {
     messageData = {
         "attachment": {
             "type": "template",
@@ -164,7 +164,7 @@ function sendGenericMessage(sender) {
             console.log('Error: ', response.body.error);
         }
     });
-}
+}*/
 
 function mysql_real_escape_string (str) {
     return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
@@ -220,16 +220,30 @@ function sendChallenge(s, r, su, ru) {
             done();
             if (err) {
                 if (err.detail.indexOf("already exists") > -1) {
-                    sendTextMessage(sender, "Challenge already pending, please wait.");
+                    sendTextMessage(s, "Challenge already pending, please wait.");
                 }
                 else {
-                    sendTextMessage(sender, "Error in sending challenge.");
+                    sendTextMessage(s, "Error in sending challenge.");
                 }
             }
-            //verify that user isn't already in a duel
             else {
-                sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
-                sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+                //verify that user isn't already in a duel
+                q_induel = 'SELECT in_duel from user_table WHERE id = \'' + r + '\'';
+                client.query(q_induel, function(err, result){
+                    if (err) {
+                        sendTextMessage(s, "Error in finding user.");
+                    }
+                    else if (result.row.length === 0) {
+                        sendTextMessage(s, "Error in finding user.");   
+                    }
+                    else if (result.rows[0].in_duel) {
+                        sendTextMessage(s, ru + "is already in a duel.");      
+                    }
+                    else{
+                        sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
+                        sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+                    }
+                }
             }
         });
     });

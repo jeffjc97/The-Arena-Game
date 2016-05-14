@@ -1,16 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="86F79BBE-39F7-DEA0-C5B1-E71C53B252A7" name="user_table">
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="5F50A24B-F940-E99D-183A-62F14AEC155C" name="user_table">
 <createdBy>Roy</createdBy>
-<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<createdTime>2016-05-14 02:36:21 UTC</createdTime>
 <generatorID>E554081A-6ECE-C978-B5AB-C83B4509281A</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <allowColumnReorder>false</allowColumnReorder>
 <existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
 <parsed>true</parsed>
 <columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
-<Column name="id" id="89A5E674-177C-082E-7B78-F5DF793B2CAB">
+<Column name="id" id="B30C5C02-7A07-5FBF-EF4F-C01B83834EC2">
 <createdBy>Roy</createdBy>
-<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<createdTime>2016-05-14 02:36:21 UTC</createdTime>
 <generatorID>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <useDomainConstraints>false</useDomainConstraints>
@@ -20,9 +20,9 @@
 <ownDataTypeParameters>20,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
-<Column name="name" id="5AD6EBFD-8AAF-9748-EB53-718EE00006F9">
+<Column name="name" id="295EC847-3350-CFB2-5736-D172101EAF9D">
 <createdBy>Roy</createdBy>
-<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<createdTime>2016-05-14 02:36:21 UTC</createdTime>
 <generatorID>3111EE50-7918-C4E4-A830-D98F6D6446FD</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <useDomainConstraints>false</useDomainConstraints>
@@ -32,9 +32,9 @@
 <ownDataTypeParameters>255,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
-<Column name="in_duel" id="3DB88593-0048-B431-2F6E-A08F06A44A06">
+<Column name="in_duel" id="3A643281-45C1-638C-6DB9-8A054306ACE2">
 <createdBy>Roy</createdBy>
-<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<createdTime>2016-05-14 02:36:21 UTC</createdTime>
 <generatorID>16BE0A72-2EF4-D654-80A7-08F62F804A34</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <useDomainConstraints>false</useDomainConstraints>
@@ -46,16 +46,16 @@
 </Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
-<ind_PK_UK id="6ACF3AFA-C084-762C-9A40-38A9F4C60359" name="user_table_PK">
+<ind_PK_UK id="CEF6C76D-1F35-EEF4-1854-D519E9ABF21F" name="user_table_PK">
 <createdBy>Roy</createdBy>
-<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<createdTime>2016-05-14 02:36:21 UTC</createdTime>
 <generatorID>0B14E390-885A-1791-72A1-A08CD4954420</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <pk>true</pk>
 <indexState>Primary Constraint</indexState>
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
-<colUsage columnID="89A5E674-177C-082E-7B78-F5DF793B2CAB"/>
+<colUsage columnID="B30C5C02-7A07-5FBF-EF4F-C01B83834EC2"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>
