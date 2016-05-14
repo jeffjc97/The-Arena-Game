@@ -81,7 +81,7 @@ app.post('/webhook/', function (req, res) {
                     respondToChallengeSetup(username, sender, false);
                     break;
                 case "@strike":
-                    makeMoveSetup(username, sender);
+                    makeMoveSetup(sender);
                     break;
                 case "@test":
                     username = words[words.length - 1];
@@ -455,7 +455,7 @@ function startDuel(s, r, f_id) {
 
 
 function makeMoveSetup(su, s){
-    q = 'SELECT id, in_duel FROM user_table where id= \'' + s + '\'';
+    q = 'SELECT name, id, in_duel FROM user_table where id= \'' + s + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
@@ -464,6 +464,7 @@ function makeMoveSetup(su, s){
             }
             else {
                 duel_id = result.rows[0].in_duel;
+                su = result.rows[0].name;
                 //TODO check that in_duel is not 0
                 q2 = 'SELECT * FROM duel_table WHERE duel_id = '+duel_id;
                 client.query(q2, function(err, result) {
@@ -498,7 +499,7 @@ function makeMoveSetup(su, s){
                                     sendTextMessage(s, "error (7)");
                                 }
                                 else{
-                                    makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id);
+                                    makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
                                 }
                             });
                         }
@@ -510,7 +511,7 @@ function makeMoveSetup(su, s){
 }
 
 //invariant: it is currently the attacker's turn
-function makeMove(attacker_id, defender_id, health_defender, health_attacker, attacker_name, defender_name, duel_id){
+function makeMove(attacker_id, defender_id, health_defender, health_attacker, attacker_name, defender_name, duel_id, attacker_is_sender){
     max = 11;
     min = 0;
     attack_value = Math.floor(Math.random() * (max - min)) + min;
@@ -520,10 +521,22 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
         loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id);
     }else{
         new_health_def = health_defender - attack_value;
-        sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
-        sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
-        sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-        sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+        //update the duel
+        q = 'UPDATE duel_table SET (turn_id = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+        if (attacker_is_sender) {
+            q = 'UPDATE duel_table SET (turn_id = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+        }
+        client.query(q, function(err, result) {
+            done();
+            if (err || result.rows.length !== 1) {
+                sendTextMessage(s, "error (8)");
+            }else{
+                sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
+                sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
+                sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+            }
+        });
     }
 }
 
