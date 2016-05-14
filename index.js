@@ -53,9 +53,9 @@ app.post('/webhook/', function (req, res) {
         if (event.message && event.message.text) {
             text = event.message.text;
             words = text.split(" ");
+            username = words[words.length - 1];
             switch(words[0]){
                 case "@challenge":
-                    username = words[words.length - 1];
                     q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
                         client.query(q, function(err, result) {
@@ -75,13 +75,13 @@ app.post('/webhook/', function (req, res) {
                     });
                     break;
                 case "@accept":
-                    username = words[words.length - 1];
                     respondToChallengeSetup(username, sender, true);
                     break;
                 case "@reject":
-                    username = words[words.length - 1];
                     respondToChallengeSetup(username, sender, false);
                     break;
+                case "@strike":
+                    makeMove(username);
                 default:
                     sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
                     break;
@@ -379,30 +379,31 @@ function respondToChallenge(s, r, su, ru, response) {
 
 // invariant: neither party is in a duel
 function setupDuel(s, r) {
-    q = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + s + '\'';
+    first = s
+    if (Math.random() > 0.5)
+        first = r;
+    q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
+        client.query(q3, function(err, result) {
             done();
             if (err) {
-                sendTextMessage(s, "Error in setting up duel. Please try again. (1)");
+                sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
+                // sendTextMessage(s, JSON.stringify(err).substring(0, 200));
             }
             else {
-                q2 = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + r + '\'';
-                client.query(q2, function(err, result) {
+                duel_id = result.rows[0].duel_id;
+                q = 'UPDATE user_table SET in_duel = '+duel_id' WHERE id = \'' + s + '\'';
+                client.query(q, function(err, result) {
                     done();
                     if (err) {
-                        sendTextMessage(s, "Error in setting up duel. Please try again. (2)");
+                        sendTextMessage(s, "Error in setting up duel. Please try again. (1)");
                     }
                     else {
-                        first = s
-                        if (Math.random() > 0.5)
-                            first = r
-                        q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
-                        client.query(q3, function(err, result) {
+                        q2 = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + r + '\'';
+                        client.query(q2, function(err, result) {
                             done();
                             if (err) {
-                                sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
-                                // sendTextMessage(s, JSON.stringify(err).substring(0, 200));
+                                sendTextMessage(s, "Error in setting up duel. Please try again. (2)");
                             }
                             else {
                                 startDuel(s,r, first);
@@ -417,6 +418,24 @@ function setupDuel(s, r) {
 
 function startDuel(s, r, f_id) {
     q = 'SELECT name FROM user_table where id= \'' + f_id + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err || result.rows.length !== 1) {
+                sendTextMessage(s, "Error in starting duel (3)");
+                sendTextMessage(r, "Error in starting duel (3)");
+            }
+            else {
+                first = result.rows[0].name;
+                sendTextMessage(s, "The duel has begun! "+first+ " has the first move.");
+                sendTextMessage(r, "The duel has begun! "+first+ " has the first move.");
+            }
+        });
+    });
+}
+
+function makeMove(su){
+    q = 'SELECT id FROM user_table where name= \'' + su + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
