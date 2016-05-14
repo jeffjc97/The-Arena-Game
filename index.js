@@ -231,6 +231,7 @@ function sendChallenge(s, r, su, ru) {
                 q_induel = 'SELECT * from user_table WHERE id = \'' + r + '\'';
                 client.query(q_induel, function(err, result){
                     done();
+                    sendTextMessage(r, r);
                     if (err) {
                         sendTextMessage(s, "Error in finding user.");
                     }
