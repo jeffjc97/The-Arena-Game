@@ -225,7 +225,7 @@ function registerUser(s, username) {
     }
     else {
         sendTextMessage(s, username);
-        q_add_username = "INSERT INTO user_table VALUES (\'" + s + "\', \'" + username + "\')";
+        q_add_username = 'INSERT INTO user_table(id, name, in_duel) VALUES (\'' + s + '\', \'' + username + '\', DEFAULT)';
         e = function(err) {
             sendTextMessage(s, JSON.stringify(err).substring(0,200));
             // if (err.detail.indexOf("already exists") > -1) {
