@@ -455,12 +455,12 @@ function startDuel(s, r, f_id) {
 
 
 function makeMoveSetup(su, s){
-    q = 'SELECT id, in_duel FROM user_table where name= \'' + su + '\'';
+    q = 'SELECT id, in_duel FROM user_table where id= \'' + s + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
             if (err || result.rows.length !== 1) {
-                sendTextMessage(s, JSON.stringify(err).substring(0,200));
+                sendTextMessage(s, JSON.stringify(result.rows).substring(0,200));
             }
             else {
                 duel_id = result.rows[0].in_duel;
