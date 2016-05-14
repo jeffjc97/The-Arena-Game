@@ -339,9 +339,9 @@ function setupDuel(s, r) {
                         sendTextMessage(s, "Error in setting up duel. Please try again. (2)");
                     }
                     else {
-                        first = "s"
+                        first = s
                         if (Math.random() > 0.5)
-                            first = "r"
+                            first = r
                         q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\')';
                         client.query(q3, function(err, result) {
                             done();
