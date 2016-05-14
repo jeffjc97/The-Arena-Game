@@ -464,7 +464,6 @@ function makeMoveSetup(su, s){
             done();
             if (err || result.rows.length !== 1) {
                 sendError(s, 26);
-                sendError(r, 26);
             }
             else {
                 duel_id = result.rows[0].in_duel;
