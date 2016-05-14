@@ -176,6 +176,7 @@ function sendGenericMessage(sender) {
         "attachment":{
           "type":"template",
           "payload":{
+            "template_type":"generic",
             // "recipient_name":"Stephane Crozatier",
             // "order_number":"12345678902",
             // "currency":"USD",
