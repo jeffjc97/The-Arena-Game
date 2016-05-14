@@ -522,9 +522,9 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
     }else{
         new_health_def = health_defender - attack_value;
         //update the duel
-        q = 'UPDATE duel_table SET (turn_id = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+        q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
         if (attacker_is_sender) {
-            q = 'UPDATE duel_table SET (turn_id = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+            q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
         }
         pg.connect(process.env.DATABASE_URL, function(err, client, done) {
             client.query(q, function(err, result) {
