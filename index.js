@@ -214,35 +214,50 @@ function getUsername(s, r, ru) {
 
 // sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
-    q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        q_validate = 'SELECT name, in_duel FROM user_table where id= \'' + s + '\'';
         client.query(q, function(err, result) {
             done();
             if (err) {
-                if (err.detail.indexOf("already exists") > -1) {
-                    sendTextMessage(s, "Challenge already pending, please wait.");
-                }
-                else {
-                    sendTextMessage(s, "Error in sending challenge.");
-                }
+                sendTextMessage(s, "Error in sending challenge");
             }
-            else {
-                //verify that user isn't already in a duel
-                q_induel = 'SELECT * from user_table WHERE id = \'' + r + '\'';
-                client.query(q_induel, function(err, result){
+            else if (result.rows.length === 0 || result.rows.length > 1) {
+                sendTextMessage(s, "Error in sending challenge.");   
+            }
+            else if(result.rows[0].in_duel === '1'){
+                sendTextMessage(s, "You are already in a duel.");      
+            }
+            else{
+                q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
+                client.query(q, function(err, result) {
                     done();
                     if (err) {
-                        sendTextMessage(s, "Error in finding user.");
+                        if (err.detail.indexOf("already exists") > -1) {
+                            sendTextMessage(s, "Challenge already pending, please wait.");
+                        }
+                        else {
+                            sendTextMessage(s, "Error in sending challenge.");
+                        }
                     }
-                    else if (result.rows.length === 0) {
-                        sendTextMessage(s, "Error in finding user.");   
-                    }
-                    else if(result.rows[0].in_duel === '1'){
-                        sendTextMessage(s, ru + " is already in a duel.");      
-                    }
-                    else{
-                        sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
-                        sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+                    else {
+                        //verify that user isn't already in a duel
+                        q_induel = 'SELECT * from user_table WHERE id = \'' + r + '\'';
+                        client.query(q_induel, function(err, result){
+                            done();
+                            if (err) {
+                                sendTextMessage(s, "Error in finding user.");
+                            }
+                            else if (result.rows.length === 0) {
+                                sendTextMessage(s, "Error in finding user.");   
+                            }
+                            else if(result.rows[0].in_duel === '1'){
+                                sendTextMessage(s, ru + " is already in a duel.");      
+                            }
+                            else{
+                                sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
+                                sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+                            }
+                        });
                     }
                 });
             }
