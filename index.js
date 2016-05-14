@@ -617,7 +617,7 @@ function loseDuel(lid, wid, lname, wname, did) {
 }
 
 function sendNormalMessage(s, text) {
-    var name = "lol";
+    var name = "";
     q_get_user_info = "SELECT name, in_duel from user_table WHERE id = \'" + s + "\'";
 
     e = function(err) {
