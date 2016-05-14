@@ -308,18 +308,19 @@ function respondToChallenge(s, r, su, ru, response) {
                     sendTextMessage(r, "This challenge request has expired or does not exist.");
                 }
                 else if (result.rows.length > 1){
-                    sendTextMessage(r, "Error. This is not a unique challenge request. Please contact support.");   
+                    sendTextMessage(r, "Error in chappenge lookup. (2)");   
                 }
                 else {
                     q2 = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
                     client.query(q2, function(err, result) {
                         done();
                         if (err) {
-                            sendTextMessage(s, "Error in challenge lookup. (2)");
+                            sendTextMessage(s, "Error in challenge lookup. (3)");
                         }
                         else {
                             if (response) {
                                 // start duel
+                                setupDuel(s, r);
                                 sendTextMessage(s, ru + " has accepted your request! Starting duel...");
                                 sendTextMessage(r, "Request accepted. Starting duel...");
                             }
@@ -329,9 +330,51 @@ function respondToChallenge(s, r, su, ru, response) {
                             }
                         }
                     });
-                    q3 = ''
                 }
             }
         });
     });
+}
+
+// invariant: neither party is in a duel
+function setupDuel(s, r) {
+    q = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + s + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                sendTextMessage(s, "Error in setting up duel. Please try again. (1)");
+            }
+            else {
+                q2 = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + r + '\'';
+                client.query(q2, function(err, result) {
+                    done();
+                    if (err) {
+                        sendTextMessage(s, "Error in setting up duel. Please try again. (2)");
+                    }
+                    else {
+                        first = s
+                        if (Math.random() > 0.5)
+                            first = r
+                        q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\')';
+                        client.query(q3, function(err, result) {
+                            done();
+                            if (err) {
+                                // sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
+                                sendTextMessage(s, JSON.stringify(err).substring(0, 200));
+                            }
+                            else {
+                                startDuel(s,r);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+}
+
+function startDuel(s, r) {
+    sendTextMessage(s, "The duel has begun!");
+    sendTextMessage(r, "The duel has begun!");
 }
