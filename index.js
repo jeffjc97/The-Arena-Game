@@ -90,11 +90,11 @@ app.post('/webhook/', function (req, res) {
                     };
                     s = function(result) {
                         if (result.rows.length === 0) {
-                            sendTextMessage(s, ":-( (2)");
+                            sendTextMessage(sender, ":-( (2)");
                         }
                         else {
                             username = result.rows[0].name;
-                            sendTextMessage(s, username);
+                            sendTextMessage(sender, username);
                         }
                     };
                     makeQuery(q, e, s);
