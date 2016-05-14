@@ -456,44 +456,48 @@ function makeMoveSetup(s){
             else {
                 duel_id = result.rows[0].in_duel;
                 su = result.rows[0].name;
-                //TODO check that in_duel is not 0
-                q2 = 'SELECT * FROM duel_table WHERE duel_id = '+duel_id;
-                client.query(q2, function(err, result) {
-                    done();
-                    if (err || result.rows.length !== 1) {
-                        sendTextMessage(s, "error");
-                    }
-                    else{
-                        data = result.rows[0];
-                        turn_id = data.user_turn;
-                        if (s != turn_id) {
-                            sendTextMessage(s, "It's not your turn. Please wait.");
+                if (duel_id === '0') {
+                    sendTextMessage(s, "You are not currently in a duel.");
+                }
+                else{
+                    q2 = 'SELECT * FROM duel_table WHERE duel_id = '+duel_id;
+                    client.query(q2, function(err, result) {
+                        done();
+                        if (err || result.rows.length !== 1) {
+                            sendTextMessage(s, "error");
                         }
                         else{
-                            //we know s is attacker. Is s sender_id or recipient_id?
-                            s_is_sender_id = isSender_id(s, data);
-                            defender_id = data.sender_id;
-                            defender_health = data.health_sender;
-                            attacker_health = data.health_recipient;
-                            if (s_is_sender_id) {
-                                defender_id = data.recipient_id;
-                                defender_health = data.health_recipient;
-                                attacker_health = data.health_sender;
+                            data = result.rows[0];
+                            turn_id = data.user_turn;
+                            if (s != turn_id) {
+                                sendTextMessage(s, "It's not your turn. Please wait.");
                             }
-                            //query for defender's name
-                            q3 = 'SELECT name FROM user_table WHERE id= \'' + defender_id + '\'';
-                            client.query(q3, function(err, result) {
-                                done();
-                                if (err || result.rows.length !== 1) {
-                                    sendTextMessage(s, "error (7)");
+                            else{
+                                //we know s is attacker. Is s sender_id or recipient_id?
+                                s_is_sender_id = isSender_id(s, data);
+                                defender_id = data.sender_id;
+                                defender_health = data.health_sender;
+                                attacker_health = data.health_recipient;
+                                if (s_is_sender_id) {
+                                    defender_id = data.recipient_id;
+                                    defender_health = data.health_recipient;
+                                    attacker_health = data.health_sender;
                                 }
-                                else{
-                                    makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
-                                }
-                            });
+                                //query for defender's name
+                                q3 = 'SELECT name FROM user_table WHERE id= \'' + defender_id + '\'';
+                                client.query(q3, function(err, result) {
+                                    done();
+                                    if (err || result.rows.length !== 1) {
+                                        sendTextMessage(s, "error (7)");
+                                    }
+                                    else{
+                                        makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     });
