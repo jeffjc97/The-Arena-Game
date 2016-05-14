@@ -316,7 +316,7 @@ function respondToChallengeSetup(su, r, response) {
                 if (result.rows.length === 0) {
                     sendError(r, 13);
                 }
-                else if(result.rows[0].in_duel === '1'){
+                else if(result.rows[0].in_duel !== '0'){
                     sendError(r, 14, "You are currently in a duel!");
                 }
                 else {
@@ -338,7 +338,7 @@ function respondToChallengeSetup(su, r, response) {
                             }
                             else {
                                 s = result.rows[0].id;
-                                if(result.rows[0].in_duel === '1'){
+                                if(result.rows[0].in_duel !== '0'){
                                     sendError(r, 18, su + " is currently in a duel. Please try accepting again soon.");      
                                 }
                                 else{   
