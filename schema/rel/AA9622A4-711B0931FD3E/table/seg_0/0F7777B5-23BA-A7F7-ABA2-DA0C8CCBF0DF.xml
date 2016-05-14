@@ -1,0 +1,176 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="0F7777B5-23BA-A7F7-ABA2-DA0C8CCBF0DF" name="duel_table">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>8F3309D8-5635-AB8C-FBAF-15F8444CAFB4</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="winner_id" id="5CB01135-EA94-3A13-52B4-147AED3F1AF1">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>C10A5812-A0EA-7D09-25CC-08594C86C5EC</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="time_started" id="66CF276D-CEA0-BE8F-9FA8-2662C4D86BEE">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>00EF414D-40E8-449F-49A3-834D4E805286</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="sender_id" id="BD94F819-D2AD-9813-9EED-C8A0187EC916">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>67FC7549-7318-267C-E56E-14E7FAA8A6C7</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="BCBF081D-12C2-BDE5-8EDB-6A7860EB801A" referredColumn="89A5E674-177C-082E-7B78-F5DF793B2CAB"/>
+</associations>
+</Column>
+<Column name="recipient_id" id="0D057F40-11CC-4B46-E660-8DF83FF793A2">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>0DF35230-3F8B-AF0D-111F-C19E0AF3B466</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="1EF7D197-D6C4-6EEA-4DF5-3561B5DA6575" referredColumn="89A5E674-177C-082E-7B78-F5DF793B2CAB"/>
+</associations>
+</Column>
+<Column name="duel_id" id="FF5498F4-627F-9932-98B5-4DF64C3DE867">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>CBCCBD2B-F431-03C6-7E7F-8D3AA1A22A59</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="health_sender" id="B5B781FF-32E7-F518-4CBA-F199E6DC58FE">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>F8C05DC7-D79E-E182-06AB-A471BBCC205C</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="health_recipient" id="1214E8FF-1167-5ACF-2416-7971F816DDCC">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>A7CCB13D-896D-CDC9-1226-F14BBB79C2AE</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="moves_in_duel" id="DBC24F05-4107-0420-A73C-503F44625F91">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>9930865F-6B1B-5864-EB4C-3D606A070918</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="move" id="33059649-7B06-C8F0-2FB5-230B4C5738B5">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>A98D3060-DD1F-AB23-2E24-2333236CE42E</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="39A08E8B-959D-0F13-8998-F87F86668189" referredColumn="89A5E674-177C-082E-7B78-F5DF793B2CAB"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="14EA7489-3EB6-9B78-D120-C5FE5857490F" name="duel_table_PK">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>90ED1842-0B59-5FAB-3BF4-9083515C62E5</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="FF5498F4-627F-9932-98B5-4DF64C3DE867"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="CD5F9149-2036-3140-B653-ED5E519BF0AC" name="duel_table_user_table_FK">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>FE4D1438-90BE-C521-990D-2B179A70FD62</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0D057F40-11CC-4B46-E660-8DF83FF793A2"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="50A8D3D1-37B6-79F7-0631-A05350D4AB8E" name="duel_table_user_table_FKv3">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>C80A59BE-18F4-08DE-1032-278FC80C8505</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BD94F819-D2AD-9813-9EED-C8A0187EC916"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="21F325B0-BF52-F10A-FE0E-4E88DF597490" name="duel_table_user_table_FKv1">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>CF566EDC-F1DB-8D19-D0ED-2AD28762C595</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="33059649-7B06-C8F0-2FB5-230B4C5738B5"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

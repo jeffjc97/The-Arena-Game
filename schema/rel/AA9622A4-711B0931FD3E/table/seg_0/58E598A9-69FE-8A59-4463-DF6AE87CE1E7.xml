@@ -1,0 +1,79 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="58E598A9-69FE-8A59-4463-DF6AE87CE1E7" name="moves_table">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>4A633D62-9DDB-2847-061B-2B24A57C7B94</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="move" id="0C6511CC-D58E-5CA2-EA42-35384AE86968">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>C26C3DED-C28A-BFFF-BC0C-4A0B0A08DA58</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="made_by" id="C701A1AF-5F9E-C301-171F-E5C2A9133235">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>60A64242-E25B-0432-862A-E330DAFE94F3</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="97EAB523-9921-338A-9DE5-3313C2E4B894" referredColumn="89A5E674-177C-082E-7B78-F5DF793B2CAB"/>
+</associations>
+</Column>
+<Column name="in_duel" id="4C12FEB5-6483-7F0A-EA96-B159FE29D0F9">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>97AAA117-C7D6-2F56-D5D8-7526C2015D8E</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="F09628D4-A73C-6B34-3B53-62B84ECBE008" referredColumn="FF5498F4-627F-9932-98B5-4DF64C3DE867"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="8E8145EE-53A8-AD3A-06A8-23D7B042F2F7" name="moves_table_duel_table_FK">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>1857E648-F5E5-D81D-F6CC-BF7482B2ED4F</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="4C12FEB5-6483-7F0A-EA96-B159FE29D0F9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="835F16B2-D769-5E35-77D8-A796050A1F44" name="moves_table_user_table_FK">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 01:21:15 UTC</createdTime>
+<generatorID>781043EF-83F2-7093-967D-39CCA94B6490</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C701A1AF-5F9E-C301-171F-E5C2A9133235"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
