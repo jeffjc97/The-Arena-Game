@@ -463,12 +463,8 @@ function makeMoveSetup(su, s){
         client.query(q, function(err, result) {
             done();
             if (err || result.rows.length !== 1) {
-<<<<<<< HEAD
                 sendError(s, 26);
                 sendError(r, 26);
-=======
-                sendTextMessage(s, JSON.stringify(result.rows).substring(0,200));
->>>>>>> ec6535af55628455ecc27dafa30b24344f46ff55
             }
             else {
                 duel_id = result.rows[0].in_duel;
@@ -530,9 +526,9 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
     }else{
         new_health_def = health_defender - attack_value;
         //update the duel
-        q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+        q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
         if (attacker_is_sender) {
-            q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+            q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
         }
         pg.connect(process.env.DATABASE_URL, function(err, client, done) {
             client.query(q, function(err, result) {
