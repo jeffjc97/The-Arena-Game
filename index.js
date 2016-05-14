@@ -343,7 +343,8 @@ function setupDuel(s, r) {
                         client.query(q3, function(err, result) {
                             done();
                             if (err) {
-                                sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
+                                // sendTextMessage(s, "Error in setting up duel. Please try again. (3)");
+                                sendTextMessage(s, JSON.stringify(err).substring(0, 200));
                             }
                             else {
                                 startDuel(s,r);
