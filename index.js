@@ -212,6 +212,21 @@ function getUsername(s, r, ru) {
     });
 }
 
+function getUsernameFromId(id){
+    q = 'SELECT name FROM user_table where id= \'' + id + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err || result.rows.length !== 1) {
+                return "error";
+            }
+            else {
+                return result.rows[0].name;
+            }
+        });
+    });
+}
+
 // sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -390,7 +405,7 @@ function setupDuel(s, r) {
                                 sendTextMessage(s, JSON.stringify(err).substring(0, 200));
                             }
                             else {
-                                startDuel(s,r);
+                                startDuel(s,r, first);
                             }
                         });
                     }
@@ -400,7 +415,8 @@ function setupDuel(s, r) {
     });
 }
 
-function startDuel(s, r) {
-    sendTextMessage(s, "The duel has begun!");
-    sendTextMessage(r, "The duel has begun!");
+function startDuel(s, r, f_id) {
+    first = getUsernameFromId(f_id);
+    sendTextMessage(s, "The duel has begun! "+ first + " has the first turn.");
+    sendTextMessage(r, "The duel has begun!" + first + " has the first turn.");
 }
