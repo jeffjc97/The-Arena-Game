@@ -82,6 +82,24 @@ app.post('/webhook/', function (req, res) {
                     break;
                 case "@strike":
                     makeMove(username);
+                    break;
+                case "@test":
+                    username = words[words.length - 1];
+                    q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
+                    e = function(err) {
+                        sendTextMessage(sender, ":-(" + JSON.stringify(err).substring(0,300));
+                    };
+                    s = function(result) {
+                        if (result.rows.length === 0) {
+                            sendTextMessage(sender, ":-( (2)");
+                        }
+                        else {
+                            username = result.rows[0].name;
+                            sendTextMessage(sender, username);
+                        }
+                    };
+                    makeQuery(q, e, s);
+                    break;
                 default:
                     sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
                     break;
@@ -201,7 +219,7 @@ function getUsername(s, r, ru) {
             }
             else {
                 if (result.rows.length === 0) {
-                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
+                    sendTextMessage(s, "Error in challenge. Please try again. (2)");
                 }
                 else {
                     username = result.rows[0].name;
@@ -406,6 +424,7 @@ function setupDuel(s, r) {
                                 sendTextMessage(s, "Error in setting up duel. Please try again. (2)");
                             }
                             else {
+                                sendTextMessage(s, JSON.stringify(result).substring(0, 200))
                                 startDuel(s,r, first);
                             }
                         });
@@ -434,6 +453,7 @@ function startDuel(s, r, f_id) {
     });
 }
 
+
 function makeMove(su){
     q = 'SELECT id FROM user_table where name= \'' + su + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -447,6 +467,21 @@ function makeMove(su){
                 first = result.rows[0].name;
                 sendTextMessage(s, "The duel has begun! "+first+ " has the first move.");
                 sendTextMessage(r, "The duel has begun! "+first+ " has the first move.");
+            }
+        });
+    });
+}
+
+function makeQuery(q, error, success) {
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                error(err);
+            }
+            else {
+                success(result);
+
             }
         });
     });
