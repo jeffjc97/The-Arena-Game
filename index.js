@@ -474,7 +474,7 @@ function makeMoveSetup(su, s){
                     else{
                         data = result.rows[0];
                         turn_id = data.user_turn;
-                        if (s !== user_turn) {
+                        if (s !== turn_id) {
                             sendTextMessage(s, "It's not your turn Please wait...!");
                         }
                         else{
