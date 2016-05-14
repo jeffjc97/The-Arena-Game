@@ -54,62 +54,86 @@ app.post('/webhook/', function (req, res) {
             text = event.message.text;
             words = text.split(" ");
             username = words[words.length - 1];
-            switch(words[0]){
-                case "@generic":
-                    sendGenericMessage(sender);
-                case "@challenge":
-                    q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
-                    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-                        client.query(q, function(err, result) {
-                            done();
-                            if (err)
-                                sendError(sender, 1);
-                            else {
+
+            q_user_registered = "SELECT * FROM user_table where id =\'" + sender + "\'";
+            e = function(err) {
+                sendError(sender, 31);
+            }
+            s_user_registered = function(result) {
+                if (!result.rows.length) {
+                    switch(words[0]) {
+                        case "@register":
+                            registerUser(sender, username);
+                            break;
+                        default:
+                            sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
+                            break;
+                    }
+                }
+                else {
+                    switch(words[0]){
+                        case "@generic":
+                            sendGenericMessage(sender);
+                            break;
+                        case "@register":
+                            sendTextMessage(sender, "You are already registered!");
+                            break;
+                        case "@challenge":
+                            q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
+                            pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+                                client.query(q, function(err, result) {
+                                    done();
+                                    if (err)
+                                        sendError(sender, 1);
+                                    else {
+                                        if (result.rows.length === 0) {
+                                            sendError(sender, 2, "Username not found. Please try again.");
+                                        }
+                                        else {
+                                            challenge_id = parseInt(result.rows[0].id);
+                                            getUsername(sender, challenge_id, username);
+                                        }
+                                    }
+                                });
+                            });
+                            break;
+                        case "@accept":
+                            respondToChallengeSetup(username, sender, true);
+                            break;
+                        case "@reject":
+                            respondToChallengeSetup(username, sender, false);
+                            break;
+                        case "@strike":
+                            makeMoveSetup(sender);
+                            break;
+                        case "@forfeit":
+                            forfeitDuel(sender);
+                            break;
+                        case "@test":
+                            username = words[words.length - 1];
+                            q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
+                            e = function(err) {
+                                sendTextMessage(sender, ":-(" + JSON.stringify(err).substring(0,300));
+                            };
+                            s = function(result) {
                                 if (result.rows.length === 0) {
-                                    sendError(sender, 2, "Username not found. Please try again.");
+                                    sendTextMessage(sender, ":-( (2)");
                                 }
                                 else {
-                                    challenge_id = parseInt(result.rows[0].id);
-                                    getUsername(sender, challenge_id, username);
+                                    username = result.rows[0].name;
+                                    sendTextMessage(sender, username);
                                 }
-                            }
-                        });
-                    });
-                    break;
-                case "@accept":
-                    respondToChallengeSetup(username, sender, true);
-                    break;
-                case "@reject":
-                    respondToChallengeSetup(username, sender, false);
-                    break;
-                case "@strike":
-                    makeMoveSetup(sender);
-                    break;
-                case "@forfeit":
-                    forfeitDuel(sender);
-                    break;
-                case "@test":
-                    username = words[words.length - 1];
-                    q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
-                    e = function(err) {
-                        sendTextMessage(sender, ":-(" + JSON.stringify(err).substring(0,300));
-                    };
-                    s = function(result) {
-                        if (result.rows.length === 0) {
-                            sendTextMessage(sender, ":-( (2)");
-                        }
-                        else {
-                            username = result.rows[0].name;
-                            sendTextMessage(sender, username);
-                        }
-                    };
-                    makeQuery(q, e, s);
-                    break;
-                default:
-                    sendNormalMessage(sender, text);
-                    // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
-                    break;
+                            };
+                            makeQuery(q, e, s);
+                            break;
+                        default:
+                            sendNormalMessage(sender, text);
+                            // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
+                            break;
+                    }
+                }
             }
+            makeQuery(q_user_registered, e, s_user_registered);
         }
         if (event.postback) {
             text = JSON.stringify(event.postback);
@@ -213,6 +237,27 @@ function mysql_real_escape_string (str) {
                                   // and double/single quotes
         }
     });
+}
+
+function registerUser(s, username) {
+    if (username.charAt(0) == "@" || username.length === 0) {
+        sendTextMessage(s, "Invalid username. Please try again.");
+    }
+    else {
+        q_add_username = 'INSERT INTO user_table(id, name) VALUES (\'' + s + '\', \'' + username + '\')';
+        e = function(err) {
+            if (err.detail.indexOf("already exists") > -1) {
+                sendError(s, 29, "Username already exists, please try another.");
+            }
+            else {
+                sendError(s, 30);
+            }
+        };
+        s_add_username = function(result) {
+            sendTextMessage(s, "Username successfully registered!");
+        };
+        makeQuery(q_add_username, e, s_add_username);
+    }
 }
 
 function getUsername(s, r, ru) {
@@ -595,7 +640,7 @@ function loseDuel(lid, wid, lname, wname, did) {
 }
 
 function sendNormalMessage(s, text) {
-    var name = "lol";
+    var name = "";
     q_get_user_info = "SELECT name, in_duel from user_table WHERE id = \'" + s + "\'";
 
     e = function(err) {
@@ -603,7 +648,6 @@ function sendNormalMessage(s, text) {
     };
     s_get_duel_info = function(result) {
         data = result.rows[0];
-        // sendTextMessage(s, JSON.stringify(data));
         message_to = data.sender_id;
         if (message_to == s) { message_to = data.recipient_id; }
         sendTextMessage(message_to, name + ": " + text);
