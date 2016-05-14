@@ -527,9 +527,9 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
         // update the duel
         sendTextMessage(defender_id, "sdfsdfsd");
         sendTextMessage(attacker_id, "sdfsdfsd");
-        q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
+        q = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         if (attacker_is_sender) {
-            q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1) WHERE duel_id = '+duel_id;
+            q = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         }
         sendTextMessage(defender_id, "sdfsdfsd2");
         sendTextMessage(attacker_id, "sdfsdfsd2");
