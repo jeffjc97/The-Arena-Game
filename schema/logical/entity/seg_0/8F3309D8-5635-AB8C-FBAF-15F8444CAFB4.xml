@@ -1,10 +1,10 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="8F3309D8-5635-AB8C-FBAF-15F8444CAFB4" name="duel table">
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="8F3309D8-5635-AB8C-FBAF-15F8444CAFB4" name="duel_table">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:07:49 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <adequatelyNormalized>NO</adequatelyNormalized>
 <expectedVolumes>0</expectedVolumes>
@@ -15,120 +15,125 @@
 <minVolumes>0</minVolumes>
 <normalForm>Third</normalForm>
 <attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
-<Attribute name="winner id" id="C10A5812-A0EA-7D09-25CC-08594C86C5EC">
+<Attribute name="winner_id" id="C10A5812-A0EA-7D09-25CC-08594C86C5EC">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:08:32 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<defaultValue>none</defaultValue>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="time_started" id="00EF414D-40E8-449F-49A3-834D4E805286">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 00:08:58 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<defaultValue>CURRENT_TIMESTAMP</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="user_turn" id="67FC7549-7318-267C-E56E-14E7FAA8A6C7">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 00:12:49 UTC</createdTime>
+<generatorID>C80A59BE-18F4-08DE-1032-278FC80C8505</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
 <ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="time started" id="00EF414D-40E8-449F-49A3-834D4E805286">
-<createdBy>Roy</createdBy>
-<createdTime>2016-05-14 00:08:58 UTC</createdTime>
-<ownerDesignName>schema</ownerDesignName>
-<engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT015</logicalDatatype>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="user turn" id="67FC7549-7318-267C-E56E-14E7FAA8A6C7">
-<createdBy>Roy</createdBy>
-<createdTime>2016-05-14 00:12:49 UTC</createdTime>
-<generatorID>C80A59BE-18F4-08DE-1032-278FC80C8505</generatorID>
-<ownerDesignName>schema</ownerDesignName>
-<engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
-</engineerTo>
-<referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="sender id" id="0DF35230-3F8B-AF0D-111F-C19E0AF3B466">
+<Attribute name="sender_id" id="0DF35230-3F8B-AF0D-111F-C19E0AF3B466">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:13:25 UTC</createdTime>
 <generatorID>FE4D1438-90BE-C521-990D-2B179A70FD62</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="health sender" id="F8C05DC7-D79E-E182-06AB-A471BBCC205C">
+<Attribute name="health_sender" id="F8C05DC7-D79E-E182-06AB-A471BBCC205C">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 01:16:07 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
+<defaultValue>100</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="health recipient" id="A7CCB13D-896D-CDC9-1226-F14BBB79C2AE">
+<Attribute name="health_recipient" id="A7CCB13D-896D-CDC9-1226-F14BBB79C2AE">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 01:16:51 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
+<defaultValue>100</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="moves in duel" id="9930865F-6B1B-5864-EB4C-3D606A070918">
+<Attribute name="moves_in_duel" id="9930865F-6B1B-5864-EB4C-3D606A070918">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 01:17:12 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
+<defaultValue>0</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="recipient id" id="A98D3060-DD1F-AB23-2E24-2333236CE42E">
+<Attribute name="recipient_id" id="A98D3060-DD1F-AB23-2E24-2333236CE42E">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 01:19:49 UTC</createdTime>
 <generatorID>CF566EDC-F1DB-8D19-D0ED-2AD28762C595</generatorID>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>20</dataTypeSize>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="duel_id" id="25C54FDE-9A6C-E928-623B-7E40EDBF1C6F">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 02:35:11 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -142,7 +147,7 @@
 <createdTime>2016-05-14 00:23:25 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
-<item key="F3203026-C442-DD8E-1F85-E9AC0A737736" value="true"/>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
 </engineerTo>
 <pk>true</pk>
 <usedAttributes>

@@ -580,10 +580,6 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
     }
 }
 
-function loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id){
-    return;
-}
-
 //data is a row from duel_table
 function isSender_id(id, data){
     return id == data.sender_id;

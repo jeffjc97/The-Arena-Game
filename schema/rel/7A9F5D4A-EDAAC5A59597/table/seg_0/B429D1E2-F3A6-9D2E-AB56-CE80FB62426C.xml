@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="B429D1E2-F3A6-9D2E-AB56-CE80FB62426C" name="challenge_table">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 22:19:39 UTC</createdTime>
+<generatorID>0885E804-2683-D016-ED08-814ABA1670DF</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="sender" id="47E3064C-A4C8-EDEA-342C-93CC278F071F">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 22:19:39 UTC</createdTime>
+<generatorID>62C7BD93-2718-CA78-3B44-6B759FC137A8</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="recipient" id="847BCEB4-1405-746D-99BA-284EE1407193">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 22:19:39 UTC</createdTime>
+<generatorID>0AF78F55-F1C0-B5A3-2945-213FB671A41C</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="issued" id="25A45C7F-F8DA-62DB-78B5-794D25C8EA85">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 22:19:39 UTC</createdTime>
+<generatorID>A0E829B4-159E-22BC-5035-928D13770CD3</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>CURRENT_TIMESTAMP</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="E42E8D4B-0C28-5DF4-63D6-6ECB00D638C2" name="unique_challenge">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 22:19:56 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="847BCEB4-1405-746D-99BA-284EE1407193"/>
+<colUsage columnID="47E3064C-A4C8-EDEA-342C-93CC278F071F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
