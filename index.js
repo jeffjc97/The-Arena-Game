@@ -239,13 +239,14 @@ function sendChallenge(s, r, su, ru) {
                     else {
                         sendTextMessage(s, result.rows[0].in_duel);
                     }
+                    //TODO
                     //     sendTextMessage(s, ru + "is already in a duel.");      
                     // }
                     // else{
                     //     sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
                     //     sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
                     // }
-                }
+                });
             }
         });
     });
@@ -266,6 +267,10 @@ function respondToChallengeSetup(su, r, response) {
                 if (result.rows.length === 0) {
                     sendTextMessage(r, "Error in responding to challenge. Please try again. (2)");
                 }
+                //TODO
+                else if(result.rows[0].in_duel){
+                    sendTextMessage(r, "You are currently in a duel!");
+                }
                 else {
                     //username of the responder
                     ru = result.rows[0].name;
@@ -283,9 +288,16 @@ function respondToChallengeSetup(su, r, response) {
                                 sendTextMessage(r, su+ "is not a unique id. Please try again. (5)");
                             }
                             else {
-                                s = result.rows[0].id;
-                                respondToChallenge(s, r, su, ru, response);
+                                sendTextMessage(s, result.rows[0].in_duel);
                             }
+                            //TODO
+                            //     sendTextMessage(s, ru + "is currently in a duel.");      
+                            // }
+                            // else if()
+                            // else {
+                            //     s = result.rows[0].id;
+                            //     respondToChallenge(s, r, su, ru, response);
+                            // }
                         }
                     });
                 }
