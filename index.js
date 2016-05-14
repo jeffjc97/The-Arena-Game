@@ -82,6 +82,23 @@ app.post('/webhook/', function (req, res) {
                     username = words[words.length - 1];
                     respondToChallengeSetup(username, sender, false);
                     break;
+                case "@test":
+                    username = words[words.length - 1];
+                    q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
+                    e = function(err) {
+                        sendTextMessage(sender, ":-(" + JSON.stringify(err).substring(0,300));
+                    };
+                    s = function(result) {
+                        if (result.rows.length === 0) {
+                            sendTextMessage(s, ":-( (2)");
+                        }
+                        else {
+                            username = result.rows[0].name;
+                            sendTextMessage(s, username);
+                        }
+                    };
+                    makeQuery(q, e, s);
+                    break;
                 default:
                     sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
                     break;
@@ -201,12 +218,27 @@ function getUsername(s, r, ru) {
             }
             else {
                 if (result.rows.length === 0) {
-                    sendTextMessage(sender, "Error in challenge. Please try again. (2)");
+                    sendTextMessage(s, "Error in challenge. Please try again. (2)");
                 }
                 else {
                     username = result.rows[0].name;
                     sendChallenge(s, r, username, ru);
                 }
+            }
+        });
+    });
+}
+
+function getUsernameFromId(id){
+    q = 'SELECT name FROM user_table where id= \'' + id + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err || result.rows.length !== 1) {
+                return "error";
+            }
+            else {
+                return result.rows[0].name;
             }
         });
     });
@@ -391,7 +423,7 @@ function setupDuel(s, r) {
                             }
                             else {
                                 sendTextMessage(s, JSON.stringify(result).substring(0, 200))
-                                startDuel(s,r);
+                                startDuel(s,r, first);
                             }
                         });
                     }
@@ -401,7 +433,22 @@ function setupDuel(s, r) {
     });
 }
 
-function startDuel(s, r) {
-    sendTextMessage(s, "The duel has begun!");
-    sendTextMessage(r, "The duel has begun!");
+function startDuel(s, r, f_id) {
+    first = getUsernameFromId(f_id);
+    sendTextMessage(s, "The duel has begun! "+ first + " has the first turn.");
+    sendTextMessage(r, "The duel has begun! " + first + " has the first turn.");
+}
+
+function makeQuery(q, error, success) {
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                error(err);
+            }
+            else {
+                success(result);
+            }
+        });
+    });
 }
