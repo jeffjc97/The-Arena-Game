@@ -529,7 +529,7 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
         client.query(q, function(err, result) {
             done();
             if (err || result.rows.length !== 1) {
-                sendTextMessage(s, "error (8)");
+                sendTextMessage(attacker_id, "error (8)");
             }else{
                 sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
                 sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
