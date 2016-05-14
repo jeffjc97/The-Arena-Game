@@ -223,21 +223,23 @@ function registerUser(s, username) {
     if (username.charAt(0) == "@" || username.length === 0) {
         sendTextMessage(s, "Invalid username. Please try again.");
     }
-    q_add_username = "INSERT INTO user_table(id, name) VALUES (\'" + s + "\', \'" + username + "\')";
-    e = function(err) {
-        sendTextMessage(s, JSON.stringify(err).substring(0,200));
-        // if (err.detail.indexOf("already exists") > -1) {
-        //     sendError(s, 29, "Username already exists, please try another.");
-        // }
-        // else {
-        //     sendError(s, 30);
-        // }
-    };
-    s = function(result) {
-        sendTextMessage(s, "Username successfully registered!");
-    };
-    makeQuery(q_add_username, e, s);
-
+    else {
+        sendTextMessage(s, username);
+        q_add_username = "INSERT INTO user_table(id, name) VALUES (\'" + s + "\', \'" + username + "\')";
+        e = function(err) {
+            sendTextMessage(s, JSON.stringify(err).substring(0,200));
+            // if (err.detail.indexOf("already exists") > -1) {
+            //     sendError(s, 29, "Username already exists, please try another.");
+            // }
+            // else {
+            //     sendError(s, 30);
+            // }
+        };
+        s = function(result) {
+            sendTextMessage(s, "Username successfully registered!");
+        };
+        makeQuery(q_add_username, e, s);
+    }
 }
 
 function getUsername(s, r, ru) {
