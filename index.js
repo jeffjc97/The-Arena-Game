@@ -434,6 +434,7 @@ function setupDuel(s, r) {
 }
 
 function startDuel(s, r, f_id) {
+<<<<<<< HEAD
     first = getUsernameFromId(f_id);
     sendTextMessage(s, "The duel has begun! "+ first + " has the first turn.");
     sendTextMessage(r, "The duel has begun! " + first + " has the first turn.");
@@ -448,6 +449,20 @@ function makeQuery(q, error, success) {
             }
             else {
                 success(result);
+=======
+    q = 'SELECT name FROM user_table where id= \'' + f_id + '\'';
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err || result.rows.length !== 1) {
+                sendTextMessage(s, "Error in starting duel (3)");
+                sendTextMessage(r, "Error in starting duel (3)");
+            }
+            else {
+                first = result.rows[0].name;
+                sendTextMessage(s, "The duel has begun! "+first+ " has the first move.");
+                sendTextMessage(r, "The duel has begun! "+first+ " has the first move.");
+>>>>>>> ec89f5438d5ab3d885c31e06ac7954c1ce89cd1e
             }
         });
     });
