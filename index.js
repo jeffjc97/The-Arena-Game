@@ -456,7 +456,7 @@ function makeMoveSetup(s){
             else {
                 duel_id = result.rows[0].in_duel;
                 su = result.rows[0].name;
-                if (duel_id === '0') {
+                if (duel_id == 0) {
                     sendTextMessage(s, "You are not currently in a duel.");
                 }
                 else{
