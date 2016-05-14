@@ -526,16 +526,18 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
         if (attacker_is_sender) {
             q = 'UPDATE duel_table SET (turn_id = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
         }
-        client.query(q, function(err, result) {
-            done();
-            if (err || result.rows.length !== 1) {
-                sendTextMessage(attacker_id, "error (8)");
-            }else{
-                sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
-                sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
-                sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-                sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-            }
+        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+            client.query(q, function(err, result) {
+                done();
+                if (err || result.rows.length !== 1) {
+                    sendTextMessage(attacker_id, "error (8)");
+                }else{
+                    sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
+                    sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
+                    sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                    sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                }
+            });
         });
     }
 }
