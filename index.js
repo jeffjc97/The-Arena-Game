@@ -230,6 +230,7 @@ function sendChallenge(s, r, su, ru) {
                 //verify that user isn't already in a duel
                 q_induel = 'SELECT in_duel from user_table WHERE id = \'' + r + '\'';
                 client.query(q_induel, function(err, result){
+                    done();
                     if (err) {
                         sendTextMessage(s, "Error in finding user.");
                     }
