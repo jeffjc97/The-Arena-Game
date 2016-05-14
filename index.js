@@ -591,6 +591,7 @@ function loseDuel(lid, wid, lname, wname, did) {
 }
 
 function sendNormalMessage(s, text) {
+    var name = "lol";
     q_get_user_info = "SELECT name, in_duel from user_table WHERE id = \'" + s + "\'";
 
     e = function(err) {
@@ -601,13 +602,14 @@ function sendNormalMessage(s, text) {
         // sendTextMessage(s, JSON.stringify(data));
         message_to = data.sender_id;
         if (message_to == s) { message_to = data.recipient_id; }
-        sendTextMessage(message_to, text);
+        sendTextMessage(message_to, name + ": " + text);
     };
     s_get_user_info = function(result) {
         data = result.rows[0];
         if (data.in_duel) {
             duel_id = data.in_duel;
-            q_get_duel_info = "SELECT sender_id, recipient_id FROM duel_table WHERE duel_id = " + duel_id
+            q_get_duel_info = "SELECT sender_id, recipient_id FROM duel_table WHERE duel_id = " + duel_id;
+            name = data.name;
             makeQuery(q_get_duel_info, e, s_get_duel_info);
         }
         else {
