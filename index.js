@@ -624,8 +624,8 @@ function forfeitDuel(uid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
-    q_update_l = "UPDATE user_table SET in_duel = 0 WHERE id = \'" + lid + "\'";
-    q_update_w = "UPDATE user_table SET in_duel = 0 WHERE id = \'" + wid + "\'";
+    q_update_l = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1 WHERE id = \'" + wid + "\'";
+    q_update_w = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1 WHERE id = \'" + lid + "\'";
     q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\'";
     e = function(err) {
         sendError(lid, 27);
