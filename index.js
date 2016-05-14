@@ -417,7 +417,7 @@ function setupDuel(s, r) {
                         sendTextMessage(s, "Error in setting up duel. Please try again. (1)");
                     }
                     else {
-                        q2 = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + r + '\'';
+                        q2 = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + r + '\'';
                         client.query(q2, function(err, result) {
                             done();
                             if (err) {
