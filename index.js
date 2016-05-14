@@ -244,9 +244,7 @@ function registerUser(s, username) {
         sendTextMessage(s, "Invalid username. Please try again.");
     }
     else {
-        sendTextMessage(s, username);
         q_add_username = 'INSERT INTO user_table(id, name) VALUES (\'' + s + '\', \'' + username + '\')';
-        sendTextMessage(s, q_add_username);
         e = function(err) {
             if (err.detail.indexOf("already exists") > -1) {
                 sendError(s, 29, "Username already exists, please try another.");
