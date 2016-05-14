@@ -214,8 +214,6 @@ function getUsername(s, r, ru) {
 
 // sender id, recipient id, sender username, recipient username
 function sendChallenge(s, r, su, ru) {
-    //validate that user isn't already in a challenge
-    
     q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -228,6 +226,7 @@ function sendChallenge(s, r, su, ru) {
                     sendTextMessage(sender, "Error in sending challenge.");
                 }
             }
+            //verify that user isn't already in a duel
             else {
                 sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
                 sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
@@ -266,7 +265,7 @@ function respondToChallengeSetup(su, r, response) {
                             }
                             else if (result.rows.length > 1) {
                                 sendTextMessage(r, su+ "is not a unique id. Please try again. (5)");
-                            };
+                            }
                             else {
                                 s = result.rows[0].id;
                                 respondToChallenge(s, r, su, ru, response);
