@@ -265,14 +265,14 @@ function respondToChallengeSetup(su, r, response) {
                 if (result.rows.length === 0) {
                     sendTextMessage(r, "Error in responding to challenge. Please try again. (2)");
                 }
-                //TODO
-                else if(result.rows[0].in_duel){
+                else if(result.rows[0].in_duel === '1'){
                     sendTextMessage(r, "You are currently in a duel!");
                 }
                 else {
                     //username of the responder
                     ru = result.rows[0].name;
-                    q2 = 'SELECT id FROM user_table where name = \'' + su + '\'';
+                    //get sender id and status
+                    q2 = 'SELECT id, in_duel FROM user_table where name = \'' + su + '\'';
                     client.query(q2, function(err, result) {
                         done();
                         if (err) {
@@ -286,16 +286,15 @@ function respondToChallengeSetup(su, r, response) {
                                 sendTextMessage(r, su+ "is not a unique id. Please try again. (5)");
                             }
                             else {
-                                sendTextMessage(s, result.rows[0].in_duel);
+                                s = result.rows[0].id;
+                                if(result.rows[0].in_duel === '1'){
+                                    sendTextMessage(s, ru + "is currently in a duel. Please try accepting again soon.");      
+                                }
+                                else{   
+                                    s = result.rows[0].id;
+                                    respondToChallenge(s, r, su, ru, response);
+                                }
                             }
-                            //TODO
-                            //     sendTextMessage(s, ru + "is currently in a duel.");      
-                            // }
-                            // else if()
-                            // else {
-                            //     s = result.rows[0].id;
-                            //     respondToChallenge(s, r, su, ru, response);
-                            // }
                         }
                     });
                 }
