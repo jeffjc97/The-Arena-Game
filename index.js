@@ -477,7 +477,7 @@ function makeMoveSetup(su, s){
                         if (s != turn_id) {
                             sendTextMessage(s, "It's not your turn Please wait...!");
                             sendTextMessage(s, s +"||"+ turn_id);
-                            sendTextMessage(s, s != turn_id);
+                            sendTextMessage(s, s != turn_id+"");
                         }
                         else{
                             //we know s is attacker. Is s sender_id or recipient_id?
