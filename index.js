@@ -75,6 +75,9 @@ app.post('/webhook/', function (req, res) {
                         case "@generic":
                             sendGenericMessage(sender);
                             break;
+                        case "@help":
+                            sendTextMessage(sender, "HELP\nyo\nyo");
+                            break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
                             break;
@@ -167,9 +170,6 @@ function sendTextMessage(sender, text) {
         }
     });
 }
-
-
-
 
 function sendGenericMessage(sender) {
     messageData = {
