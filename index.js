@@ -418,5 +418,5 @@ function setupDuel(s, r) {
 function startDuel(s, r, f_id) {
     first = getUsernameFromId(f_id);
     sendTextMessage(s, "The duel has begun! "+ first + " has the first turn.");
-    sendTextMessage(r, "The duel has begun!" + first + " has the first turn.");
+    sendTextMessage(r, "The duel has begun! " + first + " has the first turn.");
 }
