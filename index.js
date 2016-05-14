@@ -238,7 +238,7 @@ function sendChallenge(s, r, su, ru) {
                         sendTextMessage(s, "Error in finding user.");   
                     }
                     else if(result.rows[0].in_duel === '1'){
-                        sendTextMessage(s, ru + "is already in a duel.");      
+                        sendTextMessage(s, ru + " is already in a duel.");      
                     }
                     else{
                         sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
@@ -288,7 +288,7 @@ function respondToChallengeSetup(su, r, response) {
                             else {
                                 s = result.rows[0].id;
                                 if(result.rows[0].in_duel === '1'){
-                                    sendTextMessage(s, ru + "is currently in a duel. Please try accepting again soon.");      
+                                    sendTextMessage(s, ru + " is currently in a duel. Please try accepting again soon.");      
                                 }
                                 else{   
                                     s = result.rows[0].id;
