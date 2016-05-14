@@ -81,7 +81,7 @@ app.post('/webhook/', function (req, res) {
                     respondToChallengeSetup(username, sender, false);
                     break;
                 case "@strike":
-                    makeMove(username);
+                    makeMoveSetup(sender);
                     break;
                 case "@forfeit":
                     forfeitDuel(sender);
@@ -413,21 +413,21 @@ function setupDuel(s, r) {
             }
             else {
                 duel_id = result.rows[0].duel_id;
-                q = 'UPDATE user_table SET in_duel = '+duel_id' WHERE id = \'' + s + '\'';
+                q = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + s + '\'';
                 client.query(q, function(err, result) {
                     done();
                     if (err) {
                         sendError(s, 23);
                     }
                     else {
-                        q2 = 'UPDATE user_table SET in_duel = 1 WHERE id = \'' + r + '\'';
+                        q2 = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + r + '\'';
                         client.query(q2, function(err, result) {
                             done();
                             if (err) {
                                 sendError(s, 24);
                             }
                             else {
-                                sendTextMessage(s, JSON.stringify(result).substring(0, 200))
+                                // sendTextMessage(s, JSON.stringify(result).substring(0, 200))
                                 startDuel(s,r, first);
                             }
                         });
@@ -457,22 +457,106 @@ function startDuel(s, r, f_id) {
 }
 
 
-function makeMove(su){
-    q = 'SELECT id FROM user_table where name= \'' + su + '\'';
+function makeMoveSetup(su, s){
+    q = 'SELECT name, id, in_duel FROM user_table where id= \'' + s + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
             if (err || result.rows.length !== 1) {
+<<<<<<< HEAD
                 sendError(s, 26);
                 sendError(r, 26);
+=======
+                sendTextMessage(s, JSON.stringify(result.rows).substring(0,200));
+>>>>>>> ec6535af55628455ecc27dafa30b24344f46ff55
             }
             else {
-                first = result.rows[0].name;
-                sendTextMessage(s, "The duel has begun! "+first+ " has the first move.");
-                sendTextMessage(r, "The duel has begun! "+first+ " has the first move.");
+                duel_id = result.rows[0].in_duel;
+                su = result.rows[0].name;
+                //TODO check that in_duel is not 0
+                q2 = 'SELECT * FROM duel_table WHERE duel_id = '+duel_id;
+                client.query(q2, function(err, result) {
+                    done();
+                    if (err || result.rows.length !== 1) {
+                        sendTextMessage(s, "error");
+                    }
+                    else{
+                        data = result.rows[0];
+                        turn_id = data.user_turn;
+                        if (s != turn_id) {
+                            sendTextMessage(s, "It's not your turn Please wait...!");
+                            sendTextMessage(s, s +"||"+ turn_id);
+                            sendTextMessage(s, s != turn_id+"");
+                        }
+                        else{
+                            //we know s is attacker. Is s sender_id or recipient_id?
+                            s_is_sender_id = isSender_id(s, data);
+                            defender_id = data.sender_id;
+                            defender_health = data.health_sender;
+                            attacker_health = data.health_recipient;
+                            if (s_is_sender_id) {
+                                defender_id = data.recipient_id;
+                                defender_health = data.health_recipient;
+                                attacker_health = data.health_sender;
+                            }
+                            //query for defender's name
+                            q3 = 'SELECT name FROM user_table WHERE id= \'' + defender_id + '\'';
+                            client.query(q3, function(err, result) {
+                                done();
+                                if (err || result.rows.length !== 1) {
+                                    sendTextMessage(s, "error (7)");
+                                }
+                                else{
+                                    makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
     });
+}
+
+//invariant: it is currently the attacker's turn
+function makeMove(attacker_id, defender_id, health_defender, health_attacker, attacker_name, defender_name, duel_id, attacker_is_sender){
+    max = 11;
+    min = 0;
+    attack_value = Math.floor(Math.random() * (max - min)) + min;
+    if (attack_value >= health_defender) {
+        sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
+        sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
+        loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id);
+    }else{
+        new_health_def = health_defender - attack_value;
+        //update the duel
+        q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+        if (attacker_is_sender) {
+            q = 'UPDATE duel_table SET (user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel+1) WHERE duel_id = '+duel_id;
+        }
+        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+            client.query(q, function(err, result) {
+                done();
+                if (err || result.rows.length !== 1) {
+                    sendTextMessage(attacker_id, "error (8)");
+                }else{
+                    sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
+                    sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
+                    sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                    sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                }
+            });
+        });
+    }
+}
+
+function loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id){
+    return;
+}
+
+//data is a row from duel_table
+function isSender_id(id, data){
+    return id == data.sender_id;
 }
 
 function makeQuery(q, error, success) {
