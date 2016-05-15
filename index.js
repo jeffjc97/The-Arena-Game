@@ -72,27 +72,8 @@ app.post('/webhook/', function (req, res) {
                 }
                 else {
                     switch(words[0]){
-                        case "@generic":
-                            sendGenericMessage(sender);
-                            break;
                         case "@help":
-                            // sendTextMessage(sender, "🔎 GENERAL COMMANDS 🔎\n \
-                            //                         🔶 @help: Self-explanatory.
-                            //                         🔶 @challenge <username>: Sends a duel request to the specified user. \n \
-                            //                         🔶 @accept <username>: Accepts a duel request from the specified user, if one exists. \n \
-                            //                         🔶 @reject <username>: Rejects a duel request from the specified user, if one exists. \n \
-                            //                         🔰 DUEL COMMANDS 🔰\n \
-                            //                         🔶 @strike: Deals damage (0-10) to your opponent if it is your turn. \n \
-                            //                         🔶 @forfeit: Forfeits the match. \
-                            //                         ");
-                            // sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
-                            //                         "- @help: Self-explanatory. \n" +
-                            //                         "- @challenge <username>: Sends a duel request to the specified user. \n" +
-                            //                         "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
-                            //                         "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
-                            //                         ":|] DUEL COMMANDS :|]\n" +
-                            //                         "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
-                            //                         "- @forfeit: Forfeits the match.");
+                            sendHelpMessage(sender);
                             break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
@@ -190,7 +171,7 @@ function sendTextMessage(sender, text) {
     });
 }
 
-function sendGenericMessage(sender) {
+function sendHelpMessage(sender) {
     messageData = {
         "attachment":{
           "type":"template",
@@ -486,7 +467,7 @@ function setupDuel(s, r) {
 }
 
 function startDuel(s, r, f_id) {
-    q = 'SELECT name FROM user_table where id= \'' + f_id + '\'';
+    q = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
@@ -496,8 +477,14 @@ function startDuel(s, r, f_id) {
             }
             else {
                 first = result.rows[0].name;
-                sendTextMessage(s, "The duel has begun! "+first+ " has the first move.");
-                sendTextMessage(r, "The duel has begun! "+first+ " has the first move.");
+                if (result.rows[0].id == s) {
+                    sendTextMessage(s, "The duel has begun! You have the first move.");
+                    sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
+                }
+                else {
+                    sendTextMessage(r, "The duel has begun! You have the first move.");
+                    sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
+                }
             }
         });
     });
