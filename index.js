@@ -687,32 +687,32 @@ function getPendingChallenges(s){
         }
         else{
             name = result.rows[0].name;
-            sendTextMessage(s, name);
             q_get_challenges = "SELECT u.name as \"sender\", u2.name as \"recipient\" from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
-            sendTextMessage(s, q_get_challenges);
             s_get_challenges = function(result){
                 if (!result.rows.length) {
                     sendTextMessage(s, "You have no pending challenges.");
                 }
                 else{
                     //challenges they're sender
+                    result_string = "You've challenged:";
                     for (var i = result.rows.length - 1; i >= 0; i--) {
                         sender_val = result.rows[i].sender;
-                        result_string = "You've challenged:";
                         if (sender_val == name) {
                             result_string+="\n";
                             result_string += sender_val;
                         }
                     };
+                    sendTextMessage(s, result_string);
                     //get a list of challenges they're recipient
+                    result_string = "You've been challenged by:";
                     for (var i = result.rows.length - 1; i >= 0; i--) {
                         recip_val = result.rows[i].recipient;
-                        result_string = "You've been challenged by:";
                         if (recip_val == name) {
                             result_string+="\n";
                             result_string += recip_val;
                         }
                     };
+                    sendTextMessage(s, result_string);
                 }
             }
             makeQuery(q_get_challenges, e, s_get_challenges);
