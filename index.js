@@ -88,8 +88,6 @@ app.post('/webhook/', function (req, res) {
                             registerUser(sender, username);
                             break;
                         default:
-                            sendTextMessage('10206557582650156', text);
-                            sendTextMessage('10206557582650156', sender);
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
                             break;
                     }
