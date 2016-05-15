@@ -115,26 +115,8 @@ app.post('/webhook/', function (req, res) {
                         case "@stats":
                             getStats(username, sender);
                             break;
-                        case "@test":
-                            username = words[words.length - 1];
-                            q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
-                            e = function(err) {
-                                sendTextMessage(sender, ":-(" + JSON.stringify(err).substring(0,300));
-                            };
-                            s = function(result) {
-                                if (result.rows.length === 0) {
-                                    sendTextMessage(sender, ":-( (2)");
-                                }
-                                else {
-                                    username = result.rows[0].name;
-                                    sendTextMessage(sender, username);
-                                }
-                            };
-                            makeQuery(q, e, s);
-                            break;
                         default:
                             sendNormalMessage(sender, text);
-                            // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
                             break;
                     }
                 }
@@ -658,7 +640,12 @@ function sendNormalMessage(s, text) {
             makeQuery(q_get_duel_info, e, s_get_duel_info);
         }
         else {
-            sendTextMessage(s, "Why are you talking to yourself? \"" + text + "\"");
+            if (text.charAt(0) == "@") {
+                sendTextMessage(s, "Not a valid command. Type @help for a list of commands.");
+            }
+            else {
+                sendTextMessage(s, "Why are you talking to yourself? \"" + text + "\"");
+            }
         }
     };
     makeQuery(q_get_user_info, e, s_get_user_info);
@@ -668,16 +655,20 @@ function getStats(user, s){
     q_get_stats = "SELECT * FROM user_table where name= \'" + user + "\'";
     e = function(err){
         sendError(s, 32);
-    }
+    };
     success = function(result){
         if (result.rows.length == 1) {
             data = result.rows[0];
-            sendTextMessage(s, "Stats for "+user+":\nWins: "+data.wins+"\nLosses: "+data.losses+"\nDraws: "+data.draws+"\nGames: "+data.games_played+"\nWin %: "+(100*data.wins/data.games_played).toFixed(2));
+            pct = (100*data.wins/data.games_played).toFixed(2);
+            if (data.games_played === 0) {
+                pct = "N/A";
+            }
+            sendTextMessage(s, "STATS: " + user + "\nWins: " + data.wins + "\nLosses: " + data.losses+"\nDraws: " + data.draws + "\nGames: " + data.games_played + "\nWin %: " + pct);
         }
         else{
             sendTextMessage(s, "User not found.");
         }
 
-    }
+    };
     makeQuery(q_get_stats, e, success);
 }
