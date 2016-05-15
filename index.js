@@ -687,7 +687,7 @@ function getPendingChallenges(s){
         }
         else{
             name = result.rows[0].name;
-            q_get_challenges = "SELECT u.name as \'sender\', u2.name as \'recipient\'' from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + user + "\' OR u2.name = \'" + user + "\'";
+            q_get_challenges = "SELECT u.name as \'sender\', u2.name as \'recipient\'' from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
             s_get_challenges = function(result){
                 if (!result.rows.length) {
                     sendTextMessage(s, "You have no pending challenges.");
