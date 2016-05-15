@@ -329,7 +329,7 @@ function sendChallenge(s, r, su, ru) {
                             }
                             else{
                                 sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
-                                sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+                                sendTextMessage(r, su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
                             }
                         });
                     }
