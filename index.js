@@ -55,10 +55,10 @@ app.post('/webhook/', function (req, res) {
             words = text.split(" ");
             username = words[words.length - 1];
 
-            q_user_registered = "SELECT * FROM user_table where id =\'" + sender + "\'";
+            q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
-            }
+            };
             s_user_registered = function(result) {
                 if (!result.rows.length) {
                     switch(words[0]) {
@@ -123,7 +123,7 @@ app.post('/webhook/', function (req, res) {
                             break;
                     }
                 }
-            }
+            };
             makeQuery(q_user_registered, e, s_user_registered);
         }
         if (event.postback) {
