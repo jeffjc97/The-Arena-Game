@@ -599,7 +599,8 @@ function sendError(uid, eid, msg) {
 function forfeitDuel(lid) {
     q_get_did = "SELECT in_duel FROM user_table where id = \'" + lid + "\'";
     e = function(err) {
-        sendError(lid, 37);
+        sendError(lid, 38);
+        sendTextMessage(lid, JSON.stringify(err).substring(0,300));
     };
     s_get_all_info = function(result) {
         sendTextMessage(lid, "woo");
@@ -610,6 +611,9 @@ function forfeitDuel(lid) {
         if (data.in_duel) {
             q_get_all_info = "SELECT u.name, u.id FROM duel_table d INNER JOIN user_table u ON (u.id = d.recipient OR u.id = d.sender) WHERE d.duel_id = " + data.in_duel;
             makeQuery(q_get_all_info, e, s_get_all_info);
+        }
+        else {
+            sendError(lid, 39, "You are not currently in a duel.");
         }
     };
     makeQuery(q_get_did, e, s_get_did);
