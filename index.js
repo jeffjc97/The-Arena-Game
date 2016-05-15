@@ -220,8 +220,9 @@ function mysql_real_escape_string (str) {
 }
 
 function registerUser(s, username) {
-    if (username.charAt(0) == "@" || username.length < 1 || username.length > 11) {
-        sendTextMessage(s, "Invalid username. Usernames must be under 12 characters and cannot start with '@'. Please try again.");
+    regex = "/^[A-Za-z0-9]{0,12}$/";
+    if (!regex.test(username) || username.length < 1 || username.length > 11) {
+        sendTextMessage(s, "Invalid username. Usernames must be under 12 characters and can only contain letters and numbers. Please try again.");
     }
     else {
         q_add_username = 'INSERT INTO user_table(id, name) VALUES (\'' + s + '\', \'' + username + '\')';
