@@ -1,7 +1,8 @@
-var express = require('express');;
-var bodyParser = require('body-parser');
+var express = require('express');
+// var bodyParser = require('body-parser');
 var request = require('request');
 var pg = require('pg');
+var JSONbig = require('json-bigint');
 var app = express();
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
 pg.defaults.ssl = true;
@@ -10,10 +11,32 @@ app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
 // Process application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
+// app.use(bodyParser.urlencoded({extended: false}));
 
 // Process application/json
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+
+app.use(function(req, res, next){
+  if (req.method == 'POST') {
+    var body = '';
+
+    req.on('data', function (data) {
+      body += data;
+
+      // Too much POST data, kill the connection!
+      // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+      if (body.length > 1e6)
+        req.connection.destroy();
+    });
+
+    req.on('end', function () {
+      // console.log(body); // should work
+        // use post['blah'], etc.
+      req.body = JSONbig.parse(body);
+      next();
+    });
+  }
+});
 
 // Index route
 app.get('/', function (req, res) {
@@ -49,13 +72,11 @@ app.post('/webhook/', function (req, res) {
     messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
-        sender = event.sender.id;
+        sender = event.sender.id.toString();
         if (event.message && event.message.text) {
             text = event.message.text;
             words = text.split(" ");
             username = words[words.length - 1];
-            // sendTextMessage('10209118205142676', "why is this not working??");
-            sendTextMessage('10206557582650156', "outside");
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
@@ -67,8 +88,6 @@ app.post('/webhook/', function (req, res) {
                             registerUser(sender, username);
                             break;
                         default:
-                            sendTextMessage('10206557582650156', text);
-                            sendTextMessage('10206557582650156', sender);
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
                             break;
                     }
@@ -155,6 +174,7 @@ function sendTextMessage(sender, text) {
             console.log('Error sending messages: ', error);
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
+            // console.log('Error: ', response);
         }
     });
 }
@@ -308,7 +328,7 @@ function sendChallenge(s, r, su, ru) {
                             }
                             else{
                                 sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
-                                sendTextMessage(parseInt(r), su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
+                                sendTextMessage(r, su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
                             }
                         });
                     }
@@ -563,7 +583,7 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
                 else {
                     sendTextMessage(defender_id, attacker_name + " hit you for " + attack_value + " health!");
                     sendTextMessage(attacker_id, "You hit " + defender_name + " for " + attack_value + " health!");
-                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def);
+                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
                     sendTextMessage(defender_id, health);
                     sendTextMessage(attacker_id, health);
                 }
@@ -572,9 +592,9 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
     }
 }
 
-function makeHealthBars(aname, ahp, dname, dhp) {
+function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
     function makeHealth(name, hp) {
-        health = Math.ceil(hp / 5);
+        health = Math.ceil(hp / (maxhp / 20));
         damage = 20 - health;
         return Array(health + 1).join("▓") + Array(damage + 1).join("▒") + " " + hp;
     }
