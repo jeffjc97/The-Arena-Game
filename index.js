@@ -559,7 +559,7 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
                 else {
                     sendTextMessage(defender_id, attacker_name + " hit you for " + attack_value + " health!");
                     sendTextMessage(attacker_id, "You hit " + defender_name + " for " + attack_value + " health!");
-                    health = makeHealthBars(attacker_name, health_attacker, defender_name, defender_health);
+                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def);
                     sendTextMessage(defender_id, health);
                     sendTextMessage(attacker_id, health);
                 }
