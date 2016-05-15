@@ -679,7 +679,7 @@ function getStats(user, s){
 function getPendingChallenges(s){
     q_name = "SELECT name FROM user_table where id= \'" + s + "\'";
     e = function(err){
-        sendError(s, 33);
+        sendError(s, 37);
     }
     s_name = function(result){
         if (result.rows.length != 1) {
