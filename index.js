@@ -690,7 +690,7 @@ function getPendingChallenges(s){
             q_get_challenges = "SELECT u.name as \"sender\", u2.name as \"recipient\" from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
             s_get_challenges = function(result){
                 if (!result.rows.length) {
-                    sendTextMessage(s, "You have no pending challenges.");
+                    sendTextMessage(s, "You have no current pending challenges.");
                 }
                 else{
                     //challenges they're sender
@@ -702,7 +702,9 @@ function getPendingChallenges(s){
                             result_string += result.rows[i].recipient;
                         }
                     };
-                    sendTextMessage(s, result_string);
+                    if (result_string !== "You've challenged:") {
+                        sendTextMessage(s, result_string);
+                    }
                     //get a list of challenges they're recipient
                     result_string = "You've been challenged by:";
                     for (var i = result.rows.length - 1; i >= 0; i--) {
@@ -712,7 +714,9 @@ function getPendingChallenges(s){
                             result_string += result.rows[i].sender;
                         }
                     };
-                    sendTextMessage(s, result_string);
+                    if (result_string !== "You've been challenged by:") {
+                        sendTextMessage(s, result_string);
+                    }
                 }
             }
             makeQuery(q_get_challenges, e, s_get_challenges);
