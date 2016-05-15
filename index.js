@@ -609,7 +609,7 @@ function forfeitDuel(lid) {
     s_get_did = function(result) {
         data =result.rows[0];
         if (data.in_duel) {
-            q_get_all_info = "SELECT u.name, u.id FROM duel_table d INNER JOIN user_table u ON (u.id = d.recipient OR u.id = d.sender) WHERE d.duel_id = " + data.in_duel;
+            q_get_all_info = "SELECT u.name, u.id FROM duel_table d INNER JOIN user_table u ON (u.id = d.recipient_id OR u.id = d.sender_id) WHERE d.duel_id = " + data.in_duel;
             makeQuery(q_get_all_info, e, s_get_all_info);
         }
         else {
