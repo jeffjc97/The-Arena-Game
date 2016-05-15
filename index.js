@@ -47,6 +47,7 @@ app.listen(app.get('port'), function() {
 });
 
 app.post('/webhook/', function (req, res) {
+    req = JSONbig.parse(req);
     messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
@@ -138,9 +139,6 @@ app.post('/webhook/', function (req, res) {
 });
 
 function sendTextMessage(sender, text) {
-    console.log(sender);
-    sender = JSONbig.parse(sender);
-    console.log(sender);
     messageData = {
         text:text
     };
