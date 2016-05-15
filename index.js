@@ -151,6 +151,8 @@ app.post('/webhook/', function (req, res) {
                             };
                             makeQuery(q, e, s);
                             break;
+                        case "@challenges":
+                            getPendingChallenges(sender);
                         default:
                             sendNormalMessage(sender, text);
                             // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
@@ -694,4 +696,47 @@ function getStats(user, s){
 
     }
     makeQuery(q_get_stats, e, success);
+}
+
+function getPendingChallenges(s){
+    q_name = "SELECT name FROM user_table where id= \'" + s + "\'";
+    e = function(err){
+        sendError(s, 33);
+    }
+    s_name = function(result){
+        if (result.rows.length != 1) {
+            sendError(s, 34);
+        }
+        else{
+            name = result.rows[0].name;
+            q_get_challenges = "SELECT u.name as \'sender\', u2.name as \'recipient\'' from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + user + "\' OR u2.name = \'" + user + "\'";
+            s_get_challenges = function(result){
+                if (!result.rows.length) {
+                    sendTextMessage(s, "You have no pending challenges.");
+                }
+                else{
+                    //challenges they're sender
+                    for (var i = result.rows.length - 1; i >= 0; i--) {
+                        sender_val = result.rows[i].sender;
+                        result_string = "You've challenged:";
+                        if (sender_val == name) {
+                            result_string+="\n";
+                            result_string += sender_val;
+                        }
+                    };
+                    //get a list of challenges they're recipient
+                    for (var i = result.rows.length - 1; i >= 0; i--) {
+                        recip_val = result.rows[i].recipient;
+                        result_string = "You've been challenged by:";
+                        if (recip_val == name) {
+                            result_string+="\n";
+                            result_string += recip_val;
+                        }
+                    };
+                }
+            }
+            makeQuery(q_get_challenges, e, s_get_challenges);
+        }
+    }
+    makeQuery(q_name, e, s_name);
 }
