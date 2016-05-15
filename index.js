@@ -85,14 +85,14 @@ app.post('/webhook/', function (req, res) {
                             //                         🔶 @strike: Deals damage (0-10) to your opponent if it is your turn. \n \
                             //                         🔶 @forfeit: Forfeits the match. \
                             //                         ");
-                            sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
-                                                    "- @help: Self-explanatory. \n" +
-                                                    "- @challenge <username>: Sends a duel request to the specified user. \n" +
-                                                    "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
-                                                    "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
-                                                    ":|] DUEL COMMANDS :|]\n" +
-                                                    "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
-                                                    "- @forfeit: Forfeits the match.");
+                            // sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
+                            //                         "- @help: Self-explanatory. \n" +
+                            //                         "- @challenge <username>: Sends a duel request to the specified user. \n" +
+                            //                         "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
+                            //                         "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
+                            //                         ":|] DUEL COMMANDS :|]\n" +
+                            //                         "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
+                            //                         "- @forfeit: Forfeits the match.");
                             break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
@@ -130,6 +130,9 @@ app.post('/webhook/', function (req, res) {
                             break;
                         case "@forfeit":
                             forfeitDuel(sender);
+                            break;
+                        case "@stats":
+                            getStats(username, sender);
                             break;
                         case "@test":
                             username = words[words.length - 1];
@@ -673,4 +676,22 @@ function sendNormalMessage(s, text) {
         }
     };
     makeQuery(q_get_user_info, e, s_get_user_info);
+}
+
+function getStats(user, s){
+    q_get_stats = "SELECT * FROM user_table where name= \'" + user + "\'";
+    e = function(err){
+        sendError(s, 32);
+    }
+    success = function(result){
+        if (result.rows.length == 1) {
+            data = result.rows[0];
+            sendTextMessage(s, "Stats for "+user+":\nWins: "+data.wins+"\nLosses: "+data.losses+"\nDraws: "+data.draws+"\nGames: "+data.games_played+"\nWin %: "+(data.wins/data.games_played).toFixed(2));
+        }
+        else{
+            sendTextMessage(s, "User not found.");
+        }
+
+    }
+    makeQuery(q_get_stats, e, success);
 }
