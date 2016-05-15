@@ -297,7 +297,7 @@ function sendChallenge(s, r, su, ru) {
             else if (result.rows.length === 0 || result.rows.length > 1) {
                 sendError(s, 5);
             }
-            else if(result.rows[0].in_duel === '1'){
+            else if(result.rows[0].in_duel > 0){
                 sendError(s, 6, "You are already in a duel.");      
             }
             else{
@@ -323,7 +323,7 @@ function sendChallenge(s, r, su, ru) {
                             else if (result.rows.length === 0) {
                                 sendError(s, 10);
                             }
-                            else if(result.rows[0].in_duel === '1'){
+                            else if(result.rows[0].in_duel > 0){
                                 sendError(s, 11, ru + " is already in a duel.");      
                             }
                             else{
