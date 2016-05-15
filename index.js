@@ -385,7 +385,7 @@ function respondToChallengeSetup(su, r, response) {
                             }
                             else {
                                 s = result.rows[0].id;
-                                if(result.rows[0].in_duel !== '0'){
+                                if(result.rows[0].in_duel !== 0){
                                     sendError(r, 18, su + " is currently in a duel. Please try accepting again soon.");      
                                 }
                                 else{   
