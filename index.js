@@ -85,14 +85,14 @@ app.post('/webhook/', function (req, res) {
                             //                         🔶 @strike: Deals damage (0-10) to your opponent if it is your turn. \n \
                             //                         🔶 @forfeit: Forfeits the match. \
                             //                         ");
-                            sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
-                                                    "- @help: Self-explanatory. \n" +
-                                                    "- @challenge <username>: Sends a duel request to the specified user. \n" +
-                                                    "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
-                                                    "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
-                                                    ":|] DUEL COMMANDS :|]\n" +
-                                                    "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
-                                                    "- @forfeit: Forfeits the match.");
+                            // sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
+                            //                         "- @help: Self-explanatory. \n" +
+                            //                         "- @challenge <username>: Sends a duel request to the specified user. \n" +
+                            //                         "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
+                            //                         "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
+                            //                         ":|] DUEL COMMANDS :|]\n" +
+                            //                         "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
+                            //                         "- @forfeit: Forfeits the match.");
                             break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
