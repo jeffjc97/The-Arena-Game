@@ -447,7 +447,7 @@ function respondToChallenge(s, r, su, ru, response) {
 
 // invariant: neither party is in a duel
 function setupDuel(s, r) {
-    first = s
+    first = s;
     if (Math.random() > 0.5)
         first = r;
     q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
@@ -456,7 +456,7 @@ function setupDuel(s, r) {
             done();
             if (err) {
                 sendError(s, 22);
-                // sendTextMessage(s, JSON.stringify(err).substring(0, 200));
+                sendTextMessage(s, JSON.stringify(err).substring(0, 200));
             }
             else {
                 duel_id = result.rows[0].duel_id;
