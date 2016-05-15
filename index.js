@@ -693,4 +693,5 @@ function getStats(user, s){
         }
 
     }
+    makeQuery(q_get_stats, e, success);
 }
