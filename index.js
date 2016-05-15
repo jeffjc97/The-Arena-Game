@@ -75,6 +75,25 @@ app.post('/webhook/', function (req, res) {
                         case "@generic":
                             sendGenericMessage(sender);
                             break;
+                        case "@help":
+                            // sendTextMessage(sender, "🔎 GENERAL COMMANDS 🔎\n \
+                            //                         🔶 @help: Self-explanatory.
+                            //                         🔶 @challenge <username>: Sends a duel request to the specified user. \n \
+                            //                         🔶 @accept <username>: Accepts a duel request from the specified user, if one exists. \n \
+                            //                         🔶 @reject <username>: Rejects a duel request from the specified user, if one exists. \n \
+                            //                         🔰 DUEL COMMANDS 🔰\n \
+                            //                         🔶 @strike: Deals damage (0-10) to your opponent if it is your turn. \n \
+                            //                         🔶 @forfeit: Forfeits the match. \
+                            //                         ");
+                            sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
+                                                    "- @help: Self-explanatory. \n" +
+                                                    "- @challenge <username>: Sends a duel request to the specified user. \n" +
+                                                    "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
+                                                    "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
+                                                    ":|] DUEL COMMANDS :|]\n" +
+                                                    "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
+                                                    "- @forfeit: Forfeits the match.");
+                            break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
                             break;
@@ -171,9 +190,6 @@ function sendTextMessage(sender, text) {
     });
 }
 
-
-
-
 function sendGenericMessage(sender) {
     messageData = {
         "attachment":{
@@ -188,21 +204,10 @@ function sendGenericMessage(sender) {
             // "timestamp":"1428444852", 
             "elements":[
               {
-                "title":"Classic White T-Shirt",
-                "subtitle":"100% Soft and Luxurious Cotton",
-                // "quantity":2,
-                // "price":50,
-                // "currency":"USD",
-                // "image_url":"http://petersapparel.parseapp.com/img/whiteshirt.png"
+                "title":"Help",
+                "subtitle":"100% Soft and Luxurious Cotton\nlolol\nlolol",
+                "image_url":"http://i.imgur.com/YhRkn3h.png"
               },
-              {
-                "title":"Classic Gray T-Shirt",
-                "subtitle":"100% Soft and Luxurious Cotton",
-                // "quantity":1,
-                // "price":25,
-                // "currency":"USD",
-                // "image_url":"http://petersapparel.parseapp.com/img/grayshirt.png"
-              }
             ]
           }
         }
