@@ -598,13 +598,20 @@ function sendError(uid, eid, msg) {
 
 function forfeitDuel(lid) {
     q_get_did = "SELECT in_duel FROM user_table where id = \'" + lid + "\'";
+    var in_duel = -1;
     e = function(err) {
         sendError(lid, 38);
-        sendTextMessage(lid, JSON.stringify(err).substring(0,300));
     };
     s_get_all_info = function(result) {
-        sendTextMessage(lid, "woo");
-        sendTextMessage(lid, JSON.stringify(result.rows).substring(0,300));
+        loser = result.rows[0];
+        winner = result.rows[1];
+        if (lid != loser.id) {
+            loser = result.rows[1];
+            winner = result.rows[0];
+        }
+        sendTextMessage(loser.id, "You have forfeited.");
+        sendTextMessage(winner.id, loser.name + " has forfeited.");
+        loseDuel(loser.id, winner.id, loser.name, winner.name, in_duel);
     };
     s_get_did = function(result) {
         data =result.rows[0];
