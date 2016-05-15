@@ -206,7 +206,7 @@ function sendGenericMessage(sender) {
               {
                 "title":"Help",
                 "subtitle":"100% Soft and Luxurious Cotton\nlolol\nlolol",
-                "image_url":"http://i.imgur.com/ghPdYrT.png"
+                "image_url":"http://i.imgur.com/I9quwyf.png"
               },
             ]
           }
