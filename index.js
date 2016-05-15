@@ -688,7 +688,7 @@ function getPendingChallenges(s){
         else{
             name = result.rows[0].name;
             sendTextMessage(s, name);
-            q_get_challenges = "SELECT u.name as \'sender\', u2.name as \'recipient\'' from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
+            q_get_challenges = "SELECT u.name as \"sender\", u2.name as \"recipient\" from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
             sendTextMessage(s, q_get_challenges);
             s_get_challenges = function(result){
                 if (!result.rows.length) {
