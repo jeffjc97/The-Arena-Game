@@ -33,7 +33,7 @@ CREATE TABLE duel_table
     health_recipient INTEGER DEFAULT 100 NOT NULL ,
     moves_in_duel    INTEGER DEFAULT 0 NOT NULL ,
     recipient_id     VARCHAR (20) NOT NULL ,
-    duel_id          INTEGER NOT NULL
+    duel_id          SERIAL NOT NULL
   ) ;
 ALTER TABLE duel_table ADD CONSTRAINT duel_table_PK PRIMARY KEY ( duel_id ) ;
 

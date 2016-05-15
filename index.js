@@ -115,6 +115,9 @@ app.post('/webhook/', function (req, res) {
                         case "@stats":
                             getStats(username, sender);
                             break;
+                        case "@challenges":
+                            getPendingChallenges(sender);
+                            break;
                         default:
                             sendNormalMessage(sender, text);
                             break;
@@ -686,4 +689,53 @@ function getStats(user, s){
 
     };
     makeQuery(q_get_stats, e, success);
+}
+
+function getPendingChallenges(s){
+    q_name = "SELECT name FROM user_table where id= \'" + s + "\'";
+    e = function(err){
+        sendError(s, 37);
+    }
+    s_name = function(result){
+        if (result.rows.length != 1) {
+            sendError(s, 34);
+        }
+        else{
+            name = result.rows[0].name;
+            q_get_challenges = "SELECT u.name as \"sender\", u2.name as \"recipient\" from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
+            s_get_challenges = function(result){
+                if (!result.rows.length) {
+                    sendTextMessage(s, "You have no current pending challenges.");
+                }
+                else{
+                    //challenges they're sender
+                    result_string = "You've challenged:";
+                    for (var i = result.rows.length - 1; i >= 0; i--) {
+                        sender_val = result.rows[i].sender;
+                        if (sender_val == name) {
+                            result_string+="\n";
+                            result_string += result.rows[i].recipient;
+                        }
+                    };
+                    if (result_string !== "You've challenged:") {
+                        sendTextMessage(s, result_string);
+                    }
+                    //get a list of challenges they're recipient
+                    result_string = "You've been challenged by:";
+                    for (var i = result.rows.length - 1; i >= 0; i--) {
+                        recip_val = result.rows[i].recipient;
+                        if (recip_val == name) {
+                            result_string+="\n";
+                            result_string += result.rows[i].sender;
+                        }
+                    };
+                    if (result_string !== "You've been challenged by:") {
+                        sendTextMessage(s, result_string);
+                    }
+                }
+            }
+            makeQuery(q_get_challenges, e, s_get_challenges);
+        }
+    }
+    makeQuery(q_name, e, s_name);
 }
