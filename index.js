@@ -230,6 +230,7 @@ function getUserInfo(sender) {
             console.log('Error getting userinfo: ', error);
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
+            console.log('https://graph.facebook.com/v2.6/me/' + sender);
         } else {
             console.log(response.body);
             console.log(body);
