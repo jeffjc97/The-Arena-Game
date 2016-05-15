@@ -555,15 +555,26 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
                 done();
                 if (err) {
                     sendTextMessage(attacker_id, JSON.stringify(err).substring(0, 200));
-                }else{
-                    sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
-                    sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
-                    sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-                    sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                }
+                else {
+                    health = makeHealth(attacker_name, health_attacker, defender_name, defender_health);
+                    sendTextMessage(defender_id, attacker_name + " hit you for " + attack_value + " health!");
+                    sendTextMessage(attacker_id, "You hit " + defender_name + " for " + attack_value + " health!");
+                    sendTextMessage(defender_id, health);
+                    sendTextMessage(attacker_id, health);
                 }
             });
         });
     }
+}
+
+function makeHealthBars(aname, ahp, dname, dhp) {
+    function makeHealth(name, hp) {
+        health = Math.ceil(hp / 5);
+        damage = 20 - health;
+        return Array(health + 1).join("▓") + Array(damage + 1).join("▒") + " " + hp;
+    }
+    return aname + "\n" + makeHealth(aname, ahp) + "\n" + dname + "\n" + makeHealth(dname, dhp);
 }
 
 //data is a row from duel_table
