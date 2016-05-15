@@ -55,20 +55,19 @@ app.post('/webhook/', function (req, res) {
             words = text.split(" ");
             username = words[words.length - 1];
             sendTextMessage('10209118205142676', "why is this not working??");
-            // sendTextMessage('10206557582650156', sender);
+            sendTextMessage('10206557582650156', "outside");
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
             };
             s_user_registered = function(result) {
                 if (!result.rows.length) {
-                    sendTextMessage('10206557582650156', "we here");
                     switch(words[0]) {
                         case "@register":
                             registerUser(sender, username);
                             break;
                         default:
-                            sendTextMessage('10206557582650156', "we here 2");
+                            sendTextMessage('10206557582650156', text);
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
                             break;
                     }
