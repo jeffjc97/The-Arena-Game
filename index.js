@@ -583,7 +583,7 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
                 else {
                     sendTextMessage(defender_id, attacker_name + " hit you for " + attack_value + " health!");
                     sendTextMessage(attacker_id, "You hit " + defender_name + " for " + attack_value + " health!");
-                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def);
+                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
                     sendTextMessage(defender_id, health);
                     sendTextMessage(attacker_id, health);
                 }
@@ -592,9 +592,9 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
     }
 }
 
-function makeHealthBars(aname, ahp, dname, dhp) {
+function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
     function makeHealth(name, hp) {
-        health = Math.ceil(hp / 5);
+        health = Math.ceil(hp / (maxhp / 20));
         damage = 20 - health;
         return Array(health + 1).join("▓") + Array(damage + 1).join("▒") + " " + hp;
     }
