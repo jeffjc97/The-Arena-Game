@@ -222,7 +222,7 @@ function sendHelpMessage(sender) {
 function getUserInfo(sender) {
     // curl -X GET "https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
     request({
-        url: 'https://graph.facebook.com/v2.6/me/' + sender ,
+        url: 'https://graph.facebook.com/v2.6/' + sender ,
         qs: {fields:"first_name,last_name,profile_pic", access_token:token},
         method: 'GET',
     }, function(error, response, body) {
