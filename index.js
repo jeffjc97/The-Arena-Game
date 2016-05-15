@@ -268,7 +268,7 @@ function registerUser(s, username) {
             }
         };
         s_add_username = function(result) {
-            sendTextMessage(s, "Username successfully registered!");
+            sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
         };
         makeQuery(q_add_username, e, s_add_username);
     }
