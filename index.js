@@ -203,19 +203,8 @@ function sendGenericMessage(sender) {
               {
                 "title":"Help",
                 "subtitle":"100% Soft and Luxurious Cotton\nlolol\nlolol",
-                // "quantity":2,
-                // "price":50,
-                // "currency":"USD",
-                // "image_url":"http://petersapparel.parseapp.com/img/whiteshirt.png"
+                "image_url":"http://i.imgur.com/OdRB0tj.png"
               },
-              {
-                "title":"Classic Gray T-Shirt",
-                "subtitle":"100% Soft and Luxurious Cotton",
-                // "quantity":1,
-                // "price":25,
-                // "currency":"USD",
-                // "image_url":"http://petersapparel.parseapp.com/img/grayshirt.png"
-              }
             ]
           }
         }
