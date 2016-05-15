@@ -244,7 +244,7 @@ function mysql_real_escape_string (str) {
 }
 
 function registerUser(s, username) {
-    pat = "/^[A-Za-z0-9]{0,12}$/";
+    pat = "^[A-Za-z0-9]{1,12}$";
     reg = new RegExp(pat);
     if (!reg.test(username) || username.length < 1 || username.length > 11) {
         sendTextMessage(s, "Invalid username. Usernames must be under 12 characters and can only contain letters and numbers. Please try again.");
