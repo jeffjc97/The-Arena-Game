@@ -112,6 +112,9 @@ app.post('/webhook/', function (req, res) {
                         case "@forfeit":
                             forfeitDuel(sender);
                             break;
+                        case "@stats":
+                            getStats(username, sender);
+                            break;
                         case "@test":
                             username = words[words.length - 1];
                             q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
@@ -668,4 +671,21 @@ function sendNormalMessage(s, text) {
         }
     };
     makeQuery(q_get_user_info, e, s_get_user_info);
+}
+
+function getStats(user, s){
+    q_get_stats = "SELECT * FROM user_table where name= \'" + user + "\'";
+    e = function(err){
+        sendError(s, 32);
+    }
+    success = function(result){
+        if (result.rows.length == 1) {
+            data = result.rows[0];
+            sendTextMessage(s, "Stats for "+user+":\n Wins: "+data.wins+"\nLosses: "+dat.losses+"\nDraws: "+data.draws+"\nGames: "+data.games_played+"\nWin %: "+(data.wins/data.games_played).toFixed(2));
+        }
+        else{
+            sendTextMessage(s, "User not found.");
+        }
+
+    }
 }
