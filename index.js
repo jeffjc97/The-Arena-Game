@@ -72,27 +72,8 @@ app.post('/webhook/', function (req, res) {
                 }
                 else {
                     switch(words[0]){
-                        case "@generic":
-                            sendGenericMessage(sender);
-                            break;
                         case "@help":
-                            // sendTextMessage(sender, "🔎 GENERAL COMMANDS 🔎\n \
-                            //                         🔶 @help: Self-explanatory.
-                            //                         🔶 @challenge <username>: Sends a duel request to the specified user. \n \
-                            //                         🔶 @accept <username>: Accepts a duel request from the specified user, if one exists. \n \
-                            //                         🔶 @reject <username>: Rejects a duel request from the specified user, if one exists. \n \
-                            //                         🔰 DUEL COMMANDS 🔰\n \
-                            //                         🔶 @strike: Deals damage (0-10) to your opponent if it is your turn. \n \
-                            //                         🔶 @forfeit: Forfeits the match. \
-                            //                         ");
-                            // sendTextMessage(sender, "ok GENERAL COMMANDS 8|\n" +
-                            //                         "- @help: Self-explanatory. \n" +
-                            //                         "- @challenge <username>: Sends a duel request to the specified user. \n" +
-                            //                         "- @accept <username>: Accepts a duel request from the specified user, if one exists. \n" +
-                            //                         "- @reject <username>: Rejects a duel request from the specified user, if one exists. \n" +
-                            //                         ":|] DUEL COMMANDS :|]\n" +
-                            //                         "- @strike: Deals damage (0-10) to your opponent if it is your turn. \n" +
-                            //                         "- @forfeit: Forfeits the match.");
+                            sendHelpMessage(sender);
                             break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
@@ -134,28 +115,11 @@ app.post('/webhook/', function (req, res) {
                         case "@stats":
                             getStats(username, sender);
                             break;
-                        case "@test":
-                            username = words[words.length - 1];
-                            q = 'SELECT name FROM user_table where id= \'' + sender + '\'';
-                            e = function(err) {
-                                sendTextMessage(sender, ":-(" + JSON.stringify(err).substring(0,300));
-                            };
-                            s = function(result) {
-                                if (result.rows.length === 0) {
-                                    sendTextMessage(sender, ":-( (2)");
-                                }
-                                else {
-                                    username = result.rows[0].name;
-                                    sendTextMessage(sender, username);
-                                }
-                            };
-                            makeQuery(q, e, s);
-                            break;
                         case "@challenges":
                             getPendingChallenges(sender);
+                            break;
                         default:
                             sendNormalMessage(sender, text);
-                            // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
                             break;
                     }
                 }
@@ -192,23 +156,22 @@ function sendTextMessage(sender, text) {
     });
 }
 
-function sendGenericMessage(sender) {
+function sendHelpMessage(sender) {
     messageData = {
         "attachment":{
           "type":"template",
           "payload":{
             "template_type":"generic",
-            // "recipient_name":"Stephane Crozatier",
-            // "order_number":"12345678902",
-            // "currency":"USD",
-            // "payment_method":"Visa 2345",        
-            // "order_url":"http://petersapparel.parseapp.com/order?order_id=123456",
-            // "timestamp":"1428444852", 
             "elements":[
               {
-                "title":"Help",
-                "subtitle":"100% Soft and Luxurious Cotton\nlolol\nlolol",
-                "image_url":"http://i.imgur.com/YhRkn3h.png"
+                "title":"Bot Fun: Help",
+                "subtitle":"Commands that can be used outside of a duel.",
+                "image_url":"http://i.imgur.com/72NClPr.png"
+              },
+              {
+                "title":"Bot Fun: Help",
+                "subtitle":"Commands that can be used during a duel.",
+                "image_url":"http://i.imgur.com/ZnCadyq.png"
               },
             ]
           }
@@ -271,7 +234,7 @@ function registerUser(s, username) {
             }
         };
         s_add_username = function(result) {
-            sendTextMessage(s, "Username successfully registered!");
+            sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
         };
         makeQuery(q_add_username, e, s_add_username);
     }
@@ -366,7 +329,7 @@ function respondToChallengeSetup(su, r, response) {
                 if (result.rows.length === 0) {
                     sendError(r, 13);
                 }
-                else if(result.rows[0].in_duel !== '0'){
+                else if(result.rows[0].in_duel != 0){
                     sendError(r, 14, "You are currently in a duel!");
                 }
                 else {
@@ -388,7 +351,7 @@ function respondToChallengeSetup(su, r, response) {
                             }
                             else {
                                 s = result.rows[0].id;
-                                if(result.rows[0].in_duel !== '0'){
+                                if(result.rows[0].in_duel !== 0){
                                     sendError(r, 18, su + " is currently in a duel. Please try accepting again soon.");      
                                 }
                                 else{   
@@ -450,7 +413,7 @@ function respondToChallenge(s, r, su, ru, response) {
 
 // invariant: neither party is in a duel
 function setupDuel(s, r) {
-    first = s
+    first = s;
     if (Math.random() > 0.5)
         first = r;
     q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
@@ -459,7 +422,7 @@ function setupDuel(s, r) {
             done();
             if (err) {
                 sendError(s, 22);
-                // sendTextMessage(s, JSON.stringify(err).substring(0, 200));
+                sendTextMessage(s, JSON.stringify(err).substring(0, 200));
             }
             else {
                 duel_id = result.rows[0].duel_id;
@@ -489,7 +452,7 @@ function setupDuel(s, r) {
 }
 
 function startDuel(s, r, f_id) {
-    q = 'SELECT name FROM user_table where id= \'' + f_id + '\'';
+    q = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
             done();
@@ -499,8 +462,14 @@ function startDuel(s, r, f_id) {
             }
             else {
                 first = result.rows[0].name;
-                sendTextMessage(s, "The duel has begun! "+first+ " has the first move.");
-                sendTextMessage(r, "The duel has begun! "+first+ " has the first move.");
+                if (result.rows[0].id == s) {
+                    sendTextMessage(s, "The duel has begun! You have the first move.");
+                    sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
+                }
+                else {
+                    sendTextMessage(r, "The duel has begun! You have the first move.");
+                    sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
+                }
             }
         });
     });
@@ -519,20 +488,20 @@ function makeMoveSetup(s){
                 duel_id = result.rows[0].in_duel;
                 su = result.rows[0].name;
                 if (duel_id == 0) {
-                    sendTextMessage(s, "You are not currently in a duel.");
+                    sendError(s, 36, "You are not currently in a duel.");
                 }
                 else{
                     q2 = 'SELECT * FROM duel_table WHERE duel_id = '+duel_id;
                     client.query(q2, function(err, result) {
                         done();
                         if (err || result.rows.length !== 1) {
-                            sendTextMessage(s, "error");
+                            sendError(s, 33);
                         }
                         else{
                             data = result.rows[0];
                             turn_id = data.user_turn;
                             if (s != turn_id) {
-                                sendTextMessage(s, "It's not your turn. Please wait.");
+                                sendError(s, 35, "It's not your turn. Please wait.");
                             }
                             else{
                                 //we know s is attacker. Is s sender_id or recipient_id?
@@ -550,7 +519,7 @@ function makeMoveSetup(s){
                                 client.query(q3, function(err, result) {
                                     done();
                                     if (err || result.rows.length !== 1) {
-                                        sendTextMessage(s, "error (7)");
+                                        sendError(s, 34);
                                     }
                                     else{
                                         makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
@@ -674,7 +643,12 @@ function sendNormalMessage(s, text) {
             makeQuery(q_get_duel_info, e, s_get_duel_info);
         }
         else {
-            sendTextMessage(s, "Why are you talking to yourself? \"" + text + "\"");
+            if (text.charAt(0) == "@") {
+                sendTextMessage(s, "Not a valid command. Type @help for a list of commands.");
+            }
+            else {
+                sendTextMessage(s, "Why are you talking to yourself? \"" + text + "\"");
+            }
         }
     };
     makeQuery(q_get_user_info, e, s_get_user_info);
@@ -684,17 +658,21 @@ function getStats(user, s){
     q_get_stats = "SELECT * FROM user_table where name= \'" + user + "\'";
     e = function(err){
         sendError(s, 32);
-    }
+    };
     success = function(result){
         if (result.rows.length == 1) {
             data = result.rows[0];
-            sendTextMessage(s, "Stats for "+user+":\nWins: "+data.wins+"\nLosses: "+data.losses+"\nDraws: "+data.draws+"\nGames: "+data.games_played+"\nWin %: "+(data.wins/data.games_played).toFixed(2));
+            pct = (100*data.wins/data.games_played).toFixed(2);
+            if (data.games_played === 0) {
+                pct = "N/A";
+            }
+            sendTextMessage(s, "STATS: " + user + "\nWins: " + data.wins + "\nLosses: " + data.losses+"\nDraws: " + data.draws + "\nGames: " + data.games_played + "\nWin %: " + pct);
         }
         else{
             sendTextMessage(s, "User not found.");
         }
 
-    }
+    };
     makeQuery(q_get_stats, e, success);
 }
 
