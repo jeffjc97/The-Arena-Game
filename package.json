@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/jeffjc97/messenger-bot#readme",
   "dependencies": {
-    "pg": "4.x",
-    "ejs": "2.3.3",
     "body-parser": "^1.15.1",
+    "ejs": "2.3.3",
     "express": "^4.13.4",
+    "json-bigint": "^0.2.0",
+    "pg": "4.x",
     "request": "^2.72.0"
   }
 }
