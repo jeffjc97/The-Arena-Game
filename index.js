@@ -128,6 +128,7 @@ app.post('/webhook/', function (req, res) {
                         case "@reject":
                             respondToChallengeSetup(username, sender, false);
                             break;
+                        case "@s":
                         case "@strike":
                             makeMoveSetup(sender);
                             break;
@@ -243,8 +244,9 @@ function mysql_real_escape_string (str) {
 }
 
 function registerUser(s, username) {
-    regex = "/^[A-Za-z0-9]{0,12}$/";
-    if (!regex.test(username) || username.length < 1 || username.length > 11) {
+    pat = "/^[A-Za-z0-9]{0,12}$/";
+    reg = new RegExp(pat);
+    if (!reg.test(username) || username.length < 1 || username.length > 11) {
         sendTextMessage(s, "Invalid username. Usernames must be under 12 characters and can only contain letters and numbers. Please try again.");
     }
     else {
