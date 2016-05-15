@@ -34,7 +34,7 @@ app.get('/', function (req, res) {
 
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
-    if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
+    if (req.query['hub.verify_token'] === 'we_are_astronauts_baby_8409') {
         res.send(req.query['hub.challenge']);
     }
     res.send('Error, wrong token');
@@ -727,26 +727,26 @@ function getPendingChallenges(s){
                             result_string+="\n";
                             result_string += result.rows[i].recipient;
                         }
-                    };
+                    }
                     if (result_string !== "You've challenged:") {
                         sendTextMessage(s, result_string);
                     }
                     //get a list of challenges they're recipient
                     result_string = "You've been challenged by:";
-                    for (var i = result.rows.length - 1; i >= 0; i--) {
+                    for (i = result.rows.length - 1; i >= 0; i--) {
                         recip_val = result.rows[i].recipient;
                         if (recip_val == name) {
                             result_string+="\n";
                             result_string += result.rows[i].sender;
                         }
-                    };
+                    }
                     if (result_string !== "You've been challenged by:") {
                         sendTextMessage(s, result_string);
                     }
                 }
-            }
+            };
             makeQuery(q_get_challenges, e, s_get_challenges);
         }
-    }
+    };
     makeQuery(q_name, e, s_name);
 }
