@@ -54,7 +54,8 @@ app.post('/webhook/', function (req, res) {
             text = event.message.text;
             words = text.split(" ");
             username = words[words.length - 1];
-            sendTextMessage('10206557582650156', sender);
+            sendTextMessage('10209118205142676', "why is this not working??");
+            // sendTextMessage('10206557582650156', sender);
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
