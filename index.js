@@ -54,11 +54,12 @@ app.post('/webhook/', function (req, res) {
             text = event.message.text;
             words = text.split(" ");
             username = words[words.length - 1];
-
-            q_user_registered = "SELECT * FROM user_table where id =\'" + sender + "\'";
+            // sendTextMessage('10209118205142676', "why is this not working??");
+            sendTextMessage('10206557582650156', "outside");
+            q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
-            }
+            };
             s_user_registered = function(result) {
                 if (!result.rows.length) {
                     switch(words[0]) {
@@ -66,6 +67,8 @@ app.post('/webhook/', function (req, res) {
                             registerUser(sender, username);
                             break;
                         default:
+                            sendTextMessage('10206557582650156', text);
+                            sendTextMessage('10206557582650156', sender);
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
                             break;
                     }
@@ -123,7 +126,7 @@ app.post('/webhook/', function (req, res) {
                             break;
                     }
                 }
-            }
+            };
             makeQuery(q_user_registered, e, s_user_registered);
         }
         if (event.postback) {
@@ -556,15 +559,26 @@ function makeMove(attacker_id, defender_id, health_defender, health_attacker, at
                 done();
                 if (err) {
                     sendTextMessage(attacker_id, JSON.stringify(err).substring(0, 200));
-                }else{
-                    sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
-                    sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
-                    sendTextMessage(defender_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
-                    sendTextMessage(attacker_id, attacker_name+": "+health_attacker+" ||| "+defender_name+": "+new_health_def);
+                }
+                else {
+                    sendTextMessage(defender_id, attacker_name + " hit you for " + attack_value + " health!");
+                    sendTextMessage(attacker_id, "You hit " + defender_name + " for " + attack_value + " health!");
+                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def);
+                    sendTextMessage(defender_id, health);
+                    sendTextMessage(attacker_id, health);
                 }
             });
         });
     }
+}
+
+function makeHealthBars(aname, ahp, dname, dhp) {
+    function makeHealth(name, hp) {
+        health = Math.ceil(hp / 5);
+        damage = 20 - health;
+        return Array(health + 1).join("▓") + Array(damage + 1).join("▒") + " " + hp;
+    }
+    return aname + "\n" + makeHealth(aname, ahp) + "\n" + dname + "\n" + makeHealth(dname, dhp);
 }
 
 //data is a row from duel_table
