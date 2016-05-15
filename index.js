@@ -196,16 +196,15 @@ function sendGenericMessage(sender) {
           "type":"template",
           "payload":{
             "template_type":"generic",
-            // "recipient_name":"Stephane Crozatier",
-            // "order_number":"12345678902",
-            // "currency":"USD",
-            // "payment_method":"Visa 2345",        
-            // "order_url":"http://petersapparel.parseapp.com/order?order_id=123456",
-            // "timestamp":"1428444852", 
             "elements":[
               {
-                "title":"Help",
-                "subtitle":"100% Soft and Luxurious Cotton\nlolol\nlolol",
+                "title":"Bot Fun: Help",
+                "subtitle":"Commands that can be used outside of a duel.",
+                "image_url":"http://i.imgur.com/72NClPr.png"
+              },
+              {
+                "title":"Bot Fun: Help",
+                "subtitle":"Commands that can be used during a duel.",
                 "image_url":"http://i.imgur.com/ZnCadyq.png"
               },
             ]
