@@ -77,6 +77,7 @@ app.post('/webhook/', function (req, res) {
             text = event.message.text;
             words = text.split(" ");
             username = words[words.length - 1];
+            getUserInfo(sender);
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
@@ -214,6 +215,24 @@ function sendHelpMessage(sender) {
             console.log('Error sending messages: ', error);
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
+        }
+    });
+}
+
+function getUserInfo(sender) {
+    // curl -X GET "https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/' + sender ,
+        qs: {fields:"first_name,last_name,profile_pic", access_token:token},
+        method: 'GET',
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error getting userinfo: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        } else {
+            console.log(response.body);
+            console.log(body);
         }
     });
 }
