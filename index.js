@@ -686,7 +686,7 @@ function getStats(user, s){
     success = function(result){
         if (result.rows.length == 1) {
             data = result.rows[0];
-            sendTextMessage(s, "Stats for "+user+":\n Wins: "+data.wins+"\nLosses: "+dat.losses+"\nDraws: "+data.draws+"\nGames: "+data.games_played+"\nWin %: "+(data.wins/data.games_played).toFixed(2));
+            sendTextMessage(s, "Stats for "+user+":\n Wins: "+data.wins+"\nLosses: "+data.losses+"\nDraws: "+data.draws+"\nGames: "+data.games_played+"\nWin %: "+(data.wins/data.games_played).toFixed(2));
         }
         else{
             sendTextMessage(s, "User not found.");
