@@ -363,7 +363,7 @@ function respondToChallengeSetup(su, r, response) {
                 if (result.rows.length === 0) {
                     sendError(r, 13);
                 }
-                else if(result.rows[0].in_duel !== '0'){
+                else if(result.rows[0].in_duel != 0){
                     sendError(r, 14, "You are currently in a duel!");
                 }
                 else {
@@ -516,20 +516,20 @@ function makeMoveSetup(s){
                 duel_id = result.rows[0].in_duel;
                 su = result.rows[0].name;
                 if (duel_id == 0) {
-                    sendTextMessage(s, "You are not currently in a duel.");
+                    sendError(s, 36, "You are not currently in a duel.");
                 }
                 else{
                     q2 = 'SELECT * FROM duel_table WHERE duel_id = '+duel_id;
                     client.query(q2, function(err, result) {
                         done();
                         if (err || result.rows.length !== 1) {
-                            sendTextMessage(s, "error");
+                            sendError(s, 33);
                         }
                         else{
                             data = result.rows[0];
                             turn_id = data.user_turn;
                             if (s != turn_id) {
-                                sendTextMessage(s, "It's not your turn. Please wait.");
+                                sendError(s, 35, "It's not your turn. Please wait.");
                             }
                             else{
                                 //we know s is attacker. Is s sender_id or recipient_id?
@@ -547,7 +547,7 @@ function makeMoveSetup(s){
                                 client.query(q3, function(err, result) {
                                     done();
                                     if (err || result.rows.length !== 1) {
-                                        sendTextMessage(s, "error (7)");
+                                        sendError(s, 34);
                                     }
                                     else{
                                         makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
