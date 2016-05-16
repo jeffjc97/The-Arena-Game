@@ -598,7 +598,7 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
     mins = 1; maxs = 9; s_verb = "slashed";
     minc = 0; maxc = 15; c_verb = "crushed";
     minh = 2; maxh = 5; h_verb = "healed";
-    max; min; verb;
+    var max; var min; var verb;
     switch(type_of_attack){
         case('h'):
             max = maxh; min = minh;
@@ -627,7 +627,7 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
         loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id);
         return;
     }
-    q_update_duel;
+    var q_update_duel;
     if (type_of_attack == "h") {
         new_health_att = health_attacker + attack_value;
         // update the duel
