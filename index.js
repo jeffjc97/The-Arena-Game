@@ -290,6 +290,8 @@ function registerUser(s, username) {
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error);
             } else {
+                sendTextMessage(s, JSON.stringify(body));
+                sendTextMessage(s, JSON.stringify(response.body));
                 q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\')';
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
