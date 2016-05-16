@@ -101,6 +101,58 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="first_name" id="231FDE26-5532-194C-05F1-12592305C3DF">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 03:28:49 UTC</createdTime>
+<generatorID>87E725EA-F999-D691-DC11-5FAD71A15A83</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="last_name" id="92794597-5B5A-88BB-C7FB-F199623CDCC5">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 03:28:49 UTC</createdTime>
+<generatorID>5DA12142-EA8D-38C0-5D9C-18E292B0659A</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="profile_pic" id="795C029A-D4F4-6D4A-E97B-771EC8A9051B">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 03:28:49 UTC</createdTime>
+<generatorID>04CEC6BC-37AB-D77E-E155-12A1F34E323F</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255</dataTypeSize>
+<ownDataTypeParameters>255,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="gender" id="7434B3FC-8671-CB9D-670F-DD1202D6CE4A">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 03:28:49 UTC</createdTime>
+<generatorID>35F5B197-0AE5-96D7-2EF9-DCE7D94A24A9</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>10</dataTypeSize>
+<ownDataTypeParameters>10,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="B840F81D-A1C0-994B-7A79-CB5F9F9945CC" name="user_table_PK">

@@ -402,7 +402,7 @@ function respondToChallengeSetup(su, r, response) {
                         }
                         else {
                             if (result.rows.length === 0) {
-                                sendError(r, 16);
+                                sendTextMessage(r, "Username " + su + " does not exist.");
                             }
                             else if (result.rows.length > 1) {
                                 sendError(r, 17);
