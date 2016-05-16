@@ -15,6 +15,18 @@
 <minVolumes>0</minVolumes>
 <normalForm>Third</normalForm>
 <attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="duel_id" id="25C54FDE-9A6C-E928-623B-7E40EDBF1C6F">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-14 02:35:11 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
 <Attribute name="winner_id" id="C10A5812-A0EA-7D09-25CC-08594C86C5EC">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-14 00:08:32 UTC</createdTime>
@@ -128,9 +140,21 @@
 <dataTypeSize>20</dataTypeSize>
 <ownDataTypeParameters>20,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="duel_id" id="25C54FDE-9A6C-E928-623B-7E40EDBF1C6F">
+<Attribute name="sender_heal" id="36AF027E-0922-E209-E75E-59F3C3FBECE1">
 <createdBy>Roy</createdBy>
-<createdTime>2016-05-14 02:35:11 UTC</createdTime>
+<createdTime>2016-05-16 19:09:38 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="recipient_heal" id="65FAAA7E-7D41-6BCB-97A5-E785DF64FDE8">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 19:10:04 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
 <item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>

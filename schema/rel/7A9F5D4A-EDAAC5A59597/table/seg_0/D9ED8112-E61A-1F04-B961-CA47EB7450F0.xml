@@ -135,6 +135,32 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="sender_heal" id="661E1D4B-F2F5-6B05-BC74-B1D112D26138">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 19:10:48 UTC</createdTime>
+<generatorID>36AF027E-0922-E209-E75E-59F3C3FBECE1</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>3</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="recipient_heal" id="50659E94-952E-6E11-C693-9088287DF907">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-16 19:10:48 UTC</createdTime>
+<generatorID>65FAAA7E-7D41-6BCB-97A5-E785DF64FDE8</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>3</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="085459B4-791A-91A4-6D72-8794B1D22D88" name="duel_table_PK">
