@@ -711,7 +711,7 @@ function loseDuel(lid, wid, lname, wname, did) {
             makeQuery(q_update_w, e, s_update_w);
         }
         makeQuery(q_update_d, e, s_update_d);
-    }, 3000);
+    }, 4000);
 }
 
 function sendNormalMessage(s, text) {
