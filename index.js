@@ -430,7 +430,7 @@ function sendChallenge(s, r, ru) {
             sendError(s, 41);
         }
         else {
-            username = result.rows[0].name;
+            su = result.rows[0].name;
             q_validate_sender = 'SELECT name, in_duel FROM user_table where id= \'' + s + '\'';
             makeQuery(q_validate_sender, e, s_validate_sender);
         }
@@ -439,7 +439,7 @@ function sendChallenge(s, r, ru) {
     e = function(err) {
         sendError(s, 40);
     };
-    var username = "none";
+    var su = "none";
     q_get_username = 'SELECT name FROM user_table where id= \'' + s + '\'';
     makeQuery(q_get_username, e, s_get_username);
 }
