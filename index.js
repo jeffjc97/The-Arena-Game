@@ -291,8 +291,6 @@ function registerUser(s, username) {
                 console.log('Error: ', response.body.error);
             } else {
                 body = JSONbig.parse(body);
-                sendTextMessage(s, JSON.stringify(body));
-                sendTextMessage(s, JSON.stringify(body.first_name));
                 q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\')';
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
