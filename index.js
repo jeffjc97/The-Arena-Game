@@ -569,6 +569,7 @@ function makeMoveSetup(s, type){
                                 attacker_health = data.health_recipient;
                                 if (s_is_sender_id) {
                                     defender_id = data.recipient_id;
+                                    sendTextMessage(s, defender_id);
                                     defender_health = data.health_recipient;
                                     attacker_health = data.health_sender;
                                 }
@@ -649,7 +650,7 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
     }
     s_update_duel = function(result){
         if (type_of_attack === "h") {
-            sendTextMessage(defender_id, attacker_name+" "+verb+" themselves for "+attack_value+" hp!");
+            sendTextMessage(defender_id, attacker_name+" "+verb+" themself for "+attack_value+" hp!");
             sendTextMessage(attacker_id, "You "+verb+" yourself for "+attack_value+" hp!");
             health = makeHealthBars(attacker_name, new_health_att, defender_name, health_defender, 50);
             sendTextMessage(defender_id, health);
