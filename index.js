@@ -595,7 +595,7 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
     mind = 4; maxd = 6; d_verb = "stabbed";
     mins = 1; maxs = 9; s_verb = "slashed";
     minc = 0; maxc = 15; c_verb = "crushed";
-    minh = 2; maxh = 5; h_verb = "healed";
+    minh = 3; maxh = 6; h_verb = "healed";
     var max; var min; var verb;
     switch(type_of_attack){
         case('h'):
@@ -753,7 +753,7 @@ function loseDuel(lid, wid, lname, wname, did) {
             makeQuery(q_update_w, e, s_update_w);
         }
         makeQuery(q_update_d, e, s_update_d);
-    }, 3000);
+    }, 5000);
 }
 
 function sendNormalMessage(s, text) {
