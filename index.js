@@ -40,20 +40,8 @@ app.use(function(req, res, next){
 
 // Index route
 app.get('/', function (req, res) {
-    res.send('Hello world, I am a chat bot');
+    res.send('BOT FUN - a messenger chat game.');
 });
-
-// app.get('/db', function (request, response) {
-//   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-//     client.query('SELECT * FROM user_table', function(err, result) {
-//       done();
-//       if (err)
-//        { console.error(err); response.send("Error " + err); }
-//       else
-//        { response.render('pages/db', {results: result.rows} ); }
-//     });
-//   });
-// })
 
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
@@ -102,33 +90,31 @@ app.post('/webhook/', function (req, res) {
                             sendTextMessage(sender, "You are already registered!");
                             break;
                         case "@challenge":
-                            q = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
-                            pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-                                client.query(q, function(err, result) {
-                                    done();
-                                    if (err)
-                                        sendError(sender, 1);
-                                    else {
-                                        if (result.rows.length === 0) {
-                                            sendError(sender, 2, "Username not found. Please try again.");
-                                        }
-                                        else {
-                                            challenge_id = result.rows[0].id;
-                                            if (challenge_id == sender+"") {
-                                                sendTextMessage(sender, "You cannot challenge yourself!");
-                                            }else
-                                                // getUsername(sender, challenge_id, username);
-                                                sendChallenge(sender, challenge_id, username);
-                                        }
-                                    }
-                                });
-                            });
+                            q_challenge = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
+                            e = function(err) {
+                                sendError(sender, 1);
+                            };
+                            s_challenge = function(result) {
+                                if (result.rows.length === 0) {
+                                    sendError(sender, 2, "Username not found. Please try again.");
+                                }
+                                else {
+                                    challenge_id = result.rows[0].id;
+                                    if (challenge_id == sender+"") {
+                                        sendTextMessage(sender, "You cannot challenge yourself!");
+                                    } else
+                                        sendChallenge(sender, challenge_id, username);
+                                }
+                            };
+                            makeQuery(q_challenge, e, s_challenge);
                             break;
                         case "@accept":
-                            respondToChallengeSetup(username, sender, true);
+                            // respondToChallengeSetup(username, sender, true);
+                            respondToChallenge(username, sender, true);
                             break;
                         case "@reject":
-                            respondToChallengeSetup(username, sender, false);
+                            // respondToChallengeSetup(username, sender, false);
+                            respondToChallenge(username, sender, false);
                             break;
                         case "@d":
                         case "@dagger":
@@ -310,80 +296,6 @@ function registerUser(s, username) {
     }
 }
 
-// function getUsername(s, r, ru) {
-//     q = 'SELECT name FROM user_table where id= \'' + s + '\'';
-//     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-//         client.query(q, function(err, result) {
-//             done();
-//             if (err) {
-//                 sendTextMessage(s, "Error in username lookup.");
-//             }
-//             else {
-//                 if (result.rows.length === 0) {
-//                     sendError(s, 3);
-//                 }
-//                 else {
-//                     username = result.rows[0].name;
-//                     sendChallenge(s, r, username, ru);
-//                 }
-//             }
-//         });
-//     });
-// }
-
-// // sender id, recipient id, sender username, recipient username
-// function sendChallenge(s, r, su, ru) {
-//     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-//         q_validate = 'SELECT name, in_duel FROM user_table where id= \'' + s + '\'';
-//         client.query(q_validate, function(err, result) {
-//             done();
-//             if (err) {
-//                 sendError(s, 4);
-//             }
-//             else if (result.rows.length === 0 || result.rows.length > 1) {
-//                 sendError(s, 5);
-//             }
-//             else if(result.rows[0].in_duel > 0){
-//                 sendError(s, 6, "You are already in a duel.");      
-//             }
-//             else{
-//                 q = 'INSERT into challenge_table values (' + s + ", " + r + ')';
-//                 client.query(q, function(err, result) {
-//                     done();
-//                     if (err) {
-//                         if (err.detail.indexOf("already exists") > -1) {
-//                             sendError(s, 7, "Challenge already pending, please wait...");
-//                         }
-//                         else {
-//                             sendError(s, 8);
-//                         }
-//                     }
-//                     else {
-//                         //verify that user isn't already in a duel
-//                         q_induel = 'SELECT * from user_table WHERE id = \'' + r + '\'';
-//                         client.query(q_induel, function(err, result){
-//                             done();
-//                             if (err) {
-//                                 sendError(s, 9);
-//                             }
-//                             else if (result.rows.length === 0) {
-//                                 sendError(s, 10);
-//                             }
-//                             else if(result.rows[0].in_duel > 0){
-//                                 sendError(s, 11, ru + " is already in a duel.");      
-//                             }
-//                             else{
-//                                 sendTextMessage(s, "Challenge sent! Waiting for " + ru + " to respond...");
-//                                 sendTextMessage(r, su + " has challenged you to a duel! Reply @accept " + su + " or @reject " + su + " to respond.");
-//                             }
-//                         });
-//                     }
-//                 });
-//             }
-//         });
-//     });
-// }
-
 function sendChallenge(s, r, ru) {
     s_validate_recipient = function(result) {
         if (result.rows.length === 0) {
@@ -445,100 +357,76 @@ function sendChallenge(s, r, ru) {
 }
 
 //r (id) is responding to challenge from su (name) with response 
-function respondToChallengeSetup(su, r, response) {
-    // get recipient username
-    // get sender id
-    q = 'SELECT name, in_duel FROM user_table where id= \'' + r + '\'';
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
-            done();
-            if (err) {
-                sendError(r, 12);
-            }
-            else {
-                if (result.rows.length === 0) {
-                    sendError(r, 13);
-                }
-                else if(result.rows[0].in_duel != 0){
-                    sendError(r, 14, "You are currently in a duel!");
-                }
-                else {
-                    //username of the responder
-                    ru = result.rows[0].name;
-                    //get sender id and status
-                    q2 = 'SELECT id, in_duel FROM user_table where name = \'' + su + '\'';
-                    client.query(q2, function(err, result) {
-                        done();
-                        if (err) {
-                            sendError(r, 15);
-                        }
-                        else {
-                            if (result.rows.length === 0) {
-                                sendTextMessage(r, "Username " + su + " does not exist.");
-                            }
-                            else if (result.rows.length > 1) {
-                                sendError(r, 17);
-                            }
-                            else {
-                                s = result.rows[0].id;
-                                if(result.rows[0].in_duel !== 0){
-                                    sendError(r, 18, su + " is currently in a duel. Please try accepting again soon.");      
-                                }
-                                else{   
-                                    s = result.rows[0].id;
-                                    respondToChallenge(s, r, su, ru, response);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    });
-}
+function respondToChallenge(su, r, response) {
+    s_delete_challenge = function(result) {
+        if (response) {
+            // start duel
+            setupDuel(s, r);
+            sendTextMessage(s, ru + " has accepted your request! Starting duel...");
+            sendTextMessage(r, "Request accepted. Starting duel...");
+        }
+        else {
+            sendTextMessage(s, ru + " has rejected your challenge request.");
+            sendTextMessage(r, "Request rejected.");
+        }
+    };
 
-function respondToChallenge(s, r, su, ru, response) {
-    // validate
-        //make sure neither responder nor challenger are in duel currently
-    // make changes/start game
-    q = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
-            done();
-            if (err) {
-                sendTextMessage(s, "Error in challenge lookup. (1)");
+    s_get_challenge = function(result) {
+        if (result.rows.length === 0) {
+            sendError(r, 19, "This challenge request has expired or does not exist.");
+        }
+        else if (result.rows.length > 1){
+            sendError(r, 20);
+        }
+        else {
+            q_delete_challenge = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+            makeQuery(q_delete_challenge, e, s_delete_challenge);
+        }
+    };
+
+    s_get_sender = function(result) {
+        if (result.rows.length === 0) {
+            sendTextMessage(r, "Username " + su + " does not exist.");
+        }
+        else if (result.rows.length > 1) {
+            sendError(r, 17);
+        }
+        else {
+            if(result.rows[0].in_duel !== 0){
+                sendError(r, 18, su + " is currently in a duel. Please try accepting again soon.");
             }
             else {
-                if (result.rows.length === 0) {
-                    sendError(r, 19, "This challenge request has expired or does not exist.");
-                }
-                else if (result.rows.length > 1){
-                    sendError(r, 20);   
-                }
-                else {
-                    q2 = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
-                    client.query(q2, function(err, result) {
-                        done();
-                        if (err) {
-                            sendError(s, 21);
-                        }
-                        else {
-                            if (response) {
-                                // start duel
-                                setupDuel(s, r);
-                                sendTextMessage(s, ru + " has accepted your request! Starting duel...");
-                                sendTextMessage(r, "Request accepted. Starting duel...");
-                            }
-                            else {
-                                sendTextMessage(s, ru + " has rejected your challenge request.");
-                                sendTextMessage(r, "Request rejected.");
-                            }
-                        }
-                    });
-                }
+                s = result.rows[0].id;
+                q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+                makeQuery(q_get_challenge, e, s_get_challenge);
             }
-        });
-    });
+        }
+    };
+
+    s_get_recipient = function(result) {
+        if (result.rows.length === 0) {
+            sendError(r, 13);
+        }
+        else if(result.rows[0].in_duel !== 0) {
+            sendError(r, 14, "You are currently in a duel!");
+        }
+        else {
+            //username of the responder
+            ru = result.rows[0].name;
+            //get sender id and status
+            q_get_sender = 'SELECT id, in_duel FROM user_table where name = \'' + su + '\'';
+            makeQuery(q_get_sender, e, s_get_sender);
+        }
+    };
+
+    e = function(err) {
+        sendError(r, 12);
+    };
+    var ru = 'none';
+    var s = 'none';
+    q_get_recipient = 'SELECT name, in_duel FROM user_table where id= \'' + r + '\'';
+    makeQuery(q_get_recipient, e, s_get_recipient);
+
 }
 
 // invariant: neither party is in a duel
@@ -582,27 +470,23 @@ function setupDuel(s, r) {
 }
 
 function startDuel(s, r, f_id) {
-    q = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
-            done();
-            if (err || result.rows.length !== 1) {
-                sendError(s, 25);
-                sendError(r, 25);
-            }
-            else {
-                first = result.rows[0].name;
-                if (result.rows[0].id == s) {
-                    sendTextMessage(s, "The duel has begun! You have the first move.");
-                    sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
-                }
-                else {
-                    sendTextMessage(r, "The duel has begun! You have the first move.");
-                    sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
-                }
-            }
-        });
-    });
+    q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
+    e = function(err) {
+        sendError(s, 25);
+        sendError(r, 25);
+    };
+    s_duel = function(result) {
+        first = result.rows[0].name;
+        if (result.rows[0].id == s) {
+            sendTextMessage(s, "The duel has begun! You have the first move.");
+            sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
+        }
+        else {
+            sendTextMessage(r, "The duel has begun! You have the first move.");
+            sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
+        }
+    };
+    makeQuery(q_duel, e, s_duel);
 }
 
 
