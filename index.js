@@ -632,9 +632,9 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
     if (type_of_attack == "h") {
         new_health_att = health_attacker + attack_value;
         // update the duel
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         if (attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         }
     }
     else{
