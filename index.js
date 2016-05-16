@@ -219,25 +219,6 @@ function sendHelpMessage(sender) {
     });
 }
 
-function getUserInfo(sender) {
-    // curl -X GET "https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
-    request({
-        url: 'https://graph.facebook.com/v2.6/' + sender ,
-        qs: {fields:"first_name,last_name,profile_pic", access_token:token},
-        method: 'GET',
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error getting userinfo: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-            console.log('https://graph.facebook.com/v2.6/me/' + sender);
-        } else {
-            console.log(body);
-            return body;
-        }
-    });
-}
-
 function mysql_real_escape_string (str) {
     return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
         switch (char) {
@@ -263,6 +244,23 @@ function mysql_real_escape_string (str) {
     });
 }
 
+function getUserInfo(sender) {
+    // curl -X GET "https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
+    request({
+        url: 'https://graph.facebook.com/v2.6/' + sender ,
+        qs: {fields:"first_name,last_name,profile_pic", access_token:token},
+        method: 'GET',
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error getting userinfo: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        } else {
+            return body;
+        }
+    });
+}
+
 function registerUser(s, username) {
     pat = "^[A-Za-z0-9]{1,12}$";
     reg = new RegExp(pat);
@@ -270,19 +268,31 @@ function registerUser(s, username) {
         sendTextMessage(s, "Invalid username. Usernames must be under 12 characters and can only contain letters and numbers. Please try again.");
     }
     else {
-        q_add_username = 'INSERT INTO user_table(id, name) VALUES (\'' + s + '\', \'' + username + '\')';
-        e = function(err) {
-            if (err.detail.indexOf("already exists") > -1) {
-                sendError(s, 29, "Username already exists, please try another.");
+        request({
+            url: 'https://graph.facebook.com/v2.6/' + sender ,
+            qs: {fields:"first_name,last_name,profile_pic", access_token:token},
+            method: 'GET',
+        }, function(error, response, body) {
+            if (error) {
+                console.log('Error getting userinfo: ', error);
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+            } else {
+                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\')';
+                e = function(err) {
+                    if (err.detail.indexOf("already exists") > -1) {
+                        sendError(s, 29, "Username already exists, please try another.");
+                    }
+                    else {
+                        sendError(s, 30);
+                    }
+                };
+                s_add_username = function(result) {
+                    sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
+                };
+                makeQuery(q_add_username, e, s_add_username);
             }
-            else {
-                sendError(s, 30);
-            }
-        };
-        s_add_username = function(result) {
-            sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
-        };
-        makeQuery(q_add_username, e, s_add_username);
+        });
     }
 }
 
