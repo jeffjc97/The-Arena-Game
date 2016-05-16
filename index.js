@@ -470,27 +470,23 @@ function setupDuel(s, r) {
 }
 
 function startDuel(s, r, f_id) {
-    q = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
-            done();
-            if (err || result.rows.length !== 1) {
-                sendError(s, 25);
-                sendError(r, 25);
-            }
-            else {
-                first = result.rows[0].name;
-                if (result.rows[0].id == s) {
-                    sendTextMessage(s, "The duel has begun! You have the first move.");
-                    sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
-                }
-                else {
-                    sendTextMessage(r, "The duel has begun! You have the first move.");
-                    sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
-                }
-            }
-        });
-    });
+    q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
+    e = function(err) {
+        sendError(s, 25);
+        sendError(r, 25);
+    };
+    s_duel = function(result) {
+        first = result.rows[0].name;
+        if (result.rows[0].id == s) {
+            sendTextMessage(s, "The duel has begun! You have the first move.");
+            sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
+        }
+        else {
+            sendTextMessage(r, "The duel has begun! You have the first move.");
+            sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
+        }
+    };
+    makeQuery(q_duel, e, s_duel);
 }
 
 
