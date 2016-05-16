@@ -608,13 +608,12 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
         return;
     }
     q_update_duel;
-    //TODO change the q_update_duel for heal
     if (type_of_attack == "h") {
         new_health_att = health_attacker + attack_value;
         // update the duel
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         if (attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         }
     }
     else{
@@ -629,11 +628,10 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
         sendError(attacker_id, 40);
     }
     s_update_duel = function(result){
-        //TODO change the output for heal
         if (type_of_attack === "h") {
-            sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
-            sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
-            health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
+            sendTextMessage(defender_id, attacker_name+" "+verb+" themselves for "+attack_value+" hp!");
+            sendTextMessage(attacker_id, "You "+verb+" yourself for "+attack_value+" hp!");
+            health = makeHealthBars(attacker_name, new_health_att, defender_name, health_defender, 50);
             sendTextMessage(defender_id, health);
             sendTextMessage(attacker_id, health); 
         }else{
