@@ -569,7 +569,6 @@ function makeMoveSetup(s, type){
                                 attacker_health = data.health_recipient;
                                 if (s_is_sender_id) {
                                     defender_id = data.recipient_id;
-                                    sendTextMessage(s, defender_id);
                                     defender_health = data.health_recipient;
                                     attacker_health = data.health_sender;
                                 }
