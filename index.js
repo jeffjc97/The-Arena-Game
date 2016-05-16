@@ -808,24 +808,26 @@ function forfeitDuel(lid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
-    q_update_l = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1 WHERE id = \'" + wid + "\'";
-    q_update_w = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1 WHERE id = \'" + lid + "\'";
-    q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\'";
-    e = function(err) {
-        sendError(lid, 27);
-        sendError(wid, 27);
-    }
-    s_update_l = function(result) {
-        sendTextMessage(lid, "You were defeated by " + wname + ".");
-        sendTextMessage(wid, "You have defeated " + lname + "!");
-    }
-    s_update_w = function(result) {
-        makeQuery(q_update_l, e, s_update_l);
-    }
-    s_update_d = function(result) {
-        makeQuery(q_update_w, e, s_update_w);
-    }
-    makeQuery(q_update_d, e, s_update_d);
+    setTimeout(function(){
+        q_update_l = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1 WHERE id = \'" + wid + "\'";
+        q_update_w = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1 WHERE id = \'" + lid + "\'";
+        q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\'";
+        e = function(err) {
+            sendError(lid, 27);
+            sendError(wid, 27);
+        }
+        s_update_l = function(result) {
+            sendTextMessage(lid, "You were defeated by " + wname + ".");
+            sendTextMessage(wid, "You have defeated " + lname + "!");
+        }
+        s_update_w = function(result) {
+            makeQuery(q_update_l, e, s_update_l);
+        }
+        s_update_d = function(result) {
+            makeQuery(q_update_w, e, s_update_w);
+        }
+        makeQuery(q_update_d, e, s_update_d);
+    }, 3000);
 }
 
 function sendNormalMessage(s, text) {
