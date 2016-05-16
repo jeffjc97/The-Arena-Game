@@ -106,7 +106,6 @@
 <createdTime>2016-05-16 03:28:49 UTC</createdTime>
 <generatorID>87E725EA-F999-D691-DC11-5FAD71A15A83</generatorID>
 <ownerDesignName>schema</ownerDesignName>
-<nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
@@ -119,7 +118,6 @@
 <createdTime>2016-05-16 03:28:49 UTC</createdTime>
 <generatorID>5DA12142-EA8D-38C0-5D9C-18E292B0659A</generatorID>
 <ownerDesignName>schema</ownerDesignName>
-<nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
@@ -132,7 +130,6 @@
 <createdTime>2016-05-16 03:28:49 UTC</createdTime>
 <generatorID>04CEC6BC-37AB-D77E-E155-12A1F34E323F</generatorID>
 <ownerDesignName>schema</ownerDesignName>
-<nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
@@ -145,7 +142,6 @@
 <createdTime>2016-05-16 03:28:49 UTC</createdTime>
 <generatorID>35F5B197-0AE5-96D7-2EF9-DCE7D94A24A9</generatorID>
 <ownerDesignName>schema</ownerDesignName>
-<nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
