@@ -431,42 +431,25 @@ function respondToChallenge(su, r, response) {
 
 // invariant: neither party is in a duel
 function setupDuel(s, r) {
-    first = s;
-    if (Math.random() > 0.5)
-        first = r;
-    q3 = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q3, function(err, result) {
-            done();
-            if (err) {
-                sendError(s, 22);
-                sendTextMessage(s, JSON.stringify(err).substring(0, 200));
-            }
-            else {
-                duel_id = result.rows[0].duel_id;
-                q = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + s + '\'';
-                client.query(q, function(err, result) {
-                    done();
-                    if (err) {
-                        sendError(s, 23);
-                    }
-                    else {
-                        q2 = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + r + '\'';
-                        client.query(q2, function(err, result) {
-                            done();
-                            if (err) {
-                                sendError(s, 24);
-                            }
-                            else {
-                                // sendTextMessage(s, JSON.stringify(result).substring(0, 200))
-                                startDuel(s,r, first);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    });
+    s_update_r = function(result) {
+        startDuel(s,r, first);
+    };
+    s_update_s = function(result) {
+        q_update_r = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + r + '\'';
+        makeQuery(q_update_r, e, s_update_r);
+    };
+    s_insert_duel = function(result) {
+        duel_id = result.rows[0].duel_id;
+        q_update_s = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + s + '\'';
+        makeQuery(q_update_s, e, s_update_s);
+    };
+    first = Math.random() < 0.5 ? s : r;
+    e = function(err) {
+        sendError(s, 22);
+    };
+    var duel_id = 'none';
+    q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
+    makeQuery(q_insert_duel, e, s_insert_duel);
 }
 
 function startDuel(s, r, f_id) {
