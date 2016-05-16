@@ -129,9 +129,21 @@ app.post('/webhook/', function (req, res) {
                         case "@reject":
                             respondToChallengeSetup(username, sender, false);
                             break;
+                        case "@d":
+                        case "@dagger":
+                            makeMoveSetup(sender, 'd');
+                            break;
                         case "@s":
-                        case "@strike":
-                            makeMoveSetup(sender);
+                        case "@sword":
+                            makeMoveSetup(sender, 's');
+                            break;
+                        case "@c":
+                        case "@club":
+                            makeMoveSetup(sender, 'c');
+                            break;
+                        case "@h":
+                        case "@heal":
+                            makeMoveSetup(sender, 'h');
                             break;
                         case "@forfeit":
                             forfeitDuel(sender);
@@ -532,7 +544,7 @@ function startDuel(s, r, f_id) {
 }
 
 
-function makeMoveSetup(s){
+function makeMoveSetup(s, type){
     q = 'SELECT name, id, in_duel FROM user_table where id= \'' + s + '\'';
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -578,7 +590,7 @@ function makeMoveSetup(s){
                                         sendError(s, 34);
                                     }
                                     else{
-                                        makeMove(s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
+                                        makeMove(type, s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
                                     }
                                 });
                             }
@@ -591,37 +603,78 @@ function makeMoveSetup(s){
 }
 
 //invariant: it is currently the attacker's turn
-function makeMove(attacker_id, defender_id, health_defender, health_attacker, attacker_name, defender_name, duel_id, attacker_is_sender){
-    max = 11;
-    min = 0;
+function makeMove(type_of_attack, attacker_id, defender_id, health_defender, health_attacker, attacker_name, defender_name, duel_id, attacker_is_sender){
+    mind = 4; maxd = 6; d_verb = "stabbed";
+    mins = 1; maxs = 9; s_verb = "slashed";
+    minc = 0; maxc = 15; c_verb = "crushed";
+    minh = 2; maxh = 5; h_verb = "healed";
+    max; min; verb;
+    switch(type_of_attack){
+        case('h'):
+            max = maxh; min = minh;
+            verb = h_verb;
+            break;
+        case('s'):
+            max = maxs; min = mins;
+            verb = s_verb;
+            break;
+        case('d'):
+            max = maxd; min = mind;
+            verb = d_verb;
+            break;
+        case('c'):
+            max = maxc; min = minc;
+            verb = c_verb;
+            break;
+        default:
+            max = maxs; min = mins;
+            verb = s_verb;
+    }
     attack_value = Math.floor(Math.random() * (max - min)) + min;
-    if (attack_value >= health_defender) {
-        sendTextMessage(defender_id, attacker_name+" hit you for "+attack_value+" hp!");
-        sendTextMessage(attacker_id, "You hit "+defender_name+" for "+attack_value+" hp!");
+    if (attack_value >= health_defender && type_of_attack != 'h') {
+        sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
+        sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
         loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id);
-    }else{
+        return;
+    }
+    q_update_duel;
+    //TODO change the q_update_duel for heal
+    if (type_of_attack == "h") {
+        new_health_att = health_attacker + attack_value;
+        // update the duel
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        if (attacker_is_sender) {
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        }
+    }
+    else{
         new_health_def = health_defender - attack_value;
         // update the duel
-        q = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         if (attacker_is_sender) {
-            q = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
         }
-        pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-            client.query(q, function(err, result) {
-                done();
-                if (err) {
-                    sendTextMessage(attacker_id, JSON.stringify(err).substring(0, 200));
-                }
-                else {
-                    sendTextMessage(defender_id, attacker_name + " hit you for " + attack_value + " health!");
-                    sendTextMessage(attacker_id, "You hit " + defender_name + " for " + attack_value + " health!");
-                    health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
-                    sendTextMessage(defender_id, health);
-                    sendTextMessage(attacker_id, health);
-                }
-            });
-        });
     }
+    e = function(err){
+        sendError(attacker_id, 40);
+    }
+    s_update_duel = function(result){
+        //TODO change the output for heal
+        if (type_of_attack === "h") {
+            sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
+            sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
+            health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
+            sendTextMessage(defender_id, health);
+            sendTextMessage(attacker_id, health); 
+        }else{
+            sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
+            sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
+            health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
+            sendTextMessage(defender_id, health);
+            sendTextMessage(attacker_id, health);  
+        }
+    }
+    makeQuery(q_update_duel, e, s_update_duel);
 }
 
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {

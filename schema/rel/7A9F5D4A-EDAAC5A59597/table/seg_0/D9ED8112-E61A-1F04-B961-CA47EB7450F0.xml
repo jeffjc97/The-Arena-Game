@@ -78,7 +78,7 @@
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
 <usesDefaultValue>true</usesDefaultValue>
-<defaultValue>100</defaultValue>
+<defaultValue>50</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
@@ -91,7 +91,7 @@
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
 <usesDefaultValue>true</usesDefaultValue>
-<defaultValue>100</defaultValue>
+<defaultValue>50</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>

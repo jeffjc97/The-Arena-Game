@@ -84,7 +84,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
-<defaultValue>100</defaultValue>
+<defaultValue>50</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="health_recipient" id="A7CCB13D-896D-CDC9-1226-F14BBB79C2AE">
@@ -97,7 +97,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
-<defaultValue>100</defaultValue>
+<defaultValue>50</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="moves_in_duel" id="9930865F-6B1B-5864-EB4C-3D606A070918">
