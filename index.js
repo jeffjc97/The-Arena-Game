@@ -282,7 +282,7 @@ function registerUser(s, username) {
     else {
         request({
             url: 'https://graph.facebook.com/v2.6/' + sender ,
-            qs: {fields:"first_name,last_name,profile_pic", access_token:token},
+            qs: {fields:"first_name,last_name,profile_pic,gender", access_token:token},
             method: 'GET',
         }, function(error, response, body) {
             if (error) {
@@ -290,7 +290,7 @@ function registerUser(s, username) {
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error);
             } else {
-                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\')';
+                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\')';
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
                         sendError(s, 29, "Username already exists, please try another.");
@@ -685,6 +685,7 @@ function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
 }
 
 //data is a row from duel_table
+
 function isSender_id(id, data){
     return id == data.sender_id;
 }
