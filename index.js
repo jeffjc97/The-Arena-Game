@@ -86,6 +86,9 @@ app.post('/webhook/', function (req, res) {
                         case "@help":
                             sendHelpMessage(sender);
                             break;
+                        case "@about":
+                            sendTextMessage(sender, "Bot Fun - a text based game by Jeff Chang and Roy Falik.");
+                            break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
                             break;
@@ -560,6 +563,14 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
             max = maxs; min = mins;
             verb = s_verb;
     }
+
+    // var attacks = {
+    //     h: {miss: 0, min: 3, max: 6, verb: 'healed'},
+    //     s: {miss: 0.25, min: 9, max: 12, verb: 'slashed'},
+    //     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
+    //     c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
+    // }
+
     attack_value = Math.floor(Math.random() * (max - min)) + min;
     if (attack_value >= health_defender && type_of_attack != 'h') {
         sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
