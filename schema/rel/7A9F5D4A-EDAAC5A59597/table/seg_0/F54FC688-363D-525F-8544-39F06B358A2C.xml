@@ -149,6 +149,19 @@
 <ownDataTypeParameters>10,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="points" id="2D90D87F-1F92-DB81-F41C-BB8241990A11">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 17:30:44 UTC</createdTime>
+<generatorID>B6C9B4CC-2A79-C6EE-1E90-E89460397856</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>100</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="B840F81D-A1C0-994B-7A79-CB5F9F9945CC" name="user_table_PK">

@@ -92,6 +92,9 @@ app.post('/webhook/', function (req, res) {
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
                             break;
+                        case "@me":
+                            getPersonalInfo(sender);
+                            break;
                         case "@challenge":
                             q_challenge = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
                             e = function(err) {
@@ -297,6 +300,24 @@ function registerUser(s, username) {
             }
         });
     }
+}
+
+function getPersonalInfo(s){
+    q_get_username = "SELECT name FROM user_table WHERE id = \'"+s+"\'";
+    e = function(err){
+        sendError(s,43);
+    };
+    s_get_username = function(result){
+        if (result.rows.length != 1) {
+            sendError(s, 44);
+        }
+        else{
+            username = result.rows[0].name;
+            getPendingChallenges(s);
+            getStats(username, s);
+        }
+    };
+    makeQuery(q_get_username, e, s_get_username);
 }
 
 function sendChallenge(s, r, ru) {
@@ -765,6 +786,8 @@ function getStats(user, s){
     makeQuery(q_get_stats, e, success);
 }
 
+
+//username optional
 function getPendingChallenges(s){
     q_name = "SELECT name FROM user_table where id= \'" + s + "\'";
     e = function(err){
