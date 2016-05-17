@@ -607,7 +607,7 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
 
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
     function makeHealth(name, hp) {
-        health = Math.ceil(hp / (maxhp / 20));
+        health = Math.min(Math.ceil(hp / (maxhp / 20)), 20);
         damage = 20 - health;
         return Array(health + 1).join("▓") + Array(damage + 1).join("▒") + " " + hp;
     }
