@@ -686,8 +686,8 @@ function loseDuel(lid, wid, lname, wname, did) {
             sendError(wid, 27);
         }
         s_update_l = function(result) {
-            sendTextMessage(lid, "You were defeated by " + wname + ".");
-            sendTextMessage(wid, "You have defeated " + lname + "!");
+            sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
+            sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
         }
         s_update_w = function(result) {
             makeQuery(q_update_l, e, s_update_l);
