@@ -586,22 +586,22 @@ function makeMove(type_of_attack, attacker_id, defender_id, health_defender, hea
     }
     e = function(err){
         sendError(attacker_id, 40);
-    }
+    };
     s_update_duel = function(result){
         if (type_of_attack === "h") {
             sendTextMessage(defender_id, attacker_name+" "+verb+" themself for "+attack_value+" hp!");
             sendTextMessage(attacker_id, "You "+verb+" yourself for "+attack_value+" hp!");
             health = makeHealthBars(attacker_name, new_health_att, defender_name, health_defender, 50);
             sendTextMessage(defender_id, health);
-            sendTextMessage(attacker_id, health); 
+            sendTextMessage(attacker_id, health);
         }else{
             sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
             sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
             health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
             sendTextMessage(defender_id, health);
-            sendTextMessage(attacker_id, health);  
+            sendTextMessage(attacker_id, health);
         }
-    }
+    };
     makeQuery(q_update_duel, e, s_update_duel);
 }
 
