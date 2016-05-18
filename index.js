@@ -670,7 +670,7 @@ function makeMove(move){
                 sendTextMessage(move.defender_id, "You've been stunned!");
                 sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
             }
-            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, max_health);
+            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
             sendTextMessage(move.attacker_id, health);
         }
