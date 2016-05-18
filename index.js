@@ -626,9 +626,9 @@ function makeMove(move){
             attack_value += move.bleed;
             move.bleed_defender -= 1;
         }
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         if (move.attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         }
     }
 
