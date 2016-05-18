@@ -599,7 +599,7 @@ function makeMove(move){
     
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
-            new_health_att = Math.min(move.health_attacker + attack_value, 50);
+            new_health_att = Math.min(move.health_attacker + attack_value, max_health);
             // update the duel
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
@@ -627,7 +627,7 @@ function makeMove(move){
             gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
             sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + gender_noun + " for " + attack_value + " health!");
             sendTextMessage(move.attacker_id, "You " + verb + " yourself for " + attack_value + " health!");
-            health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, 50);
+            health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
             sendTextMessage(move.attacker_id, health);
         }
@@ -640,7 +640,7 @@ function makeMove(move){
                 sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
                 sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
             }
-            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, 50);
+            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, max_health);
             sendTextMessage(move.defender_id, health);
             sendTextMessage(move.attacker_id, health);
             move.health_attacker = new_health_att;
@@ -728,6 +728,8 @@ function forfeitDuel(lid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
+    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
+    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
     setTimeout(function(){
         q_update_l = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1 WHERE id = \'" + wid + "\'";
         q_update_w = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1 WHERE id = \'" + lid + "\'";
@@ -737,8 +739,8 @@ function loseDuel(lid, wid, lname, wname, did) {
             sendError(wid, 27);
         };
         s_update_l = function(result) {
-            sendTextMessage(lid, "You were defeated by " + wname + ".");
-            sendTextMessage(wid, "You have defeated " + lname + "!");
+            sendTextMessage(lid, "The duel has ended.");
+            sendTextMessage(wid, "The duel has ended.");
         };
         s_update_w = function(result) {
             makeQuery(q_update_l, e, s_update_l);
