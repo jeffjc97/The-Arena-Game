@@ -568,6 +568,9 @@ function makeMoveSetup(s, type){
 }
 
 //invariant: it is currently the attacker's turn
+// move: type_of_attack, attacker/defender/duel_id, attacker/defender_name
+// attacker/defender_health, attacker_is_sender, potions_attacker/defender
+// bleed_attacker/defender, stun_attacker/defender
 function makeMove(move){
     var q_update_duel;
     var attacks = {
