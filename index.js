@@ -647,6 +647,10 @@ function makeMove(move){
         sendError(move.attacker_id, 60, JSON.stringify(err).substring(0,300));
     };
     s_update_duel = function(result){
+        if (move.bleed) {
+            sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+        }
         if (move.type_of_attack === "h") {
             att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
             sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "!");
@@ -668,10 +672,6 @@ function makeMove(move){
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
                 sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
-            }
-            if (move.bleed) {
-                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
-                sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, max_health);
             sendTextMessage(move.defender_id, health);
