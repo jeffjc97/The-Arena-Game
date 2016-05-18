@@ -162,7 +162,7 @@ app.post('/webhook/', function (req, res) {
 });
 
 
-function createChallenge(username, sender, stake_val){
+function createChallenge(sender, username, stake_val){
     if (!stake_val) {
         stake_val = 10;
     }
