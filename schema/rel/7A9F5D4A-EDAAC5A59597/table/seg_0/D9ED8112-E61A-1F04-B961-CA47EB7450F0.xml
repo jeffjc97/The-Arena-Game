@@ -211,6 +211,19 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="stake" id="F7150C2F-0EC2-44AD-E7E5-F7547B8645BE">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 18:48:48 UTC</createdTime>
+<generatorID>39764E46-E5FE-0A18-E4CB-DFA4FEC9000A</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="085459B4-791A-91A4-6D72-8794B1D22D88" name="duel_table_PK">

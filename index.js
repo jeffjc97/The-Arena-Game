@@ -96,23 +96,7 @@ app.post('/webhook/', function (req, res) {
                             getPersonalInfo(sender);
                             break;
                         case "@challenge":
-                            q_challenge = 'SELECT id FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
-                            e = function(err) {
-                                sendError(sender, 1);
-                            };
-                            s_challenge = function(result) {
-                                if (result.rows.length === 0) {
-                                    sendError(sender, 2, "Username not found. Please try again.");
-                                }
-                                else {
-                                    challenge_id = result.rows[0].id;
-                                    if (challenge_id == sender+"") {
-                                        sendTextMessage(sender, "You cannot challenge yourself!");
-                                    } else
-                                        sendChallenge(sender, challenge_id, username);
-                                }
-                            };
-                            makeQuery(q_challenge, e, s_challenge);
+                            createChallenge(sender, username);
                             break;
                         case "@accept":
                             // respondToChallengeSetup(username, sender, true);
@@ -147,6 +131,11 @@ app.post('/webhook/', function (req, res) {
                         case "@challenges":
                             getPendingChallenges(sender);
                             break;
+                        case "@stake":
+                            username = words[words.length -2];
+                            val = words[words.length -1];
+                            createChallenge(s, username, val);
+                            break;
                         default:
                             sendNormalMessage(sender, text);
                             break;
@@ -163,6 +152,36 @@ app.post('/webhook/', function (req, res) {
     }
     res.sendStatus(200);
 });
+
+
+function createChallenge(username, sender, stake_val){
+    if (stake_val) {
+        q_validate_val = 'SELECT points FROM user_table WHERE id = \'' + sender + '\'';
+        e_validate_val = function(err){
+            sendError(44);
+        }
+        
+
+    }
+    q_challenge = 'SELECT id, points FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
+    e = function(err) {
+        sendError(sender, 1);
+    };
+    s_challenge = function(result) {
+        if (result.rows.length === 0) {
+            sendError(sender, 2, "Username not found. Please try again.");
+        }
+        else {
+            challenge_id = result.rows[0].id;
+            if (challenge_id == sender+"") {
+                sendTextMessage(sender, "You cannot challenge yourself!");
+            } else
+                sendChallenge(sender, challenge_id, username);
+        }
+    };
+    makeQuery(q_challenge, e, s_challenge);
+}
+
 
 function sendTextMessage(sender, text) {
     messageData = {
