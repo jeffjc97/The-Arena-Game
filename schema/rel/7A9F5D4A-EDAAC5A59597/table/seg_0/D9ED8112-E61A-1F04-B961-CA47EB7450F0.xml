@@ -144,7 +144,6 @@
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
 <usesDefaultValue>true</usesDefaultValue>
-<defaultValue>3</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
@@ -157,7 +156,58 @@
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
 <usesDefaultValue>true</usesDefaultValue>
-<defaultValue>3</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="bleed_sender" id="34AFA2E4-53DA-07CE-C221-20DB0624AB8B">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 17:52:59 UTC</createdTime>
+<generatorID>41AEE6B0-8F09-1C43-15B7-54DED83790F7</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="bleed_recipient" id="F5FC9C4D-A474-B30C-BCA4-21AFA65C2F1B">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 17:52:59 UTC</createdTime>
+<generatorID>EE19BE40-B86B-1C1E-A1D1-E4E9053650EB</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="stun_sender" id="04BBD110-3A38-FBE0-E221-E12D857DCED1">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 17:52:59 UTC</createdTime>
+<generatorID>2ACFC2F1-529E-32C6-0E5C-2092A31CC326</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="stun_recipient" id="A3882DA4-C6E9-BA9B-A677-D79A7AF4F45A">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 17:52:59 UTC</createdTime>
+<generatorID>D720851C-73EF-0504-538F-6202CDF9D531</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
