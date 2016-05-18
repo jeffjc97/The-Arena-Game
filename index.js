@@ -163,31 +163,56 @@ app.post('/webhook/', function (req, res) {
 
 
 function createChallenge(username, sender, stake_val){
-    if (stake_val) {
-        q_validate_val = 'SELECT points FROM user_table WHERE id = \'' + sender + '\'';
-        e_validate_val = function(err){
-            sendError(44);
-        }
-        
-
+    if (!stake_val) {
+        stake_val = 10;
     }
-    q_challenge = 'SELECT id, points FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
-    e = function(err) {
-        sendError(sender, 1);
-    };
-    s_challenge = function(result) {
-        if (result.rows.length === 0) {
-            sendError(sender, 2, "Username not found. Please try again.");
+    q_validate_val = 'SELECT id, name, points FROM user_table WHERE id = \'' + sender + '\' OR username = \''+username+'\'';
+    e_validate_val = function(err){
+        sendError(sender, 44);
+    }
+    s_validate_val = function(result){
+        if (result.rows.length != 2) {
+            sendError(sender, 45);
         }
-        else {
-            challenge_id = result.rows[0].id;
-            if (challenge_id == sender+"") {
-                sendTextMessage(sender, "You cannot challenge yourself!");
-            } else
-                sendChallenge(sender, challenge_id, username);
+        else{
+            challenger_p = result.rows[0].points;
+            receiver_p = result.rows[1].points;
+            if (result.rows[1].id == sender) {
+                challenger_p = result.rows[1].points;
+                receiver_p = result.rows[0].points;
+            }
+            if (stake_val > challenger_p) {
+                sendTextMessage(sender, "You don't have enough coins for this stake!");
+                return;
+            }
+            if (stake_val > receiver_p) {
+                sendTextMessage(sender, username + " doesn't have enough coins for this stake!");
+                return;
+            }
+            else{
+                sendTextMessage(sender, "All good to go!");
+                //enough points for the query - 
+                // q_challenge = 'SELECT id, points FROM user_table WHERE name = \'' + mysql_real_escape_string(username) + '\'';
+                // e = function(err) {
+                //     sendError(sender, 1);
+                // };
+                // s_challenge = function(result) {
+                //     if (result.rows.length === 0) {
+                //         sendError(sender, 2, "Username not found. Please try again.");
+                //     }
+                //     else {
+                //         challenge_id = result.rows[0].id;
+                //         if (challenge_id == sender+"") {
+                //             sendTextMessage(sender, "You cannot challenge yourself!");
+                //         } else
+                //             sendChallenge(sender, challenge_id, username);
+                //     }
+                // };
+                // makeQuery(q_challenge, e, s_challenge);
+            }
         }
-    };
-    makeQuery(q_challenge, e, s_challenge);
+    }
+    makeQuery(q_validate_val, e_validate_val, s_validate_val);
 }
 
 
