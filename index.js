@@ -650,6 +650,7 @@ function makeMove(move){
             makeMovePassives(move);
         }
     };
+    sendTextMessage(move.attacker_id, "lol");
     makeQuery(q_update_duel, e, s_update_duel);
 }
 
