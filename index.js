@@ -584,7 +584,7 @@ function makeMove(move){
     var new_health_att;
     var new_health_def;
 
-    attack_value = Math.floor(Math.random() * (max - min)) + min;
+    attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
 
     if (attack_value >= move.health_defender && move.type_of_attack != 'h') {
         sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
