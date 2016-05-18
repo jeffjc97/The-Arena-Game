@@ -660,25 +660,17 @@ function makeMove(move){
                 sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
             }
             if (move.bleed) {
-                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turns remaining)");
-                sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turns remaining)");
+                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+                sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, max_health);
             sendTextMessage(move.defender_id, health);
             sendTextMessage(move.attacker_id, health);
             move.health_attacker = new_health_att;
             move.health_defender = new_health_def;
-            makeMovePassives(move);
         }
     };
     makeQuery(q_update_duel, e, s_update_duel);
-}
-
-function makeMovePassives(move) {
-    // if 
-    // assign passives
-    // passive effects
-    sendTextMessage(move.attacker_id, "pass");
 }
 
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
