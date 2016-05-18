@@ -142,7 +142,7 @@ app.post('/webhook/', function (req, res) {
                         case "@stake":
                             username = words[words.length -2];
                             val = words[words.length -1];
-                            createChallenge(s, username, val);
+                            createChallenge(sender, username, val);
                             break;
                         default:
                             sendNormalMessage(sender, text);
