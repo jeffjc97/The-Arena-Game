@@ -581,7 +581,9 @@ function makeMove(move){
     };
     var attack = attacks[move.type_of_attack];
     var max = attack.max; var min = attack.min; var verb = attack.verb; var miss = attack.miss;
-    
+    var new_health_att;
+    var new_health_def;
+
     attack_value = Math.floor(Math.random() * (max - min)) + min;
 
     if (move.attack_value >= move.health_defender && move.type_of_attack != 'h') {
