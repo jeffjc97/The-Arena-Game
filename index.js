@@ -599,7 +599,7 @@ function makeMove(move){
     
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
-            sendTextMessage(move.attacker_id, move.attacker_gender);
+            // sendt
             new_health_att = Math.min(move.health_attacker + attack_value, max_health);
             // update the duel
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, WHERE duel_id = '+ move.duel_id;
@@ -621,7 +621,7 @@ function makeMove(move){
         }
     }
     e = function(err){
-        sendError(move.attacker_id, 40, JSON.stringify(err).substring(0,300));
+        sendError(move.attacker_id, 40);
     };
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
