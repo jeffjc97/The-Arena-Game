@@ -587,6 +587,7 @@ function makeMove(move){
     attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
 
     if (attack_value >= move.health_defender && move.type_of_attack != 'h') {
+        move.attack_value = move.health_defender;
         sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
         sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
         loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
@@ -622,7 +623,7 @@ function makeMove(move){
         }
         else {
             if (attack_value === 0) {
-                sendTextMessage(move.defender_id, move.attacker_name + "missed!");
+                sendTextMessage(move.defender_id, move.attacker_name + " missed!");
                 sendTextMessage(move.attacker_id, "You missed!");
             }
             else {
