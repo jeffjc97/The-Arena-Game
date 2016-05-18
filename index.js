@@ -10,6 +10,8 @@ pg.defaults.ssl = true;
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
+
+var max_health = 50;
 // Process application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({extended: false}));
 
@@ -597,7 +599,7 @@ function makeMove(move){
     
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
-            new_health_att = move.health_attacker + attack_value;
+            new_health_att = Math.min(move.health_attacker + attack_value, 50);
             // update the duel
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
@@ -606,6 +608,7 @@ function makeMove(move){
         }
         else {
             sendTextMessage(move.attacker_id, "You do not have any potions left.");
+            return;
         }
     }
     else {
