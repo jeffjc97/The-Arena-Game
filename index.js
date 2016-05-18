@@ -589,14 +589,6 @@ function makeMove(move){
     var new_health_def;
 
     attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
-
-    if (attack_value >= move.health_defender && move.type_of_attack != 'h') {
-        attack_value = move.health_defender;
-        sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
-        sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
-        loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
-        return;
-    }
     
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
@@ -606,6 +598,7 @@ function makeMove(move){
             if (move.bleed_defender) {
                 move.bleed = Math.floor(Math.random() * (5 - 2)) + 2;
                 new_health_def = move.bleed;
+                attack_value = move.bleed;
                 move.bleed_defender -= 1;
             }
 
@@ -633,6 +626,7 @@ function makeMove(move){
         if (move.bleed_defender) {
             move.bleed = Math.floor(Math.random() * (5 - 2)) + 2;
             new_health_def -= move.bleed;
+            attack_value += move.bleed;
             move.bleed_defender -= 1;
         }
         q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
@@ -640,6 +634,15 @@ function makeMove(move){
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         }
     }
+
+    if (attack_value >= move.health_defender && move.type_of_attack != 'h') {
+        attack_value = move.health_defender;
+        sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
+        sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
+        loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
+        return;
+    }
+
     e = function(err){
         sendError(move.attacker_id, 60);
     };
