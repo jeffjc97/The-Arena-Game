@@ -481,7 +481,8 @@ function makeMoveSetup(s, type){
             sendError(s, 34);
         }
         else{
-            makeMove(type, s, defender_id, defender_health, attacker_health, su, result.rows[0].name, data.duel_id, s_is_sender_id);
+            move.defender_name = result.rows[0].name;
+            makeMove(move);
         }
     };
     s_get_duel = function(result) {
@@ -490,19 +491,31 @@ function makeMoveSetup(s, type){
         if (s != turn_id) {
             sendError(s, 35, "It's not your turn. Please wait.");
         }
-        else{
+        else {
             //we know s is attacker. Is s sender_id or recipient_id?
-            s_is_sender_id = isSender_id(s, data);
-            defender_id = data.sender_id;
-            defender_health = data.health_sender;
-            attacker_health = data.health_recipient;
-            if (s_is_sender_id) {
-                defender_id = data.recipient_id;
-                defender_health = data.health_recipient;
-                attacker_health = data.health_sender;
+            move.attacker_is_sender = isSender_id(s, data);
+            move.defender_id = data.sender_id;
+            move.health_defender = data.health_sender;
+            move.health_attacker = data.health_recipient;
+            move.potions_defender = data.sender_heal;
+            move.potions_attacker = data.recipient_heal;
+            move.bleed_defender = data.bleed_sender;
+            move.bleed_attacker = data.bleed_recipient;
+            move.stun_defender = data.stun_sender;
+            move.stun_attacker = data.stun_recipient;
+            if (move.attacker_is_sender) {
+                move.defender_id = data.recipient_id;
+                move.health_defender = data.health_recipient;
+                move.health_attacker = data.health_sender;
+                move.potions_defender = data.recipient_heal;
+                move.potions_attacker = data.sender_heal;
+                move.bleed_defender = data.bleed_recipient;
+                move.bleed_attacker = data.bleed_sender;
+                move.stun_defender = data.stun_recipient;
+                move.stun_attacker = data.stun_sender;
             }
             //query for defender's name
-            q_get_defender = 'SELECT name FROM user_table WHERE id= \'' + defender_id + '\'';
+            q_get_defender = 'SELECT name FROM user_table WHERE id= \'' + move.defender_id + '\'';
             makeQuery(q_get_defender, e, s_get_defender);
         }
     };
@@ -511,8 +524,8 @@ function makeMoveSetup(s, type){
            sendError(s, 27);
         }
         else {
-            duel_id = result.rows[0].in_duel;
-            su = result.rows[0].name;
+            move.duel_id = result.rows[0].in_duel;
+            move.attacker_name = result.rows[0].name;
             if (duel_id === 0) {
                 sendError(s, 36, "You are not currently in a duel.");
             }
@@ -525,99 +538,89 @@ function makeMoveSetup(s, type){
     e = function(err) {
         sendError(s, 26);
     };
-    var defender_id;
-    var defender_health;
-    var attacker_health;
-    var su;
-    var data;
-    var s_is_sender_id;
+    var move = {
+        type_of_attack: type,
+        attacker_id: s
+    };
     q_get_s = 'SELECT name, id, in_duel FROM user_table where id= \'' + s + '\'';
     makeQuery(q_get_s, e, s_get_s);
 }
 
 //invariant: it is currently the attacker's turn
-function makeMove(type_of_attack, attacker_id, defender_id, health_defender, health_attacker, attacker_name, defender_name, duel_id, attacker_is_sender){
-    mind = 4; maxd = 6; d_verb = "stabbed";
-    mins = 1; maxs = 9; s_verb = "slashed";
-    minc = 0; maxc = 15; c_verb = "crushed";
-    minh = 3; maxh = 6; h_verb = "healed";
-    var max; var min; var verb;
-    switch(type_of_attack){
-        case('h'):
-            max = maxh; min = minh;
-            verb = h_verb;
-            break;
-        case('s'):
-            max = maxs; min = mins;
-            verb = s_verb;
-            break;
-        case('d'):
-            max = maxd; min = mind;
-            verb = d_verb;
-            break;
-        case('c'):
-            max = maxc; min = minc;
-            verb = c_verb;
-            break;
-        default:
-            max = maxs; min = mins;
-            verb = s_verb;
-    }
-
-    // var attacks = {
-    //     h: {miss: 0, min: 3, max: 6, verb: 'healed'},
-    //     s: {miss: 0.25, min: 9, max: 12, verb: 'slashed'},
-    //     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
-    //     c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
-    // }
-
+function makeMove(move){
+    var q_update_duel;
+    var attacks = {
+        h: {miss: 0, min: 3, max: 6, verb: 'healed'},
+        s: {miss: 0.25, min: 9, max: 12, verb: 'slashed'},
+        d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
+        c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
+    };
+    var attack = attacks['type_of_attack'];
+    var max = attack.max; var min = attack.min; var verb = attack.verb; var miss = attack.miss;
+    
     attack_value = Math.floor(Math.random() * (max - min)) + min;
-    if (attack_value >= health_defender && type_of_attack != 'h') {
-        sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
-        sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
-        loseDuel(defender_id, attacker_id, defender_name, attacker_name, duel_id);
+
+    if (move.attack_value >= move.health_defender && move.type_of_attack != 'h') {
+        sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
+        sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
+        loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
         return;
     }
-    var q_update_duel;
-    if (type_of_attack == "h") {
-        new_health_att = health_attacker + attack_value;
+    
+    if (move.type_of_attack == "h") {
+        new_health_att = move.health_attacker + attack_value;
         // update the duel
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
-        if (attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
+        if (move.attacker_is_sender) {
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
         }
     }
-    else{
-        new_health_def = health_defender - attack_value;
+    else {
+        new_health_def = move.health_defender - attack_value;
         // update the duel
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
         if (attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
         }
     }
     e = function(err){
-        sendError(attacker_id, 40);
+        sendError(move.attacker_id, 40);
     };
     s_update_duel = function(result){
-        if (type_of_attack === "h") {
-            sendTextMessage(defender_id, attacker_name+" "+verb+" themself for "+attack_value+" hp!");
-            sendTextMessage(attacker_id, "You "+verb+" yourself for "+attack_value+" hp!");
-            health = makeHealthBars(attacker_name, new_health_att, defender_name, health_defender, 50);
-            sendTextMessage(defender_id, health);
-            sendTextMessage(attacker_id, health);
-        }else{
-            sendTextMessage(defender_id, attacker_name+" "+verb+" you for "+attack_value+" hp!");
-            sendTextMessage(attacker_id, "You "+verb+" "+defender_name+" for "+attack_value+" hp!");
-            health = makeHealthBars(attacker_name, health_attacker, defender_name, new_health_def, 50);
-            sendTextMessage(defender_id, health);
-            sendTextMessage(attacker_id, health);
+        if (move.type_of_attack === "h") {
+            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " themself for " + attack_value + " health!");
+            sendTextMessage(move.attacker_id, "You " + verb + " yourself for " + attack_value + " health!");
+            health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, 50);
+            sendTextMessage(move.defender_id, health);
+            sendTextMessage(move.attacker_id, health);
+        }
+        else {
+            if (attack_value === 0) {
+                sendTextMessage(move.defender_id, move.attacker_name + "missed!");
+                sendTextMessage(move.attacker_id, "You missed!");
+            }
+            else {
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
+                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
+            }
+            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, 50);
+            sendTextMessage(move.defender_id, health);
+            sendTextMessage(move.attacker_id, health);
+            move.health_attacker = new_health_att;
+            move.health_defender = new_health_def;
+            makeMovePassives(move);
         }
     };
     makeQuery(q_update_duel, e, s_update_duel);
 }
 
+function makeMovePassives(move) {
+    sendTextMessage(move.attacker_id, "pass");
+}
+
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
     function makeHealth(name, hp) {
+        hp = Math.max(hp, 0);
         health = Math.min(Math.ceil(hp / (maxhp / 20)), 20);
         damage = 20 - health;
         return Array(health + 1).join("▓") + Array(damage + 1).join("▒") + " " + hp;
