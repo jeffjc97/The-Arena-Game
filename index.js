@@ -566,7 +566,7 @@ function makeMoveSetup(s, type){
         type_of_attack: type,
         attacker_id: s
     };
-    q_get_s = 'SELECT name, id, in_duel FROM user_table where id= \'' + s + '\'';
+    q_get_s = 'SELECT name, id, gender, in_duel FROM user_table where id= \'' + s + '\'';
     makeQuery(q_get_s, e, s_get_s);
 }
 
