@@ -623,7 +623,6 @@ function makeMove(move){
         if (move.bleed_defender) {
             move.bleed = Math.floor(Math.random() * (5 - 2)) + 2;
             move.health_defender -= move.bleed;
-            attack_value += move.bleed;
             move.bleed_defender -= 1;
         }
         q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
