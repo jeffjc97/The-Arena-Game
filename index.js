@@ -602,9 +602,9 @@ function makeMove(move){
                 move.bleed_defender -= 1;
             }
 
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att + 'health_sender = ' + new_health_def + ', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att + ', health_sender = ' + new_health_def + ', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
-                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att + 'health_sender = ' + new_health_def + ', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
+                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att + ', health_recipient = ' + new_health_def + ', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
             }
         }
         else {
