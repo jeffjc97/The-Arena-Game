@@ -469,7 +469,7 @@ function setupDuel(s, r) {
     };
     first = Math.random() < 0.5 ? s : r;
     e = function(err) {
-        sendError(s, 22);
+        sendError(s, JSON.stringify(err).subsring(0,200));
     };
     var duel_id = 'none';
     q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
