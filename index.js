@@ -603,7 +603,7 @@ function makeMove(move){
         new_health_def = move.health_defender - attack_value;
         // update the duel
         q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
-        if (attacker_is_sender) {
+        if (move.attacker_is_sender) {
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
         }
     }
