@@ -606,7 +606,6 @@ function makeMove(move){
             if (move.attacker_is_sender) {
                 q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att+', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
             }
-            sendTextMessage(move.attacker_id, q_update_duel);
         }
         else {
             sendTextMessage(move.attacker_id, "You do not have any potions left.");
@@ -622,7 +621,7 @@ function makeMove(move){
         }
     }
     e = function(err){
-        sendError(move.attacker_id, 60, JSON.stringify(err).substring(0, 300));
+        sendError(move.attacker_id, 60);
     };
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
