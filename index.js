@@ -582,6 +582,7 @@ function makeMoveSetup(s, type){
 // attacker/defender_health, attacker_is_sender, potions_attacker/defender
 // bleed_attacker/defender, stun_attacker/defender, attacker_gender
 function makeMove(move){
+    move.bleed = 0;
     var q_update_duel;
     var attack = attacks[move.type_of_attack];
     var max = attack.max; var min = attack.min; var verb = attack.verb; var miss = attack.miss;
@@ -633,14 +634,22 @@ function makeMove(move){
 
     if (move.health_defender <= 0 && move.type_of_attack != 'h') {
         def_gender_noun = move.defender_gender == "male" ? "He" : "She";
+        // if you're bleeding when you lose
         if (move.bleed) {
             sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            // if the bleed killed you
+            if (move.bleed + move.health_defender) {
+                loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
+            }
         }
-        attack_value = attack_value + move.health_defender;
-        sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
-        sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
-        loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
+        // either you're not bleeding or the bleed didn't kill you
+        else {
+            attack_value = attack_value + move.health_defender;
+            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
+            sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
+            loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
+        }
         return;
     }
 
