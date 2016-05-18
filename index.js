@@ -547,6 +547,7 @@ function makeMoveSetup(s, type){
         else {
             move.duel_id = result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
+            move.attacker_gender = result.rows[0].gender;
             if (move.duel_id === 0) {
                 sendError(s, 36, "You are not currently in a duel.");
             }
@@ -570,11 +571,11 @@ function makeMoveSetup(s, type){
 //invariant: it is currently the attacker's turn
 // move: type_of_attack, attacker/defender/duel_id, attacker/defender_name
 // attacker/defender_health, attacker_is_sender, potions_attacker/defender
-// bleed_attacker/defender, stun_attacker/defender
+// bleed_attacker/defender, stun_attacker/defender, attacker_gender
 function makeMove(move){
     var q_update_duel;
     var attacks = {
-        h: {miss: 0, min: 3, max: 6, verb: 'healed'},
+        h: {miss: 0, min: 10, max: 10, verb: 'healed'},
         s: {miss: 0.25, min: 9, max: 12, verb: 'slashed'},
         d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
         c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
@@ -595,11 +596,16 @@ function makeMove(move){
     }
     
     if (move.type_of_attack == "h") {
-        new_health_att = move.health_attacker + attack_value;
-        // update the duel
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
-        if (move.attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
+        if (move.potions_attacker) {
+            new_health_att = move.health_attacker + attack_value;
+            // update the duel
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, WHERE duel_id = '+ move.duel_id;
+            if (move.attacker_is_sender) {
+                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att+', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
+            }
+        }
+        else {
+            sendTextMessage(move.attacker_id, "You do not have any potions left.");
         }
     }
     else {
@@ -615,7 +621,8 @@ function makeMove(move){
     };
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
-            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " themself for " + attack_value + " health!");
+            gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
+            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + gender_noun + " for " + attack_value + " health!");
             sendTextMessage(move.attacker_id, "You " + verb + " yourself for " + attack_value + " health!");
             health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, 50);
             sendTextMessage(move.defender_id, health);
@@ -725,17 +732,17 @@ function loseDuel(lid, wid, lname, wname, did) {
         e = function(err) {
             sendError(lid, 27);
             sendError(wid, 27);
-        }
+        };
         s_update_l = function(result) {
             sendTextMessage(lid, "You were defeated by " + wname + ".");
             sendTextMessage(wid, "You have defeated " + lname + "!");
-        }
+        };
         s_update_w = function(result) {
             makeQuery(q_update_l, e, s_update_l);
-        }
+        };
         s_update_d = function(result) {
             makeQuery(q_update_w, e, s_update_w);
-        }
+        };
         makeQuery(q_update_d, e, s_update_d);
     }, 5000);
 }
