@@ -33,7 +33,7 @@ CREATE TABLE duel_table
     health_recipient INTEGER DEFAULT 50 NOT NULL ,
     moves_in_duel    INTEGER DEFAULT 0 NOT NULL ,
     recipient_id     VARCHAR (20) NOT NULL ,
-    duel_id          INTEGER NOT NULL ,
+    duel_id          SERIAL NOT NULL ,
     sender_heal      INTEGER NOT NULL ,
     recipient_heal   INTEGER NOT NULL ,
     bleed_sender     INTEGER DEFAULT 0 NOT NULL ,

@@ -469,7 +469,7 @@ function setupDuel(s, r) {
     };
     first = Math.random() < 0.5 ? s : r;
     e = function(err) {
-        sendError(s, JSON.stringify(err.detail).substring(0,300));
+        sendError(s, 22);
     };
     var duel_id = 'none';
     q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
@@ -547,11 +547,11 @@ function makeMoveSetup(s, type){
         else {
             move.duel_id = result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
-            if (duel_id === 0) {
+            if (move.duel_id === 0) {
                 sendError(s, 36, "You are not currently in a duel.");
             }
             else {
-                q_get_duel = 'SELECT * FROM duel_table WHERE duel_id = ' + duel_id;
+                q_get_duel = 'SELECT * FROM duel_table WHERE duel_id = ' + move.duel_id;
                 makeQuery(q_get_duel, e, s_get_duel);
             }
         }
