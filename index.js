@@ -643,6 +643,7 @@ function makeMove(move){
         sendError(move.attacker_id, 60, JSON.stringify(err).substring(0,300));
     };
     s_update_duel = function(result){
+        def_gender_noun = move.defender_gender == "male" ? "He" : "She";
         if (move.bleed) {
             sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
@@ -656,7 +657,6 @@ function makeMove(move){
             sendTextMessage(move.attacker_id, health);
         }
         else {
-            def_gender_noun = move.defender_gender == "male" ? "He" : "She";
             if (attack_value === 0) {
                 sendTextMessage(move.defender_id, move.attacker_name + " missed!");
                 sendTextMessage(move.attacker_id, "You missed!");
