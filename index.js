@@ -576,7 +576,7 @@ function makeMove(move){
         d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
         c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
     };
-    var attack = attacks['type_of_attack'];
+    var attack = attacks[move.type_of_attack];
     var max = attack.max; var min = attack.min; var verb = attack.verb; var miss = attack.miss;
     
     attack_value = Math.floor(Math.random() * (max - min)) + min;
