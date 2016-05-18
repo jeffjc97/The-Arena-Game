@@ -639,7 +639,6 @@ function makeMove(move){
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
             att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
-            def_gender_noun = move.defender_gender == "male" ? "He" : "She";
             sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "!");
             sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
             health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, max_health);
@@ -647,6 +646,7 @@ function makeMove(move){
             sendTextMessage(move.attacker_id, health);
         }
         else {
+            def_gender_noun = move.defender_gender == "male" ? "He" : "She";
             if (attack_value === 0) {
                 sendTextMessage(move.defender_id, move.attacker_name + " missed!");
                 sendTextMessage(move.attacker_id, "You missed!");
