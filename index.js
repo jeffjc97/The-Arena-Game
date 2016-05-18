@@ -621,7 +621,7 @@ function makeMove(move){
         }
     }
     e = function(err){
-        sendError(move.attacker_id, 40);
+        sendError(move.attacker_id, 40, JSON.stringify(err).substring(0,300));
     };
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
