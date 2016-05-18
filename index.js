@@ -632,6 +632,11 @@ function makeMove(move){
     }
 
     if (move.health_defender <= 0 && move.type_of_attack != 'h') {
+        def_gender_noun = move.defender_gender == "male" ? "He" : "She";
+        if (move.bleed) {
+            sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+        }
         attack_value = attack_value + move.health_defender;
         sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
         sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
