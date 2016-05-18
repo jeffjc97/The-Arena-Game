@@ -601,12 +601,12 @@ function makeMove(move){
         if (move.potions_attacker) {
             new_health_att = Math.min(move.health_attacker + attack_value, max_health);
             // update the duel
-            sendTextMessage(move.attacker_id, new_health_att);
 
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
                 q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att+', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
             }
+            sendTextMessage(move.attacker_id, q_update_duel);
         }
         else {
             sendTextMessage(move.attacker_id, "You do not have any potions left.");
