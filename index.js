@@ -166,7 +166,7 @@ function createChallenge(sender, username, stake_val){
     if (!stake_val) {
         stake_val = 10;
     }
-    q_validate_val = 'SELECT id, name, points FROM user_table WHERE id = \'' + sender + '\' OR username = \''+username+'\'';
+    q_validate_val = 'SELECT id, name, points FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
     e_validate_val = function(err){
         sendError(sender, 44);
     }
