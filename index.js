@@ -616,7 +616,7 @@ function makeMove(move){
         new_health_def = move.health_defender - attack_value;
         // update the duel
         next = move.defender_id
-        if (move.type_of_attack == "c" && Math.random() < 0.3) {
+        if (move.type_of_attack == "c" && attack_value > 0 && Math.random() < 0.3) {
             next = move.attacker_id
             move.stun = true;
         }
