@@ -599,6 +599,7 @@ function makeMove(move){
     
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
+            sendTextMessage(attacker_id, move.attacker_gender);
             new_health_att = Math.min(move.health_attacker + attack_value, max_health);
             // update the duel
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, WHERE duel_id = '+ move.duel_id;
@@ -625,8 +626,8 @@ function makeMove(move){
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
             gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
-            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + gender_noun + " for " + attack_value + " health!");
-            sendTextMessage(move.attacker_id, "You " + verb + " yourself for " + attack_value + " health!");
+            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + gender_noun + "!");
+            sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
             health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
             sendTextMessage(move.attacker_id, health);
