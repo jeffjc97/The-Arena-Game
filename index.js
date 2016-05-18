@@ -639,7 +639,7 @@ function makeMove(move){
             sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             // if the bleed killed you
-            if (move.bleed + move.health_defender) {
+            if (move.health_defender + attack_value < 0) {
                 loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
             }
         }
