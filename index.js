@@ -600,8 +600,6 @@ function makeMove(move){
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
             new_health_att = Math.min(move.health_attacker + attack_value, max_health);
-            // update the duel
-
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+new_health_att+', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
                 q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+new_health_att+', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
@@ -620,9 +618,19 @@ function makeMove(move){
             next = move.attacker_id
             move.stun = true;
         }
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
+        passive_string = ""
+        if (move.type_of_attack == "d" && !move.bleed_defender && attack_value > 0 && Math.random() < 0.3) {
+            passive_string = ", bleed_defender = 3";
+            move.bleed_defender = 3;
+        }
+        if (move.bleed_defender) {
+            move.bleed = Math.floor(Math.random() * (5 - 2)) + 2;
+            new_health_def -= move.bleed;
+            move.bleed_defender -= 1;
+        }
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+new_health_def+', moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         if (move.attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1 WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+new_health_def+', moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         }
     }
     e = function(err){
@@ -649,6 +657,10 @@ function makeMove(move){
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
                 sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
+            }
+            if (move.bleed) {
+                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. " + move.bleed_defender);
+                sendTextMessage(move.attacker_id, "You caused " + move.defender_name + " to lose " + move.bleed + " health. " + move.bleed_defender);
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, max_health);
             sendTextMessage(move.defender_id, health);
