@@ -511,6 +511,7 @@ function makeMoveSetup(s, type){
         }
         else{
             move.defender_name = result.rows[0].name;
+            move.defender_gender = result.rows[0].gender;
             makeMove(move);
         }
     };
@@ -544,7 +545,7 @@ function makeMoveSetup(s, type){
                 move.stun_attacker = data.stun_sender;
             }
             //query for defender's name
-            q_get_defender = 'SELECT name FROM user_table WHERE id= \'' + move.defender_id + '\'';
+            q_get_defender = 'SELECT name, gender FROM user_table WHERE id= \'' + move.defender_id + '\'';
             makeQuery(q_get_defender, e, s_get_defender);
         }
     };
@@ -620,7 +621,6 @@ function makeMove(move){
         }
         passive_string = ""
         if (move.type_of_attack == "d" && !move.bleed_defender && attack_value > 0 && Math.random() < 0.3) {
-            passive_string = ", bleed_defender = 3";
             move.bleed_defender = 3;
         }
         if (move.bleed_defender) {
@@ -638,8 +638,9 @@ function makeMove(move){
     };
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
-            gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
-            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + gender_noun + "!");
+            att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
+            def_gender_noun = move.defender_gender == "male" ? "He" : "She";
+            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "!");
             sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
             health = makeHealthBars(move.attacker_name, new_health_att, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
@@ -659,8 +660,8 @@ function makeMove(move){
                 sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
             }
             if (move.bleed) {
-                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. " + move.bleed_defender);
-                sendTextMessage(move.attacker_id, "You caused " + move.defender_name + " to lose " + move.bleed + " health. " + move.bleed_defender);
+                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turns remaining)");
+                sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turns remaining)");
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, new_health_def, max_health);
             sendTextMessage(move.defender_id, health);
