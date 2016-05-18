@@ -597,7 +597,7 @@ function makeMove(move){
             new_health_def = move.health_defender;
             if (move.bleed_defender) {
                 move.bleed = Math.floor(Math.random() * (5 - 2)) + 2;
-                new_health_def = move.bleed;
+                new_health_def = move.health_defender - move.bleed;
                 attack_value = move.bleed;
                 move.bleed_defender -= 1;
             }
@@ -644,7 +644,7 @@ function makeMove(move){
     }
 
     e = function(err){
-        sendError(move.attacker_id, 60);
+        sendError(move.attacker_id, 60, JSON.stringify(err).substring(0,300));
     };
     s_update_duel = function(result){
         if (move.type_of_attack === "h") {
