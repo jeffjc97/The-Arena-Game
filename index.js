@@ -748,7 +748,7 @@ function forfeitDuel(lid) {
     s_get_did = function(result) {
         data =result.rows[0];
         if (data.in_duel) {
-            q_get_all_info = "SELECT u.name, u.id FROM duel_table d INNER JOIN user_table u ON (u.id = d.recipient_id OR u.id = d.sender_id) WHERE d.duel_id = " + data.in_duel;
+            q_get_all_info = "SELECT u.name, u.id, d.stake FROM duel_table d INNER JOIN user_table u ON (u.id = d.recipient_id OR u.id = d.sender_id) WHERE d.duel_id = " + data.in_duel;
             in_duel = data.in_duel;
             makeQuery(q_get_all_info, e, s_get_all_info);
         }
@@ -763,23 +763,25 @@ function loseDuel(lid, wid, lname, wname, did) {
     sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
     sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
     setTimeout(function(){
-        q_update_l = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1 WHERE id = \'" + wid + "\'";
-        q_update_w = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1 WHERE id = \'" + lid + "\'";
-        q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\'";
+        stake = 0;
         e = function(err) {
             sendError(lid, 27);
             sendError(wid, 27);
         };
-        s_update_l = function(result) {
+        s_update_w = function(result) {
             sendTextMessage(lid, "The duel has ended.");
             sendTextMessage(wid, "The duel has ended.");
         };
-        s_update_w = function(result) {
-            makeQuery(q_update_l, e, s_update_l);
+        s_update_l = function(result) {
+            q_update_w = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1, points = points +"+stake+"  WHERE id = \'" + wid + "\'";
+            makeQuery(q_update_w, e, s_update_l);
         };
         s_update_d = function(result) {
-            makeQuery(q_update_w, e, s_update_w);
+            stake = result.rows[0].stake;
+            q_update_l = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1, points = points -"+stake+" WHERE id = \'" + lid + "\'";
+            makeQuery(q_update_l, e, s_update_w);
         };
+        q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\' RETURNING stake";
         makeQuery(q_update_d, e, s_update_d);
     }, 5000);
 }
