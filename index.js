@@ -383,11 +383,10 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
         }
     };
     s_insert_duel = function(result) {
-        sendTextMessage(sender, "Challenged "+username+" for "+stake_val+". Waiting for response...");
-        sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+". Type @accept "+challenger_name+" to accept.");
+        sendTextMessage(sender, "Challenged "+username+" for "+stake_val+" coins. Waiting for response...");
+        sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+" coins. Type @accept "+challenger_name+" to accept.");
     };
-    makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
-    
+    makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);    
 }
 
 //r (id) is responding to challenge from su (name) with response 
@@ -395,7 +394,7 @@ function respondToChallenge(su, r, response) {
     s_delete_challenge = function(result) {
         if (response) {
             // start duel
-            setupDuel(s, r);
+            setupDuel(s, r, response.rows[0].val);
             sendTextMessage(s, ru + " has accepted your request! Starting duel...");
             sendTextMessage(r, "Request accepted. Starting duel...");
         }
@@ -413,7 +412,7 @@ function respondToChallenge(su, r, response) {
             sendError(r, 20);
         }
         else {
-            q_delete_challenge = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+            q_delete_challenge = 'DELETE FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\' RETURNING val';
             makeQuery(q_delete_challenge, e, s_delete_challenge);
         }
     };
@@ -464,17 +463,13 @@ function respondToChallenge(su, r, response) {
 }
 
 // invariant: neither party is in a duel
-function setupDuel(s, r) {
-    s_update_r = function(result) {
-        startDuel(s,r, first);
-    };
+function setupDuel(s, r, stake_val) {
     s_update_s = function(result) {
-        q_update_r = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + r + '\'';
-        makeQuery(q_update_r, e, s_update_r);
+        startDuel(s,r, first);
     };
     s_insert_duel = function(result) {
         duel_id = result.rows[0].duel_id;
-        q_update_s = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + s + '\'';
+        q_update_s = 'UPDATE user_table SET in_duel = '+duel_id+' WHERE id = \'' + s + '\' OR id = \'' + r + '\'';
         makeQuery(q_update_s, e, s_update_s);
     };
     first = Math.random() < 0.5 ? s : r;
@@ -482,7 +477,7 @@ function setupDuel(s, r) {
         sendError(s, 22);
     };
     var duel_id = 'none';
-    q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\') RETURNING duel_id';
+    q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id, stake) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\', '+stake_val+') RETURNING duel_id';
     makeQuery(q_insert_duel, e, s_insert_duel);
 }
 
