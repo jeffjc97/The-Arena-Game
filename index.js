@@ -394,7 +394,7 @@ function respondToChallenge(su, r, response) {
     s_delete_challenge = function(result) {
         if (response) {
             // start duel
-            setupDuel(s, r, response.rows[0].val);
+            setupDuel(s, r, result.rows[0].val);
             sendTextMessage(s, ru + " has accepted your request! Starting duel...");
             sendTextMessage(r, "Request accepted. Starting duel...");
         }
