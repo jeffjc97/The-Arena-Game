@@ -699,7 +699,6 @@ function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
 }
 
 //data is a row from duel_table
-
 function isSender_id(id, data){
     return id == data.sender_id;
 }
