@@ -720,7 +720,6 @@ function makeQuery(q, error, success) {
     });
 }
 
-
 function sendError(uid, eid, msg) {
     if (typeof msg === 'undefined') {
         sendTextMessage(uid, "Sorry - something bad happened! Please try again. (" + eid + ")");
@@ -840,7 +839,6 @@ function getStats(user, s){
     };
     makeQuery(q_get_stats, e, success);
 }
-
 
 //username optional
 function getPendingChallenges(s){
