@@ -383,7 +383,7 @@ function getPersonalInfo(s){
             username = result.rows[0].name;
             getPendingChallenges(s);
             getStats(username, s);
-            sendTextMessage(s, "You have "+ result.rows[0].points+" points.");
+            sendTextMessage(s, "You have "+ result.rows[0].points+" coins.");
         }
     };
     makeQuery(q_get_username, e, s_get_username);
