@@ -632,6 +632,9 @@ function makeMove(move){
         }
     }
 
+    // at this point, health_defender is the health after attack and poison
+    // attack_value is the value of just the attack
+    // move.bleed is the value of the bleed
     if (move.health_defender <= 0 && move.type_of_attack != 'h') {
         def_gender_noun = move.defender_gender == "male" ? "He" : "She";
         // if you're bleeding when you lose
@@ -639,7 +642,7 @@ function makeMove(move){
             sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
         }
-       // if the bleed killed you
+        // if the bleed killed you
         if (move.health_defender + attack_value < 0) {
             loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
         }
