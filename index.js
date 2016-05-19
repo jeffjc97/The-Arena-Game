@@ -372,15 +372,15 @@ function getPersonalInfo(s){
 
 //invariant: neither party is in a duel and both parties have enough for the stake
 function sendChallenge(sender, challenger_name, receiver_id, username, stake_val){
-    q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ', '+stake_val+')';
+    q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ',default, '+stake_val+',1)';
     e_insert_duel = function(err) {
-        // if (err.detail.indexOf("already exists") > -1) {
-        //     sendError(s, 7, "Challenge already pending, please wait...");
-        // }
-        // else {
-            sendError(s, 8);
-            sendTextMessage(sender, JSON.stringify(err).substring(0,200));
-        // }
+        if (err.detail.indexOf("already exists") > -1) {
+            sendError(sender, 7, "Challenge already pending, please wait...");
+        }
+        else {
+            sendError(sender, 8);
+            // sendTextMessage(sender, JSON.stringify(err).substring(0,200));
+        }
     };
     s_insert_duel = function(result) {
         sendTextMessage(sender, "Challenged "+username+" for "+stake_val+". Waiting for response...");
