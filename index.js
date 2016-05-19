@@ -353,7 +353,7 @@ function registerUser(s, username) {
 }
 
 function getPersonalInfo(s){
-    q_get_username = "SELECT name FROM user_table WHERE id = \'"+s+"\'";
+    q_get_username = "SELECT name, points FROM user_table WHERE id = \'"+s+"\'";
     e = function(err){
         sendError(s,43);
     };
@@ -365,6 +365,7 @@ function getPersonalInfo(s){
             username = result.rows[0].name;
             getPendingChallenges(s);
             getStats(username, s);
+            sendTextMessage(s, "You have "+ result.rows[0].points 9+" points.");
         }
     };
     makeQuery(q_get_username, e, s_get_username);
