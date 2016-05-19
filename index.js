@@ -139,6 +139,9 @@ app.post('/webhook/', function (req, res) {
                         case "@challenges":
                             getPendingChallenges(sender);
                             break;
+                        case "@cancel":
+                            cancelChallenge(sender, username);
+                            break;
                         case "@stake":
                             username = words[words.length -2];
                             val = words[words.length -1];
@@ -213,6 +216,10 @@ function setupChallenge(sender, username, stake_val){
     makeQuery(q_validate_val, e_validate_val, s_validate_val);
 }
 
+function cancelChallenge(s, u)
+{
+
+}
 
 function sendTextMessage(sender, text) {
     messageData = {
@@ -365,7 +372,7 @@ function getPersonalInfo(s){
             username = result.rows[0].name;
             getPendingChallenges(s);
             getStats(username, s);
-            sendTextMessage(s, "You have "+ result.rows[0].points 9+" points.");
+            sendTextMessage(s, "You have "+ result.rows[0].points+" points.");
         }
     };
     makeQuery(q_get_username, e, s_get_username);
