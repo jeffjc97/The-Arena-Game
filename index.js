@@ -478,6 +478,7 @@ function setupDuel(s, r, stake_val) {
     };
     var duel_id = 'none';
     q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id, stake) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\', '+stake_val+') RETURNING duel_id';
+    sendTextMessage(s, q_insert_duel);
     makeQuery(q_insert_duel, e, s_insert_duel);
 }
 
