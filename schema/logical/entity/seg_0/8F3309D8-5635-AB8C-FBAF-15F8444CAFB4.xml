@@ -150,6 +150,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
+<defaultValue>3</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="recipient_heal" id="65FAAA7E-7D41-6BCB-97A5-E785DF64FDE8">
@@ -162,6 +163,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT011</logicalDatatype>
+<defaultValue>3</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="bleed_sender" id="41AEE6B0-8F09-1C43-15B7-54DED83790F7">
@@ -206,6 +208,19 @@
 <Attribute name="stun_recipient" id="D720851C-73EF-0504-538F-6202CDF9D531">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-17 17:52:41 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="stake" id="39764E46-E5FE-0A18-E4CB-DFA4FEC9000A">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 18:48:26 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
 <engineerTo>
 <item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>

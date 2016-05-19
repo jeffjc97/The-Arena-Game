@@ -45,6 +45,33 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="val" id="2168550B-0CF0-F60F-A5F7-962BC3DC2B7F">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 18:58:41 UTC</createdTime>
+<generatorID>C6A3D24A-B761-7F58-9750-8EE50EB4F148</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="is_stake" id="F40CED10-33A2-B5EC-0636-648A768A5ED1">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-17 19:02:05 UTC</createdTime>
+<generatorID>73EA7456-D849-4530-63B9-63C3D0232CC5</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1</dataTypeSize>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>1,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="E42E8D4B-0C28-5DF4-63D6-6ECB00D638C2" name="unique_challenge">
