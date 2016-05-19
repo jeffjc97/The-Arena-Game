@@ -774,12 +774,12 @@ function loseDuel(lid, wid, lname, wname, did) {
         };
         s_update_l = function(result) {
             q_update_w = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1, points = points +"+stake+"  WHERE id = \'" + wid + "\'";
-            makeQuery(q_update_w, e, s_update_l);
+            makeQuery(q_update_w, e, s_update_w);
         };
         s_update_d = function(result) {
             stake = result.rows[0].stake;
             q_update_l = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1, points = points -"+stake+" WHERE id = \'" + lid + "\'";
-            makeQuery(q_update_l, e, s_update_w);
+            makeQuery(q_update_l, e, s_update_l);
         };
         q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\' RETURNING stake";
         makeQuery(q_update_d, e, s_update_d);
