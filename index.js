@@ -374,12 +374,13 @@ function getPersonalInfo(s){
 function sendChallenge(sender, challenger_name, receiver_id, username, stake_val){
     q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ', '+stake_val+')';
     e_insert_duel = function(err) {
-        if (err.detail.indexOf("already exists") > -1) {
-            sendError(s, 7, "Challenge already pending, please wait...");
-        }
-        else {
+        // if (err.detail.indexOf("already exists") > -1) {
+        //     sendError(s, 7, "Challenge already pending, please wait...");
+        // }
+        // else {
             sendError(s, 8);
-        }
+            sendTextMessage(sender, JSON.stringify(err).substring(0,200));
+        // }
     };
     s_insert_duel = function(result) {
         sendTextMessage(sender, "Challenged "+username+" for "+stake_val+". Waiting for response...");
