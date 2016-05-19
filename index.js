@@ -216,9 +216,19 @@ function setupChallenge(sender, username, stake_val){
     makeQuery(q_validate_val, e_validate_val, s_validate_val);
 }
 
-function cancelChallenge(s, u)
-{
-
+function cancelChallenge(s, u){
+    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
+    e = function(err){
+        sendError(s, 46);
+    }
+    s_cancel = function(result){
+        if (result.rows.length != 1) {
+            e(null);
+        }
+        else{
+            (s, "Your challenge to "+u+" has been revoked.");
+        }
+    }
 }
 
 function sendTextMessage(sender, text) {
