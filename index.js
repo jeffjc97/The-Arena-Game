@@ -229,6 +229,7 @@ function cancelChallenge(s, u){
             (s, "Your challenge to "+u+" has been revoked.");
         }
     }
+    makeQuery(q_cancel, e, s_cancel);
 }
 
 function sendTextMessage(sender, text) {
