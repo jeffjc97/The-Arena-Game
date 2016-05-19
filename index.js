@@ -605,10 +605,11 @@ function makeMove(move){
 
     attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
     
+    // dealing with heal
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
             move.health_attacker = Math.min(move.health_attacker + attack_value, max_health);
-            
+            // if the opponent is bleeding, still do damage
             if (move.bleed_defender) {
                 move.bleed = Math.floor(Math.random() * (5 - 2)) + 2;
                 move.health_defender = move.health_defender - move.bleed;
@@ -618,7 +619,7 @@ function makeMove(move){
 
             q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+move.health_attacker + ', health_sender = ' + move.health_defender + ', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
-                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+move.health_attacker + ', health_recipient = ' + move.health_defender + ', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
+                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+move.health_attacker + ', health_recipient = ' + move.health_defender + ', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
             }
         }
         else {
@@ -629,12 +630,14 @@ function makeMove(move){
     else {
         move.health_defender = move.health_defender - attack_value;
         // update the duel
+        // stun, just keep the next turn id the same
         next = move.defender_id;
         if (move.type_of_attack == "c" && attack_value > 0 && Math.random() < 0.3) {
             next = move.attacker_id;
             move.stun = true;
         }
-        if (move.type_of_attack == "d" && !move.bleed_defender && attack_value > 0 && Math.random() < 0.3) {
+        // bleed
+        if (move.type_of_attack == "d" && attack_value > 0 && Math.random() < 0.3) {
             move.bleed_defender = 3;
         }
         if (move.bleed_defender) {
@@ -648,6 +651,7 @@ function makeMove(move){
         }
     }
 
+    // if the defender is dead
     // at this point, health_defender is the health after attack and poison
     // attack_value is the value of just the attack
     // move.bleed is the value of the bleed
