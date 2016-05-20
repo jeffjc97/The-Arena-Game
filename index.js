@@ -856,7 +856,11 @@ function getStats(user, s){
                 pct = "N/A";
             }
             sendTextMessage(s, "STATS: " + user + "\nWins: " + data.wins + "\nLosses: " + data.losses+"\nDraws: " + data.draws + "\nGames: " + data.games_played + "\nWin %: " + pct);
-            sendTextMessage(s, user + " has "+ data.points+" coins.");
+            if (data.id == s) {
+                sendTextMessage(s, "You have "+ data.points+" coins.");
+            }else{
+                sendTextMessage(s, user + " has "+ data.points+" coins.");
+            }
 
         }
         else{
