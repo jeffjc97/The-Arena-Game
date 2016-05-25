@@ -412,6 +412,7 @@ function respondToChallenge(su, r, response) {
     s_delete_challenge = function(result) {
         if (response) {
             // start duel
+            stake_val = result.rows[0].val;
             if (sp < stake_val) {
                 sendTextMessage(s, ru + " accepted your duel request, but you no longer have enough coins. Please re-issue the challenge.");
                 sendTextMessage(r, "Request accepted, but " + su + " no longer has enough coins. Please re-issue the challenge.");
@@ -421,7 +422,7 @@ function respondToChallenge(su, r, response) {
                 sendTextMessage(r, "Request accepted, but you no longer have enough coins. Please re-issue the challenge.");
             }
             else {
-                setupDuel(s, r, result.rows[0].val);
+                setupDuel(s, r, stake_val);
                 sendTextMessage(s, ru + " has accepted your request! Starting duel...");
                 sendTextMessage(r, "Request accepted. Starting duel...");
             }
