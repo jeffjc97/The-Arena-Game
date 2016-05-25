@@ -383,7 +383,6 @@ function getPersonalInfo(s){
             username = result.rows[0].name;
             getPendingChallenges(s);
             getStats(username, s);
-            sendTextMessage(s, "You have "+ result.rows[0].points+" coins.");
         }
     };
     makeQuery(q_get_username, e, s_get_username);
@@ -871,6 +870,12 @@ function getStats(user, s){
                 pct = "N/A";
             }
             sendTextMessage(s, "STATS: " + user + "\nWins: " + data.wins + "\nLosses: " + data.losses+"\nDraws: " + data.draws + "\nGames: " + data.games_played + "\nWin %: " + pct);
+            if (data.id == s) {
+                sendTextMessage(s, "You have "+ data.points+" coins.");
+            }else{
+                sendTextMessage(s, user + " has "+ data.points+" coins.");
+            }
+
         }
         else{
             sendTextMessage(s, "User not found.");
