@@ -13,10 +13,8 @@ pg.defaults.ssl = true;
 var threeSecondInterval = function(){
     sendTextMessage(10205320360242528, "Another 3 seconds have gone by. What did you do in them?");
     sendTextMessage(10206557582650156, "Another 3 seconds have gone by. What did you do in them?");
-    console.log("check?");
 }
 setInterval(threeSecondInterval, 3000)
-console.log("check1");
 
 //For specific times, use a chron job
 var fifteenSeconsAfterMinute = function() {
