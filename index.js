@@ -405,7 +405,7 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
         sendTextMessage(sender, "Challenged "+username+" for "+stake_val+" coins. Waiting for response...");
         sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+" coins. Type @accept "+challenger_name+" to accept.");
     };
-    makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);    
+    makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
 }
 
 //r (id) is responding to challenge from su (name) with response 
@@ -413,9 +413,19 @@ function respondToChallenge(su, r, response) {
     s_delete_challenge = function(result) {
         if (response) {
             // start duel
-            setupDuel(s, r, result.rows[0].val);
-            sendTextMessage(s, ru + " has accepted your request! Starting duel...");
-            sendTextMessage(r, "Request accepted. Starting duel...");
+            if (sp < stake_val) {
+                sendTextMessage(s, ru + " accepted your duel request, but you no longer have enough coins. Please re-issue the challenge.");
+                sendTextMessage(r, "Request accepted, but " + su + " no longer has enough coins. Please re-issue the challenge.");
+            }
+            else if (rp < stake_val) {
+                sendTextMessage(s, ru + " accepted your duel request, but no longer has enough coins. Please re-issue the challenge.");
+                sendTextMessage(r, "Request accepted, but you no longer have enough coins. Please re-issue the challenge.");
+            }
+            else {
+                setupDuel(s, r, result.rows[0].val);
+                sendTextMessage(s, ru + " has accepted your request! Starting duel...");
+                sendTextMessage(r, "Request accepted. Starting duel...");
+            }
         }
         else {
             sendTextMessage(s, ru + " has rejected your challenge request.");
@@ -449,6 +459,7 @@ function respondToChallenge(su, r, response) {
             }
             else {
                 s = result.rows[0].id;
+                sp = result.rows[0].points;
                 q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
                 makeQuery(q_get_challenge, e, s_get_challenge);
             }
@@ -465,8 +476,9 @@ function respondToChallenge(su, r, response) {
         else {
             //username of the responder
             ru = result.rows[0].name;
+            rp = result.rows[0].points;
             //get sender id and status
-            q_get_sender = 'SELECT id, in_duel FROM user_table where name = \'' + su + '\'';
+            q_get_sender = 'SELECT points, id, in_duel FROM user_table where name = \'' + su + '\'';
             makeQuery(q_get_sender, e, s_get_sender);
         }
     };
@@ -476,7 +488,8 @@ function respondToChallenge(su, r, response) {
     };
     var ru = 'none';
     var s = 'none';
-    q_get_recipient = 'SELECT name, in_duel FROM user_table where id= \'' + r + '\'';
+    var rp, sp;
+    q_get_recipient = 'SELECT points, name, in_duel FROM user_table where id= \'' + r + '\'';
     makeQuery(q_get_recipient, e, s_get_recipient);
 
 }
@@ -498,6 +511,7 @@ function setupDuel(s, r, stake_val) {
     var duel_id = 'none';
     q_insert_duel = 'INSERT INTO duel_table(user_turn, sender_id, recipient_id, stake) VALUES (\'' + first + '\', \'' + s + '\', \'' + r + '\', '+stake_val+') RETURNING duel_id';
     makeQuery(q_insert_duel, e, s_insert_duel);
+
 }
 
 function startDuel(s, r, f_id) {
