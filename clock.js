@@ -13,7 +13,7 @@ setInterval(threeSecondInterval, 3000)
 //For specific times, use a chron job
 var fifteenSeconsAfterMinute = function() {
   sendTextMessage(10205320360242528,"Another minute is gone forever. Hopefully, you made the most of it...");
-  sendTextMessage(1020655582650156,,"Another minute is gone forever. Hopefully, you made the most of it...");
+  sendTextMessage(1020655582650156,"Another minute is gone forever. Hopefully, you made the most of it...");
 }
 var CronJob = require('cron').CronJob;
 new CronJob({
