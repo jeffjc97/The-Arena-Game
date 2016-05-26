@@ -22,7 +22,7 @@ function makeQuery(q, error, success) {
             }
         });
     });
-}
+};
 
 function sendError(uid, eid, msg) {
     if (typeof msg === 'undefined') {
@@ -31,7 +31,7 @@ function sendError(uid, eid, msg) {
     else {
         sendTextMessage(uid, msg);
     }
-}
+};
 
 //OnInterval
 var ClearChallenges = function(){
@@ -54,8 +54,7 @@ var ClearChallenges = function(){
       sendTextMessage(10205320360242528, "Challenge Clearer has worked");
     }
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
-
-}
+};
 setInterval(ClearChallenges, 3000);
 
 function sendTextMessage(sender, text) {
