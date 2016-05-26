@@ -10,7 +10,6 @@ pg.defaults.ssl = true;
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
-
 var max_health = 50;
 var attacks = {
     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
@@ -18,6 +17,7 @@ var attacks = {
     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
     c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
 };
+
 // Process application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({extended: false}));
 
@@ -86,7 +86,7 @@ app.post('/webhook/', function (req, res) {
                                 registerUser(sender, username);
                             }
                             else {
-                                sendError(sender, 100, "Usernames must be one word.")
+                                sendError(sender, 100, "Usernames must be one word.");
                             }
                             break;
                         default:
@@ -116,7 +116,7 @@ app.post('/webhook/', function (req, res) {
                                 setupChallenge(sender, username);
                             }
                             else {
-                                sendError(sender, 100, "Invalid challenge command. See @help for more information.")
+                                sendError(sender, 100, "Invalid challenge command. See @help for more information.");
                             }
                             break;
                         case "@accept":
@@ -124,7 +124,7 @@ app.post('/webhook/', function (req, res) {
                                 respondToChallenge(username, sender, true);
                             }
                             else {
-                                sendError(sender, 100, "Invalid accept command. See @help for more information.")
+                                sendError(sender, 100, "Invalid accept command. See @help for more information.");
                             }
                             break;
                         case "@reject":
@@ -132,15 +132,15 @@ app.post('/webhook/', function (req, res) {
                                 respondToChallenge(username, sender, false);
                             }
                             else {
-                                sendError(sender, 100, "Invalid reject command. See @help for more information.")
+                                sendError(sender, 100, "Invalid reject command. See @help for more information.");
                             }
                             break;
                         case "@feedback":
                             if (words.length > 1) {
-                                userFeedback(sender, text.substr(text.indexOf(" ") + 1))
+                                userFeedback(sender, text.substr(text.indexOf(" ") + 1));
                             }
                             else {
-                                sendError(sender, 100, "Please include your feedback after the command.")
+                                sendError(sender, 100, "Please include your feedback after the command.");
                             }
                             break;
                         case "@d":
@@ -167,7 +167,7 @@ app.post('/webhook/', function (req, res) {
                                 getStats(username, sender);
                             }
                             else {
-                                sendError(sender, 100, "Invalid stats command. See @help for more information.")
+                                sendError(sender, 100, "Invalid stats command. See @help for more information.");
                             }
                             break;
                         case "@challenges":
@@ -178,7 +178,7 @@ app.post('/webhook/', function (req, res) {
                                 cancelChallenge(sender, username);
                             }
                             else {
-                                sendError(sender, 100, "Invalid cancel command. See @help for more information.")
+                                sendError(sender, 100, "Invalid cancel command. See @help for more information.");
                             }
                             break;
                         case "@stake":
@@ -186,22 +186,22 @@ app.post('/webhook/', function (req, res) {
                                 username = words[words.length - 2];
                                 val = words[words.length - 1];
                                 if (isNaN(parseInt(val))) {
-                                    sendError(sender, 100, "Invalid stake command. See @help for more information.")
+                                    sendError(sender, 100, "Invalid stake command. See @help for more information.");
                                 }
                                 else if (val < 1) {
-                                    sendError(sender, 101, "Stake value must be greater than 0.g")
+                                    sendError(sender, 101, "Stake value must be greater than 0.");
                                 }
                                 else {
                                     setupChallenge(sender, username, val);
                                 }
                             }
                             else {
-                                sendError(sender, 100, "Invalid stake command. See @help for more information.")
+                                sendError(sender, 100, "Invalid stake command. See @help for more information.");
                             }
                             break;
                         default:
                             if (words[0].charAt(0) == "@") {
-                                sendError(sender, 100, "Not a valid command. See @help for more information.")
+                                sendError(sender, 100, "Not a valid command. See @help for more information.");
                             }
                             else {
                                 sendNormalMessage(sender, text);
@@ -221,6 +221,76 @@ app.post('/webhook/', function (req, res) {
     res.sendStatus(200);
 });
 
+function mysql_real_escape_string (str) {
+    return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+        switch (char) {
+            case "\0":
+                return "\\0";
+            case "\x08":
+                return "\\b";
+            case "\x09":
+                return "\\t";
+            case "\x1a":
+                return "\\z";
+            case "\n":
+                return "\\n";
+            case "\r":
+                return "\\r";
+            case "\"":
+            case "'":
+            case "\\":
+            case "%":
+                return "\\"+char; // prepends a backslash to backslash, percent,
+                                  // and double/single quotes
+        }
+    });
+}
+
+function sendTextMessage(sender, text) {
+    messageData = {
+        text:text
+    };
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:token},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+            // console.log('Error: ', response);
+        }
+    });
+}
+
+function makeQuery(q, error, success) {
+    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(q, function(err, result) {
+            done();
+            if (err) {
+                error(err);
+            }
+            else {
+                success(result);
+
+            }
+        });
+    });
+}
+
+function sendError(uid, eid, msg) {
+    if (typeof msg === 'undefined') {
+        sendTextMessage(uid, "Sorry - something bad happened! Please try again. (" + eid + ")");
+    }
+    else {
+        sendTextMessage(uid, msg);
+    }
+}
 
 function setupChallenge(sender, username, stake_val){
     if (!stake_val) {
@@ -229,7 +299,7 @@ function setupChallenge(sender, username, stake_val){
     q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
     e_validate_val = function(err){
         sendError(sender, 44);
-    }
+    };
     s_validate_val = function(result){
         if (result.rows.length != 2) {
             sendTextMessage(sender, "Username not found. Please try again.");
@@ -269,7 +339,7 @@ function setupChallenge(sender, username, stake_val){
                 sendChallenge(sender, challenger_name, receiver_id, username, stake_val);
             }
         }
-    }
+    };
     makeQuery(q_validate_val, e_validate_val, s_validate_val);
 }
 
@@ -277,7 +347,7 @@ function cancelChallenge(s, u){
     q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
         sendError(s, 46);
-    }
+    };
     s_cancel = function(result){
         if (result.rows.length != 1) {
             e(null);
@@ -285,30 +355,8 @@ function cancelChallenge(s, u){
         else{
             sendTextMessage(s, "Your challenge to "+u+" has been cancelled.");
         }
-    }
-    makeQuery(q_cancel, e, s_cancel);
-}
-
-function sendTextMessage(sender, text) {
-    messageData = {
-        text:text
     };
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-            // console.log('Error: ', response);
-        }
-    });
+    makeQuery(q_cancel, e, s_cancel);
 }
 
 function sendHelpMessage(sender) {
@@ -345,31 +393,6 @@ function sendHelpMessage(sender) {
             console.log('Error sending messages: ', error);
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
-        }
-    });
-}
-
-function mysql_real_escape_string (str) {
-    return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
-        switch (char) {
-            case "\0":
-                return "\\0";
-            case "\x08":
-                return "\\b";
-            case "\x09":
-                return "\\t";
-            case "\x1a":
-                return "\\z";
-            case "\n":
-                return "\\n";
-            case "\r":
-                return "\\r";
-            case "\"":
-            case "'":
-            case "\\":
-            case "%":
-                return "\\"+char; // prepends a backslash to backslash, percent,
-                                  // and double/single quotes
         }
     });
 }
@@ -806,30 +829,6 @@ function isSender_id(id, data){
     return id == data.sender_id;
 }
 
-function makeQuery(q, error, success) {
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(q, function(err, result) {
-            done();
-            if (err) {
-                error(err);
-            }
-            else {
-                success(result);
-
-            }
-        });
-    });
-}
-
-function sendError(uid, eid, msg) {
-    if (typeof msg === 'undefined') {
-        sendTextMessage(uid, "Sorry - something bad happened! Please try again. (" + eid + ")");
-    }
-    else {
-        sendTextMessage(uid, msg);
-    }
-}
-
 function forfeitDuel(lid) {
     q_get_did = "SELECT in_duel FROM user_table where id = \'" + lid + "\'";
     var in_duel = -1;
@@ -957,7 +956,7 @@ function getPendingChallenges(s){
     q_name = "SELECT name FROM user_table where id= \'" + s + "\'";
     e = function(err){
         sendError(s, 37);
-    }
+    };
     s_name = function(result){
         if (result.rows.length != 1) {
             sendError(s, 34);
