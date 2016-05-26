@@ -264,12 +264,12 @@ function sendHelpMessage(sender) {
               {
                 "title":"Bot Fun: Help",
                 "subtitle":"Commands that can be used outside of a duel.",
-                "image_url":"http://i.imgur.com/72NClPr.png"
+                "image_url":"http://i.imgur.com/0tFTAWa.png"
               },
               {
                 "title":"Bot Fun: Help",
                 "subtitle":"Commands that can be used during a duel.",
-                "image_url":"http://i.imgur.com/ZnCadyq.png"
+                "image_url":"http://i.imgur.com/OZpuj2F.png"
               },
             ]
           }
