@@ -177,7 +177,12 @@ app.post('/webhook/', function (req, res) {
                                 if (isNaN(parseInt(val))) {
                                     sendError(sender, 100, "Invalid stake command. See @help for more information.")
                                 }
-                                setupChallenge(sender, username, val);
+                                else if (val < 1) {
+                                    sendError(sender, 101, "Stake value must be greater than 0.")
+                                }
+                                else {
+                                    setupChallenge(sender, username, val);
+                                }
                             }
                             else {
                                 sendError(sender, 100, "Invalid stake command. See @help for more information.")
