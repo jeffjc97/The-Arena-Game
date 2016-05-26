@@ -15,13 +15,32 @@ app.listen(app.get('port'), function() {
     console.log('running on port', app.get('port'));
 });
 
+app.use(function(req, res, next){
+  if (req.method == 'POST') {
+    var body = '';
 
+    req.on('data', function (data) {
+      body += data;
 
+      // Too much POST data, kill the connection!
+      // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+      if (body.length > 1e6)
+        req.connection.destroy();
+    });
+
+    req.on('end', function () {
+      // console.log(body); // should work
+        // use post['blah'], etc.
+      req.body = JSONbig.parse(body);
+      next();
+    });
+  }
+});
 
 //OnInterval
 var ClearChallenges = function(){
-    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'10 minute\'";
-    q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
+    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'1 minute\'";
+    q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'1 minute\'";
     e = function(err){
         sendError(10206557582650156, "Challenge Clearer has failed");
         sendError(10205320360242528, "Challenge Clearer has failed");
@@ -40,9 +59,7 @@ var ClearChallenges = function(){
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
-setInterval(ClearChallenges, 3000);
-sendTextMessage(10206557582650156, "Challenge Clearer has worked");
-sendTextMessage(10205320360242528, "Challenge Clearer has worked");
+setInterval(ClearChallenges, 10000);
 
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
