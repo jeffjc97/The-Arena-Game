@@ -66,8 +66,6 @@ function sendError(uid, eid, msg) {
     }
 }
 
-
-
 function sendTextMessage(sender, text) {
     messageData = {
         text:text
