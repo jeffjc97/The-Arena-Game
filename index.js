@@ -82,7 +82,12 @@ app.post('/webhook/', function (req, res) {
                 if (!result.rows.length) {
                     switch(words[0]) {
                         case "@register":
-                            registerUser(sender, username);
+                            if (words.length == 2) {
+                                registerUser(sender, username);
+                            }
+                            else {
+                                sendError(sender, 100, "Usernames must be one word.")
+                            }
                             break;
                         default:
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
@@ -104,15 +109,28 @@ app.post('/webhook/', function (req, res) {
                             getPersonalInfo(sender);
                             break;
                         case "@challenge":
-                            setupChallenge(sender, username);
+                            if (words.length == 2) {
+                                setupChallenge(sender, username);
+                            }
+                            else {
+                                sendError(sender, 100, "Invalid challenge command. See @help for more information.")
+                            }
                             break;
                         case "@accept":
-                            // respondToChallengeSetup(username, sender, true);
-                            respondToChallenge(username, sender, true);
+                            if (words.length == 2) {
+                                respondToChallenge(username, sender, true);
+                            }
+                            else {
+                                sendError(sender, 100, "Invalid accept command. See @help for more information.")
+                            }
                             break;
                         case "@reject":
-                            // respondToChallengeSetup(username, sender, false);
-                            respondToChallenge(username, sender, false);
+                            if (words.length == 2) {
+                                respondToChallenge(username, sender, false);
+                            }
+                            else {
+                                sendError(sender, 100, "Invalid reject command. See @help for more information.")
+                            }
                             break;
                         case "@d":
                         case "@dagger":
@@ -134,18 +152,36 @@ app.post('/webhook/', function (req, res) {
                             forfeitDuel(sender);
                             break;
                         case "@stats":
-                            getStats(username, sender);
+                            if (words.length == 2) {
+                                getStats(username, sender);
+                            }
+                            else {
+                                sendError(sender, 100, "Invalid stats command. See @help for more information.")
+                            }
                             break;
                         case "@challenges":
                             getPendingChallenges(sender);
                             break;
                         case "@cancel":
-                            cancelChallenge(sender, username);
+                            if (words.length == 2) {
+                                cancelChallenge(sender, username);
+                            }
+                            else {
+                                sendError(sender, 100, "Invalid cancel command. See @help for more information.")
+                            }
                             break;
                         case "@stake":
-                            username = words[words.length -2];
-                            val = words[words.length -1];
-                            setupChallenge(sender, username, val);
+                            if (words.length == 3) {
+                                username = words[words.length - 2];
+                                val = words[words.length - 1];
+                                if (isNaN(parseInt(val))) {
+                                    sendError(sender, 100, "Did you switch the ")
+                                }
+                                setupChallenge(sender, username, val);
+                            }
+                            else {
+                                sendError(sender, 100, "Invalid stake command. See @help for more information.")
+                            }
                             break;
                         default:
                             sendNormalMessage(sender, text);
