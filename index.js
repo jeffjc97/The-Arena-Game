@@ -132,6 +132,14 @@ app.post('/webhook/', function (req, res) {
                                 sendError(sender, 100, "Invalid reject command. See @help for more information.")
                             }
                             break;
+                        case "@feedback":
+                            if (words.length > 1) {
+                                userFeedback(sender, text.substr(text.indexOf(" ") + 1))
+                            }
+                            else {
+                                sendError(sender, 100, "Please include your feedback after the command.")
+                            }
+                            break;
                         case "@d":
                         case "@dagger":
                             makeMoveSetup(sender, 'd');
@@ -178,7 +186,7 @@ app.post('/webhook/', function (req, res) {
                                     sendError(sender, 100, "Invalid stake command. See @help for more information.")
                                 }
                                 else if (val < 1) {
-                                    sendError(sender, 101, "Stake value must be greater than 0.")
+                                    sendError(sender, 101, "Stake value must be greater than 0.g")
                                 }
                                 else {
                                     setupChallenge(sender, username, val);
@@ -989,4 +997,14 @@ function getPendingChallenges(s){
         }
     };
     makeQuery(q_name, e, s_name);
+}
+
+function userFeedback(s, feedback) {
+    q_feedback = 'INSERT INTO feedback_table(id, feedback) VALUES (\'' + s + '\', \'' + feedback.substr(0, 1000) + '\')';
+    e = function(err){
+        sendError(s, 105);
+    };
+    s_feedback = function(result) {
+        sendTextMessage(s, "Thanks for your feedback! We really appreciate it.");
+    };
 }
