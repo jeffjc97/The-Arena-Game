@@ -269,7 +269,7 @@ function sendHelpMessage(sender) {
               {
                 "title":"Bot Fun: Help",
                 "subtitle":"Commands that can be used during a duel.",
-                "image_url":"http://i.imgur.com/OZpuj2F.png"
+                "image_url":"http://i.imgur.com/a70xxT8.png"
               },
             ]
           }
