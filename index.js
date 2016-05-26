@@ -95,7 +95,7 @@ app.post('/webhook/', function (req, res) {
                     }
                 }
                 else {
-                    if (Math.floor((Math.random() * 10)) == 2) {
+                    if (Math.floor((Math.random() * 100)) == 42) {
                         sendTextMessage(sender, "We'd love to know what you think of the game! Please use the @feedback command to leave us your thoughts.");
                     }
                     switch(words[0]){
