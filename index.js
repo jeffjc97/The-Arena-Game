@@ -1007,4 +1007,5 @@ function userFeedback(s, feedback) {
     s_feedback = function(result) {
         sendTextMessage(s, "Thanks for your feedback! We really appreciate it.");
     };
+    makeQuery(q_feedback, e, s_feedback);
 }
