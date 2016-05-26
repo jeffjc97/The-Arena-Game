@@ -9,6 +9,31 @@ pg.defaults.ssl = true;
 
 
 
+setInterval(ClearChallenges, 3000);
+
+//OnInterval
+var ClearChallenges = function(){
+    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'10 minute\'";
+    q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
+    e = function(err){
+        sendError(10206557582650156, "Challenge Clearer has failed");
+        sendError(10205320360242528, "Challenge Clearer has failed");
+    };
+    s_get_expired_challenges = function(result){
+      for (var i = 0; i < result.rows.length; i++)
+        sender = result.rows[i].sender;
+        name = result.rows[i].name;
+        sendTextMessage(sender, "Your challenge to "+name+ " has expired. Please reissue it if you wish.");
+      }
+      makeQuery(q_delete_expired_challenges, e, s_delete_expired_challenges);
+    };
+    s_delete_expired_challenges = function(result){
+      sendTextMessage(10206557582650156, "Challenge Clearer has worked");
+      sendTextMessage(10205320360242528, "Challenge Clearer has worked");
+    };
+    makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
+}
+
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -33,29 +58,7 @@ function sendError(uid, eid, msg) {
     }
 }
 
-//OnInterval
-var ClearChallenges = function(){
-    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'10 minute\'";
-    q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
-    e = function(err){
-        sendError(10206557582650156, "Challenge Clearer has failed");
-        sendError(10205320360242528, "Challenge Clearer has failed");
-    };
-    s_get_expired_challenges = function(result){
-      for (var i = 0; i < result.rows.length; i++)
-        sender = result.rows[i].sender;
-        name = result.rows[i].name;
-        sendTextMessage(sender, "Your challenge to "+name+ " has expired. Please reissue it if you wish.");
-      }
-      makeQuery(q_delete_expired_challenges, e, s_delete_expired_challenges);
-    };
-    s_delete_expired_challenges = function(result){
-      sendTextMessage(10206557582650156, "Challenge Clearer has worked");
-      sendTextMessage(10205320360242528, "Challenge Clearer has worked");
-    };
-    makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
-};
-setInterval(ClearChallenges, 3000);
+
 
 function sendTextMessage(sender, text) {
     messageData = {
