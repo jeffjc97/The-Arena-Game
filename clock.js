@@ -32,7 +32,7 @@ var ClearChallenges = function(){
       sendTextMessage(10205320360242528, "Challenge Clearer has worked");
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
-}
+};
 
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
