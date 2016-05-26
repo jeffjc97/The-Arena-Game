@@ -167,7 +167,7 @@ app.post('/webhook/', function (req, res) {
 
 function setupChallenge(sender, username, stake_val){
     if (!stake_val) {
-        stake_val = 10;
+        stake_val = 0;
     }
     q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
     e_validate_val = function(err){
@@ -802,7 +802,7 @@ function loseDuel(lid, wid, lname, wname, did) {
     sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
     sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
     setTimeout(function(){
-        stake = 0;
+        var stake = 0;
         e = function(err) {
             sendError(lid, 27);
             sendError(wid, 27);
@@ -812,6 +812,9 @@ function loseDuel(lid, wid, lname, wname, did) {
             sendTextMessage(wid, "The duel has ended.");
         };
         s_update_l = function(result) {
+            if (!stake) {
+                stake = 10;
+            }
             q_update_w = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1, points = points +"+stake+"  WHERE id = \'" + wid + "\'";
             makeQuery(q_update_w, e, s_update_w);
         };
