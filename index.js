@@ -226,7 +226,7 @@ function cancelChallenge(s, u){
             e(null);
         }
         else{
-            sendTextMessage(s, "Your challenge to "+u+" has been revoked.");
+            sendTextMessage(s, "Your challenge to "+u+" has been cancelled.");
         }
     }
     makeQuery(q_cancel, e, s_cancel);
@@ -401,8 +401,14 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
         }
     };
     s_insert_duel = function(result) {
-        sendTextMessage(sender, "Challenged "+username+" for "+stake_val+" coins. Waiting for response...");
-        sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+" coins. Type @accept "+challenger_name+" to accept.");
+        if (stake_val) {
+            sendTextMessage(sender, "Challenged "+username+" for "+stake_val+" coins. Waiting for response...");
+            sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+" coins. Type @accept "+challenger_name+" to accept.");
+        }
+        else {
+            sendTextMessage(sender, "Challenged "+username+" to a friendly duel. Waiting for response...");
+            sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" to a friendly duel. Type @accept "+challenger_name+" to accept.");
+        }
     };
     makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
 }
