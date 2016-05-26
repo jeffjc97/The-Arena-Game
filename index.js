@@ -175,7 +175,7 @@ app.post('/webhook/', function (req, res) {
                                 username = words[words.length - 2];
                                 val = words[words.length - 1];
                                 if (isNaN(parseInt(val))) {
-                                    sendError(sender, 100, "Did you switch the ")
+                                    sendError(sender, 100, "Invalid stake command. See @help for more information.")
                                 }
                                 setupChallenge(sender, username, val);
                             }
@@ -184,7 +184,12 @@ app.post('/webhook/', function (req, res) {
                             }
                             break;
                         default:
-                            sendNormalMessage(sender, text);
+                            if (words[0].charAt(0) == "@") {
+                                sendError(sender, 100, "Not a valid command. See @help for more information.")
+                            }
+                            else {
+                                sendNormalMessage(sender, text);
+                            }
                             break;
                     }
                 }
