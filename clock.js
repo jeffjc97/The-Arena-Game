@@ -60,6 +60,7 @@ var ClearChallenges = function(){
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
 setInterval(ClearChallenges, 10000);
+console.log("balls");
 
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {

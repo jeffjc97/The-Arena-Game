@@ -1,0 +1,36 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AC6E7639-5352-81B0-5048-88DB0CB77E6B" name="feedback_table">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-26 04:18:23 UTC</createdTime>
+<generatorID>32ED857C-D857-6EDA-7132-7BEF332C4E6A</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="ED815FA8-A460-0F3E-0BA9-613E865BE58A">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-26 04:18:23 UTC</createdTime>
+<generatorID>133341F0-8D83-9533-5C98-D563778D7E9E</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>20,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="feedback" id="DE504E5F-7059-2E15-52CC-DF9F0B9974CC">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-26 04:18:23 UTC</createdTime>
+<generatorID>20DCB098-A33F-5889-5C2F-AB604EAF2A0B</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1000</dataTypeSize>
+<ownDataTypeParameters>1000,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+</Table>
