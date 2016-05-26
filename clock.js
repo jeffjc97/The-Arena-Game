@@ -7,9 +7,16 @@ var app = express();
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
 pg.defaults.ssl = true;
 
+app.set('port', (process.env.PORT || 5000));
+app.set('view engine', 'ejs');
+
+// Spin up the server
+app.listen(app.get('port'), function() {
+    console.log('running on port', app.get('port'));
+});
 
 
-setInterval(ClearChallenges, 3000);
+
 
 //OnInterval
 var ClearChallenges = function(){
@@ -20,7 +27,7 @@ var ClearChallenges = function(){
         sendError(10205320360242528, "Challenge Clearer has failed");
     };
     s_get_expired_challenges = function(result){
-      for (var i = 0; i < result.rows.length; i++)
+      for (var i = 0; i < result.rows.length; i++){
         sender = result.rows[i].sender;
         name = result.rows[i].name;
         sendTextMessage(sender, "Your challenge to "+name+ " has expired. Please reissue it if you wish.");
@@ -33,6 +40,7 @@ var ClearChallenges = function(){
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
+setInterval(ClearChallenges, 3000);
 
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
