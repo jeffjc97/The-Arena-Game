@@ -22,7 +22,7 @@ function makeQuery(q, error, success) {
             }
         });
     });
-};
+}
 
 function sendError(uid, eid, msg) {
     if (typeof msg === 'undefined') {
@@ -31,7 +31,7 @@ function sendError(uid, eid, msg) {
     else {
         sendTextMessage(uid, msg);
     }
-};
+}
 
 //OnInterval
 var ClearChallenges = function(){
