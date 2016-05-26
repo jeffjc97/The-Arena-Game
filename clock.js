@@ -20,7 +20,7 @@ var ClearChallenges = function(){
         sendError(10205320360242528, "Challenge Clearer has failed");
     };
     s_get_expired_challenges = function(result){
-      for (var i = 0; i < result.rows.length; i++)
+      for (var i = 0; i < result.rows.length; i++){
         sender = result.rows[i].sender;
         name = result.rows[i].name;
         sendTextMessage(sender, "Your challenge to "+name+ " has expired. Please reissue it if you wish.");
