@@ -1005,7 +1005,7 @@ function getPendingChallenges(s){
 }
 
 function setPressure(s){
-    q_user_in_duel = "SELECT duel_id FROM duel_table WHERE sender_id =\'"+s+"\' OR recipient_id=\'"+s+"\'";
+    q_user_in_duel = "SELECT duel_id FROM duel_table WHERE winner_id='none' AND (sender_id =\'"+s+"\' OR recipient_id=\'"+s+"\')";
     e = function(err){
         sendError(s, 50);
     }
