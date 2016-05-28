@@ -59,7 +59,7 @@ var ClearChallenges = function(){
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
-setInterval(ClearChallenges, 300000);
+setInterval(ClearChallenges, 3000);
 
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
