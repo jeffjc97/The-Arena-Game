@@ -59,61 +59,58 @@ var ClearChallenges = function(){
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
-// var CheckMovesExpire = function(){
-//     q_get_stale_duels = "SELECT d.duel_id, d.sender_id, d.recipient_id, u1.name as sender_name, u2.name recipient_name, d.user_turn FROM duel_table d LEFT JOIN user_table u1 ON (u1.id = d.sender_id) LEFT JOIN user_table u2 ON (u2.id = d.recipient_id) WHERE d.pressure_time < NOW()- interval \'30 second\'";
-//     e = function(err){
-//         sendError(10206557582650156, "CheckMovesExpire has failed");
-//         sendError(10205320360242528, "CheckMovesExpire has failed");
-//     }
-//     s_get_stale_duels = function(result){
-//         for (var i = 0; i < result.rows.length; i++) {
-//             sender_id = result.rows[i].sender_id;
-//             recipient_id = result.rows[i].recipient_id;
-//             sender_name = result.rows[i].sender_name;
-//             recipient_name = result.rows[i].recipient_name;
-//             user_turn = result.rows[i].user_turn;
-//             duel_id = result.rows[i].duel_id;
-//             if (sender_id == user_turn) {
-//                 timeOutDuel(sender_id, recipient_id, sender_name, recipient_name, duel_id);
-//             }else{
-//                 timeOutDuel(recipient_id, sender_id, recipient_name, sender_name, duel_id);
-//             }
-//         };
-//     }
-//     makeQuery(q_get_stale_duels, e, s_get_stale_duels);
-// }
-// setInterval(ClearChallenges, 300000);
-// setInterval(CheckMovesExpire, 5000);
+var CheckMovesExpire = function(){
+    q_get_stale_duels = "SELECT d.duel_id, d.sender_id, d.recipient_id, u1.name as sender_name, u2.name recipient_name, d.user_turn FROM duel_table d LEFT JOIN user_table u1 ON (u1.id = d.sender_id) LEFT JOIN user_table u2 ON (u2.id = d.recipient_id) WHERE winner_id=\'none\' AND d.pressure_time < NOW()- interval \'30 second\'";
+    e = function(err){
+        sendError(10206557582650156, "CheckMovesExpire has failed");
+        sendError(10205320360242528, "CheckMovesExpire has failed");
+    }
+    s_get_stale_duels = function(result){
+        for (var i = 0; i < result.rows.length; i++) {
+            sender_id = result.rows[i].sender_id;
+            recipient_id = result.rows[i].recipient_id;
+            sender_name = result.rows[i].sender_name;
+            recipient_name = result.rows[i].recipient_name;
+            user_turn = result.rows[i].user_turn;
+            duel_id = result.rows[i].duel_id;
+            if (sender_id == user_turn) {
+                timeOutDuel(sender_id, recipient_id, sender_name, recipient_name, duel_id);
+            }else{
+                timeOutDuel(recipient_id, sender_id, recipient_name, sender_name, duel_id);
+            }
+        };
+    }
+    makeQuery(q_get_stale_duels, e, s_get_stale_duels);
+}
+setInterval(ClearChallenges, 300000);
+setInterval(CheckMovesExpire, 5000);
 
-// function timeOutDuel(lid, wid, lname, wname, did) {
-//     sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
-//     sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
-//     setTimeout(function(){
-//         var stake = 0;
-//         e = function(err) {
-//             sendError(lid, 27);
-//             sendError(wid, 27);
-//         };
-//         s_update_w = function(result) {
-//             sendTextMessage(lid, "The duel has ended.");
-//             sendTextMessage(wid, "The duel has ended.");
-//         };
-//         s_update_l = function(result) {
-//             if (!stake) {
-//                 stake = 10;
-//             }
-//             q_update_w = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1, points = points +"+stake+"  WHERE id = \'" + wid + "\'";
-//             makeQuery(q_update_w, e, s_update_w);
-//         };
-//         s_update_d = function(result) {
-//             stake = result.rows[0].stake;
-//             q_update_l = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1, points = points -"+stake+" WHERE id = \'" + lid + "\'";
-//             makeQuery(q_update_l, e, s_update_l);
-//         };
-//         q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\' RETURNING stake";
-//         makeQuery(q_update_d, e, s_update_d);
-//     }, 5000);
-// }
+function timeOutDuel(lid, wid, lname, wname, did) {
+    sendTextMessage(lid, "You lost to " + wname + " because you did not make a move.");
+    sendTextMessage(wid, "You have defeated " + lname + "!");
+    var stake = 0;
+    e = function(err) {
+        sendError(lid, 27);
+        sendError(wid, 27);
+    };
+    s_update_w = function(result) {
+        return;
+    };
+    s_update_l = function(result) {
+        if (!stake) {
+            stake = 10;
+        }
+        q_update_w = "UPDATE user_table SET in_duel = 0, wins=wins+1, games_played=games_played+1, points = points +"+stake+"  WHERE id = \'" + wid + "\'";
+        makeQuery(q_update_w, e, s_update_w);
+    };
+    s_update_d = function(result) {
+        stake = result.rows[0].stake;
+        q_update_l = "UPDATE user_table SET in_duel = 0, losses=losses+1, games_played=games_played+1, points = points -"+stake+" WHERE id = \'" + lid + "\'";
+        makeQuery(q_update_l, e, s_update_l);
+    };
+    q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\' RETURNING stake";
+    makeQuery(q_update_d, e, s_update_d);
+}
 
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
