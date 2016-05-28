@@ -231,6 +231,19 @@
 <defaultValue>0</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
+<Attribute name="pressure_time" id="D39C86C0-99AF-18D5-292F-B40FDB4C43DF">
+<createdBy>Roy</createdBy>
+<createdTime>2016-05-28 05:18:50 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
 </attributes>
 <identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
 <identifier id="90ED1842-0B59-5FAB-3BF4-9083515C62E5" name="duel_table_PK">

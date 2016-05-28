@@ -173,6 +173,9 @@ app.post('/webhook/', function (req, res) {
                         case "@challenges":
                             getPendingChallenges(sender);
                             break;
+                        case "@pressure":
+                            setPressure(sender);
+                            break;
                         case "@cancel":
                             if (words.length == 2) {
                                 cancelChallenge(sender, username);
@@ -999,6 +1002,39 @@ function getPendingChallenges(s){
         }
     };
     makeQuery(q_name, e, s_name);
+}
+
+function setPressure(s){
+    q_user_in_duel = "SELECT duel_id FROM duel_table WHERE sender_id =\'"+s+"\' OR recipient_id=\'"+s+"\'";
+    e = function(err){
+        sendError(s, 50);
+    }
+    s_user_in_duel = function(result){
+        if (result.rows.length != 1) {
+            sendTextMessage(s, "You are not currently in a duel!");
+        }else{
+            duel_id = result.rows[0].duel_id;
+            q_update_duel = "UPDATE duel_table SET pressure_time = now() WHERE duel_id="+duel_id+" AND user_turn !=\'"+s+"\' RETURNING user_turn, sender_id, recipient_id";
+            makeQuery(q_update_duel, e, s_update_duel);
+        }
+    }
+    s_update_duel = function(result){
+        if (result.rows.length != 1) {
+            sendTextMessage(s, "It is currently your turn, please make a move.");
+        }else{
+            user_turn = result.rows[0].user_turn;
+            sender_id = result.rows[0].sender_id;
+            recipient_id = result.rows[0].recipient_id;
+            if (s == sender_id) {
+                sendTextMessage(sender_id, "Your opponent has 30 seconds to make a move.");
+                sendTextMessage(recipient_id, "Your opponent has pressured you. You now have 30 seconds to make a move.");
+            }else{
+                sendTextMessage(recipient_id, "Your opponent has 30 seconds to make a move.");
+                sendTextMessage(sender_id, "Your opponent has pressured you. You now have 30 seconds to make a move.");
+            }
+        }
+    }
+    makeQuery(q_user_in_duel, e, s_user_in_duel);
 }
 
 function userFeedback(s, feedback) {
