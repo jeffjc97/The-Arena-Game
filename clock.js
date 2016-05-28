@@ -39,8 +39,8 @@ app.use(function(req, res, next){
 
 //OnInterval
 var ClearChallenges = function(){
-    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'30 minute\'";
-    q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'00 minute\'";
+    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'10 minute\'";
+    q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
     e = function(err){
         sendError(10206557582650156, "Challenge Clearer has failed");
         sendError(10205320360242528, "Challenge Clearer has failed");
