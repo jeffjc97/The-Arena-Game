@@ -720,9 +720,9 @@ function makeMove(move){
                 move.bleed_defender -= 1;
             }
 
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+move.health_attacker + ', health_sender = ' + move.health_defender + ', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_recipient = '+move.health_attacker + ', health_sender = ' + move.health_defender + ', recipient_heal = recipient_heal - 1, moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_sender = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
             if (move.attacker_is_sender) {
-                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+move.health_attacker + ', health_recipient = ' + move.health_defender + ', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
+                q_update_duel = 'UPDATE duel_table SET user_turn = \'' + move.defender_id + '\', health_sender = '+move.health_attacker + ', health_recipient = ' + move.health_defender + ', sender_heal = sender_heal - 1, moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_recipient = ' + move.bleed_defender + 'WHERE duel_id = '+ move.duel_id;
             }
         }
         else {
@@ -748,9 +748,9 @@ function makeMove(move){
             move.health_defender -= move.bleed;
             move.bleed_defender -= 1;
         }
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         if (move.attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         }
     }
 
