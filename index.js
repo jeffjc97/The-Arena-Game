@@ -13,7 +13,7 @@ app.set('view engine', 'ejs');
 var max_health = 50;
 var attacks = {
     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
-    s: {miss: 0.25, min: 9, max: 12, verb: 'slashed'},
+    s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
     c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
 };
@@ -48,7 +48,8 @@ app.use(function(req, res, next){
 
 // Index route
 app.get('/', function (req, res) {
-    res.send('BOT FUN - a messenger chat game.');
+    res.render('index', { title: 'Express' });
+    // res.send('BOT FUN - a messenger chat game.');
 });
 
 // for Facebook verification
@@ -383,10 +384,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"Bot Fun: Help",
                 "subtitle":"Commands that can be used during a duel.",
-                "image_url":"http://i.imgur.com/a70xxT8.png",
+                "image_url":"http://i.imgur.com/bvgvgir.png",
                 "buttons":[{
                     "type":"web-url",
-                    "url":"http://i.imgur.com/a70xxT8.png",
+                    "url":"http://i.imgur.com/bvgvgir.png",
                     "title":"Larger image"
                 }
                 ]
@@ -624,12 +625,12 @@ function startDuel(s, r, f_id) {
     s_duel = function(result) {
         first = result.rows[0].name;
         if (result.rows[0].id == s) {
-            sendTextMessage(s, "The duel has begun! You have the first move.");
-            sendTextMessage(r, "The duel has begun! " + first + " has the first move.");
+            sendTextMessage(s, "The duel has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(r, "The duel has begun! " + first + " has the first move. To message your opponent, just type normally in the chat.");
         }
         else {
-            sendTextMessage(r, "The duel has begun! You have the first move.");
-            sendTextMessage(s, "The duel has begun! " + first + " has the first move.");
+            sendTextMessage(r, "The duel has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(s, "The duel has begun! " + first + " has the first move. To message your opponent, just type normally in the chat.");
         }
     };
     makeQuery(q_duel, e, s_duel);
