@@ -375,7 +375,7 @@ function sendHelpMessage(sender) {
                 "subtitle":"Commands that can be used outside of a duel.",
                 "image_url":"http://i.imgur.com/uSjGWnc.png",
                 "buttons":[{
-                    "type":"web-url",
+                    "type":"web_url",
                     "url":"http://i.imgur.com/uSjGWnc.png",
                     "title":"Larger image"
                 }
@@ -386,7 +386,7 @@ function sendHelpMessage(sender) {
                 "subtitle":"Commands that can be used during a duel.",
                 "image_url":"http://i.imgur.com/bvgvgir.png",
                 "buttons":[{
-                    "type":"web-url",
+                    "type":"web_url",
                     "url":"http://i.imgur.com/bvgvgir.png",
                     "title":"Larger image"
                 }
