@@ -104,7 +104,7 @@ app.post('/webhook/', function (req, res) {
                             sendHelpMessage(sender);
                             break;
                         case "@about":
-                            sendTextMessage(sender, "Bot Fun - a text based game by Jeff Chang and Roy Falik.");
+                            sendTextMessage(sender, "The Arena - a text based game by Jeff Chang and Roy Falik.");
                             break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
