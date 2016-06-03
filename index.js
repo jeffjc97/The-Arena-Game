@@ -104,7 +104,7 @@ app.post('/webhook/', function (req, res) {
                             sendHelpMessage(sender);
                             break;
                         case "@about":
-                            sendTextMessage(sender, "Bot Fun - a text based game by Jeff Chang and Roy Falik.");
+                            sendTextMessage(sender, "The Arena - a text based game by Jeff Chang and Roy Falik.");
                             break;
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
@@ -373,12 +373,24 @@ function sendHelpMessage(sender) {
               {
                 "title":"Bot Fun: Help",
                 "subtitle":"Commands that can be used outside of a duel.",
-                "image_url":"http://i.imgur.com/uSjGWnc.png"
+                "image_url":"http://i.imgur.com/uSjGWnc.png",
+                "buttons":[{
+                    "type":"web_url",
+                    "url":"http://i.imgur.com/uSjGWnc.png",
+                    "title":"Larger image"
+                }
+                ]
               },
               {
                 "title":"Bot Fun: Help",
                 "subtitle":"Commands that can be used during a duel.",
-                "image_url":"http://i.imgur.com/bvgvgir.png"
+                "image_url":"http://i.imgur.com/bvgvgir.png",
+                "buttons":[{
+                    "type":"web_url",
+                    "url":"http://i.imgur.com/bvgvgir.png",
+                    "title":"Larger image"
+                }
+                ]
               },
             ]
           }
@@ -487,11 +499,11 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
     s_insert_duel = function(result) {
         if (stake_val) {
             sendTextMessage(sender, "Challenged "+username+" for "+stake_val+" coins. Waiting for response...");
-            sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+" coins. Type @accept "+challenger_name+" to accept.");
+            sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" for "+stake_val+" coins. Type @accept/@reject "+challenger_name+" to accept or reject.");
         }
         else {
             sendTextMessage(sender, "Challenged "+username+" to a friendly duel. Waiting for response...");
-            sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" to a friendly duel. Type @accept "+challenger_name+" to accept.");
+            sendTextMessage(receiver_id, "You have been challenged by "+challenger_name+" to a friendly duel. Type @accept/@reject "+challenger_name+" to accept or reject.");
         }
     };
     makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
