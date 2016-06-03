@@ -153,6 +153,17 @@ app.post('/webhook/', function (req, res) {
                                 sendError(sender, 100, "Please include your feedback after the command.");
                             }
                             break;
+                        case "@friends":
+                            if (words.length == 1) {
+                                listFriends(sender);
+                            }
+                            else if (words.length == 2) {
+                                addFriend(sender, username);
+                            }
+                            else {
+                                sendError(sender, 111, "Invalid friends command. See @help for more information.");
+                            }
+                            break;
                         case "@d":
                         case "@dagger":
                             makeMoveSetup(sender, 'd');
@@ -973,6 +984,30 @@ function sendNormalMessage(s, text) {
         }
     };
     makeQuery(q_get_user_info, e, s_get_user_info);
+}
+
+function listFriends(s) {
+    // TODO
+}
+
+function addFriend(s, fu) {
+    s_add_friend = function(result) {
+        sendTextMessage(s, fu + " added to your friends list! Type @friends to see all friends.");
+    };
+    s_validate_fu = function(result) {
+        if (result.rows.length) {
+            q_add_friend = "update user_table set friends = friends || '{" + fu + "}' where id = '" + s + "'";
+            makeQuery(q_add_friend, e, s_add_friend);
+        }
+        else {
+            sendTextMessage(s, "Username not found. Please try again.");
+        }
+    };
+    e = function(err) {
+        sendError(s, 112);
+    };
+    q_validate_fu = "select id from user_table where name = '" + fu + "'";
+    makeQuery(q_validate_fu, e, s_validate_fu);
 }
 
 function getStats(user, s){
