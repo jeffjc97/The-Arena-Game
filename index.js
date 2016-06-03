@@ -128,7 +128,7 @@ app.post('/webhook/', function (req, res) {
                                 respondToChallenge(username, sender, true);
                             }
                             else if (words.length == 1) {
-                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @accept jeff).")
+                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @accept jeff).");
                             }
                             else {
                                 sendError(sender, 100, "Invalid accept command. See @help for more information.");
@@ -139,7 +139,7 @@ app.post('/webhook/', function (req, res) {
                                 respondToChallenge(username, sender, false);
                             }
                             else if (words.length == 1) {
-                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @reject jeff).")
+                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @reject jeff).");
                             }
                             else {
                                 sendError(sender, 100, "Invalid reject command. See @help for more information.");
