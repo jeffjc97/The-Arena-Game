@@ -497,26 +497,30 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
     makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
 }
 
+// bug - can send request to someone where request is already pending
 function randomChallenge(s) {
-    // check if sender in a duel
-    // check if pending request already
-    // random request can't request yourself
     s_get_random = function(result) {
         r = result.rows[0].id;
         ru = result.rows[0].name;
         sendChallenge(s, su, r, ru, 0);
     };
-    s_get_su = function(result) {
+    s_get_sender = function(result) {
         su = result.rows[0].name;
-        q_get_random = "select id, name  from user_table where in_duel = 0 and id != '" + s + "' offset floor(random() * (select count(*) from user_table)) limit 1";
-        makeQuery(q_get_random, e, s_get_random);
+        s_in_duel = result.rows[0].in_duel;
+        if (s_in_duel) {
+            sendTextMessage(sender, "You are currently in a duel!");
+        }
+        else {
+            q_get_random = "select id, name  from user_table where in_duel = 0 and id != '" + s + "' offset floor(random() * (select count(*) from user_table)) limit 1";
+            makeQuery(q_get_random, e, s_get_random);
+        }
     };
     e = function(err) {
         sendError(s, 110);
     };
     var rid, ru, su;
-    q_get_su = "select name from user_table where id = '" + s + "'";
-    makeQuery(q_get_su, e, s_get_su);
+    q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
+    makeQuery(q_get_sender, e, s_get_sender);
 }
 
 //r (id) is responding to challenge from su (name) with response 
