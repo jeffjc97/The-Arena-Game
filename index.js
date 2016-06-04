@@ -1019,7 +1019,7 @@ function sendNormalMessage(s, text) {
 
 function listFriends(s) {
     s_get_friends = function(result) {
-        num_messages = Math.ceil(result.rows.length);
+        num_messages = Math.ceil(result.rows.length / 20);
         for (i = 0; i < num_messages; i++) {
             friend_string = "Friends:\n";
             for (j = 20 * i; j < Math.min(result.rows.length, 20 * (i + 1)); j++) {
