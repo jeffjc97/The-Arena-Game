@@ -560,11 +560,17 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
 }
 
 // bug - can send request to someone where request is already pending
+// bug - sometimes returns nothing
 function randomChallenge(s) {
     s_get_random = function(result) {
-        r = result.rows[0].id;
-        ru = result.rows[0].name;
-        sendChallenge(s, su, r, ru, 0);
+        if (result.rows.length > 0) {
+            r = result.rows[0].id;
+            ru = result.rows[0].name;
+            sendChallenge(s, su, r, ru, 0);
+        }
+        else {
+            randomChallenge(s);
+        }
     };
     s_get_sender = function(result) {
         su = result.rows[0].name;
