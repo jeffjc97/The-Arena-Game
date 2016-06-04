@@ -336,7 +336,9 @@ function setupChallenge(sender, username, stake_val){
         console.log(result.rows[0]);
         if (result.rows[0].count >= 1) {
             sendTextMessage(sender, "You have too many challenges pending. Please cancel some before issuing any more.");
-        }else{
+        }
+        else{
+            sendTextMessage(sender, "gogogo");
             q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
             s_validate_val = function(result){
                 if (result.rows.length != 2) {
