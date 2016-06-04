@@ -337,8 +337,7 @@ function setupChallenge(sender, username, stake_val){
         if (result.rows[0].count >= 1) {
             sendTextMessage(sender, "You have too many challenges pending. Please cancel some before issuing any more.");
         }
-        else{
-            sendTextMessage(sender, "gogogo");
+        else {
             q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
             s_validate_val = function(result){
                 if (result.rows.length != 2) {
@@ -360,7 +359,7 @@ function setupChallenge(sender, username, stake_val){
                         receiver_in_duel = result.rows[0].in_duel;
                     }
                     if (stake_val > challenger_p) {
-                        sendTextMessage(sender, "You don't have enough coins for this stake!");
+                        sendTextMessage(sender, "You don't have enough coins for thi!!!s stake!");
                         return;
                     }
                     if (stake_val > receiver_p) {
@@ -382,7 +381,7 @@ function setupChallenge(sender, username, stake_val){
             };
             makeQuery(q_validate_val, e_validate_val, s_validate_val);
         }
-    }
+    };
     makeQuery(q_max_challenges, e_validate_val, s_max_challenges);
 }
 
