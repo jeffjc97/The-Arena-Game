@@ -330,7 +330,10 @@ function setupChallenge(sender, username, stake_val){
         sendError(sender, 44);
     };
     s_max_challenges = function(result){
-        sendTextMessage(sender, JSON.stringify(result.rows[0]).substring(0,200));
+        sendTextMessage(sender, result.rows[0]);
+        sendTextMessage(sender, "shit");
+        console.log(result.rows);
+        console.log(result.rows[0]);
         if (result.rows[0].count >= 1) {
             sendTextMessage(sender, "You have too many challenges pending. Please cancel some before issuing any more.");
         }else{
