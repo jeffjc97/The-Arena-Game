@@ -1043,23 +1043,28 @@ function sendNormalMessage(s, text) {
 function listFriends(s) {
     s_get_friends = function(result) {
         num_messages = Math.ceil(result.rows.length / 20);
-        for (i = 0; i < num_messages; i++) {
-            friend_string = "Friends:\n";
-            for (j = 20 * i; j < Math.min(result.rows.length, 20 * (i + 1)); j++) {
-                if (j % 20 === 0) {
-                    friend_string += result.rows[j].name;
+        if (result.rows.length === 0) {
+            sendTextMessage(s, "Add some friends to get started! (Ex. @friend jeff)");
+        }
+        else {
+            for (i = 0; i < num_messages; i++) {
+                friend_string = "Friends:\n";
+                for (j = 20 * i; j < Math.min(result.rows.length, 20 * (i + 1)); j++) {
+                    if (j % 20 === 19) {
+                        friend_string += result.rows[j].name + " - " + result.rows[j].fname;
+                    }
+                    else {
+                        friend_string += result.rows[j].name + " - " + result.rows[j].fname + "\n";
+                    }
                 }
-                else {
-                    friend_string += ", " + result.rows[j].name;
-                }
+                sendTextMessage(s, friend_string);
             }
-            sendTextMessage(s, friend_string);
         }
     };
     e = function(err) {
         sendError(s, 112);
     };
-    q_get_friends = "select u.name as \"name\" from friend_table f join user_table u on (f.friend_id = u.id)";
+    q_get_friends = "select u.name as \"name\", u.first_name as \"fname\" from friend_table f join user_table u on (f.friend_id = u.id)";
     makeQuery(q_get_friends, e, s_get_friends);
 }
 
