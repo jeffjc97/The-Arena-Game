@@ -331,6 +331,7 @@ function setupChallenge(sender, username, stake_val){
     };
     s_max_challenges = function(result){
         sendTextMessage(sender, result.rows[0]);
+        sendTextMessage(sender, "shit");
         console.log(result.rows);
         console.log(result.rows[0]);
         if (result.rows[0].count >= 1) {
