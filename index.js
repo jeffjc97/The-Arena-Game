@@ -326,6 +326,7 @@ function sendError(uid, eid, msg) {
 }
 
 function setupChallenge(sender, username, stake_val){
+    sendError(sender, 666);
     if (!stake_val) {
         stake_val = 0;
     }
