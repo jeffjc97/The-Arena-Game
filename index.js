@@ -49,8 +49,7 @@ app.use(function(req, res, next){
 
 // Index route
 app.get('/', function (req, res) {
-    res.render('index', { title: 'Express' });
-    // res.send('BOT FUN - a messenger chat game.');
+    res.send('The Arena - a messenger chat game by Jeffrey Chang and Roy Falik.');
 });
 
 // for Facebook verification
