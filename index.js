@@ -988,6 +988,18 @@ function sendNormalMessage(s, text) {
 
 function listFriends(s) {
     // TODO
+    s_get_friends = function(result) {
+        friend_string = "";
+        for (i = 0; i < result.rows.length; i++) {
+            friend_string += ", " + result.rows[i].name;
+        }
+        sendTextMessage(s, friend_string);
+    };
+    e = function(err) {
+        sendError(s, 113);
+    };
+    q_get_friends = "select u.name as \"name\" from friend_table f join user_table u on (f.friend_id = u.id)";
+    makeQuery(q_get_friends, e, s_get_friends);
 }
 
 function addFriend(s, fu) {
@@ -996,7 +1008,8 @@ function addFriend(s, fu) {
     };
     s_validate_fu = function(result) {
         if (result.rows.length) {
-            q_add_friend = "update user_table set friends = friends || '{" + fu + "}' where id = '" + s + "'";
+            fid = result.rows[0].id;
+            q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
             makeQuery(q_add_friend, e, s_add_friend);
         }
         else {
