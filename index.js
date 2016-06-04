@@ -1106,7 +1106,7 @@ function getPendingChallenges(s){
         }
         else{
             name = result.rows[0].name;
-            q_get_challenges = "SELECT u.name as \"sender\", u2.name as \"recipient\" from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
+            q_get_challenges = "SELECT u.name as \"sender\", u2.name as \"recipient\", c.val from challenge_table c join user_table u on (u.id = c.sender) left join user_table u2 on (u2.id = c.recipient) where u.name = \'" + name + "\' OR u2.name = \'" + name + "\'";
             s_get_challenges = function(result){
                 if (!result.rows.length) {
                     sendTextMessage(s, "You have no current pending challenges.");
@@ -1116,9 +1116,12 @@ function getPendingChallenges(s){
                     result_string = "You've challenged:";
                     for (var i = result.rows.length - 1; i >= 0; i--) {
                         sender_val = result.rows[i].sender;
+                        val = result.rows[i].val;
                         if (sender_val == name) {
                             result_string+="\n";
                             result_string += result.rows[i].recipient;
+                            result_string += " - ";
+                            result_string += val + " coins";
                         }
                     }
                     if (result_string !== "You've challenged:") {
@@ -1128,9 +1131,12 @@ function getPendingChallenges(s){
                     result_string = "You've been challenged by:";
                     for (i = result.rows.length - 1; i >= 0; i--) {
                         recip_val = result.rows[i].recipient;
+                        val = result.rows[i].val;
                         if (recip_val == name) {
                             result_string+="\n";
                             result_string += result.rows[i].sender;
+                            result_string += " - ";
+                            result_string += val + " coins";
                         }
                     }
                     if (result_string !== "You've been challenged by:") {
