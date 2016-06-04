@@ -49,7 +49,7 @@ app.use(bodyParser.json());
 
 // Index route
 app.get('/', function (req, res) {
-    res.send('The Arena - a messenger chat game by Jeffrey Chang and Roy Falik.');
+    res.send('The Arena - a messenger chat game by Jeffrey Chang and Roy Falik. Play at m.me/TheArenaGame');
 });
 
 // for Facebook verification
