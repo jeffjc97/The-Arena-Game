@@ -1073,7 +1073,7 @@ function listFriends(s) {
         num_messages = result.rows.length / 20 + 1;
         for (i = 0; i < num_messages; i++) {
             friend_string = "Friends:";
-            for (j = 20 * i; j < 20 * (i + 1); j++) {
+            for (j = 20 * i; j < min(result.rows.length, 20 * (i + 1)); j++) {
                 if (j % 20 === 0) {
                     friend_string += result.rows[j].name;
                 }
