@@ -88,7 +88,7 @@ app.post('/webhook/', function (req, res) {
                                 registerUser(sender, username);
                             }
                             else {
-                                sendError(sender, 100, "Usernames must be one word.");
+                                sendTextMessage(sender, "Usernames must be one word.");
                             }
                             break;
                         default:
@@ -118,7 +118,7 @@ app.post('/webhook/', function (req, res) {
                                 setupChallenge(sender, username);
                             }
                             else {
-                                sendError(sender, 100, "Invalid challenge command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid challenge command. See @help for more information.");
                             }
                             break;
                         case "@random":
@@ -129,10 +129,10 @@ app.post('/webhook/', function (req, res) {
                                 respondToChallenge(username, sender, true);
                             }
                             else if (words.length == 1) {
-                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @accept jeff).");
+                                sendTextMessage(sender, "Make sure to include the challenger's username (ex. @accept jeff).");
                             }
                             else {
-                                sendError(sender, 100, "Invalid accept command. See @help for more information.");
+                                sendTextMessage(sender,"Invalid accept command. See @help for more information.");
                             }
                             break;
                         case "@reject":
@@ -140,10 +140,10 @@ app.post('/webhook/', function (req, res) {
                                 respondToChallenge(username, sender, false);
                             }
                             else if (words.length == 1) {
-                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @reject jeff).");
+                                sendTextMessage(sender, "Make sure to include the challenger's username (ex. @reject jeff).");
                             }
                             else {
-                                sendError(sender, 100, "Invalid reject command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid reject command. See @help for more information.");
                             }
                             break;
                         case "@feedback":
@@ -151,7 +151,7 @@ app.post('/webhook/', function (req, res) {
                                 userFeedback(sender, text.substr(text.indexOf(" ") + 1));
                             }
                             else {
-                                sendError(sender, 100, "Please include your feedback after the command.");
+                                sendTextMessage(sender, "Please include your feedback after the command.");
                             }
                             break;
                         case "@friend":
@@ -159,7 +159,7 @@ app.post('/webhook/', function (req, res) {
                                 addFriend(sender, username);
                             }
                             else {
-                                sendError(sender, 116, "Invalid friends command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid friends command. See @help for more information.");
                             }
                             break;
                         case "@friends":
@@ -167,7 +167,7 @@ app.post('/webhook/', function (req, res) {
                                 listFriends(sender);
                             }
                             else {
-                                sendError(sender, 111, "Invalid friends command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid friends command. See @help for more information.");
                             }
                             break;
                         case "@d":
@@ -194,7 +194,7 @@ app.post('/webhook/', function (req, res) {
                                 getStats(username, sender);
                             }
                             else {
-                                sendError(sender, 100, "Invalid stats command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid stats command. See @help for more information.");
                             }
                             break;
                         case "@challenges":
@@ -208,7 +208,7 @@ app.post('/webhook/', function (req, res) {
                                 cancelChallenge(sender, username);
                             }
                             else {
-                                sendError(sender, 100, "Invalid cancel command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
                             }
                             break;
                         case "@stake":
@@ -216,22 +216,22 @@ app.post('/webhook/', function (req, res) {
                                 username = words[words.length - 2];
                                 val = words[words.length - 1];
                                 if (isNaN(parseInt(val))) {
-                                    sendError(sender, 100, "Invalid stake command. See @help for more information.");
+                                    sendTextMessage(sender, "Invalid stake command. See @help for more information.");
                                 }
                                 else if (val < 1) {
-                                    sendError(sender, 101, "Stake value must be greater than 0.");
+                                    sendTextMessage(sender, "Stake value must be greater than 0.");
                                 }
                                 else {
                                     setupChallenge(sender, username, val);
                                 }
                             }
                             else {
-                                sendError(sender, 100, "Invalid stake command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid stake command. See @help for more information.");
                             }
                             break;
                         default:
                             if (words[0].charAt(0) == "@") {
-                                sendError(sender, 100, "Not a valid command. See @help for more information.");
+                                sendTextMessage(sender, "Not a valid command. See @help for more information.");
                             }
                             else {
                                 sendNormalMessage(sender, text);
@@ -326,7 +326,6 @@ function sendError(uid, eid, msg) {
 }
 
 function setupChallenge(sender, username, stake_val){
-    sendError(sender, 666);
     if (!stake_val) {
         stake_val = 0;
     }
@@ -502,7 +501,7 @@ function registerUser(s, username) {
                 q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\')';
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
-                        sendError(s, 29, "Username already exists, please try another.");
+                        sendTextMessage(s, "Username already exists, please try another.");
                     }
                     else {
                         sendError(s, 30);
@@ -540,7 +539,7 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
     q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ',default, '+stake_val+',1)';
     e_insert_duel = function(err) {
         if (err.detail.indexOf("already exists") > -1) {
-            sendError(sender, 7, "Challenge already pending, please wait...");
+            sendTextMessage(sender,"Challenge already pending, please wait...");
         }
         else {
             sendError(sender, 8);
@@ -614,7 +613,7 @@ function respondToChallenge(su, r, response) {
 
     s_get_challenge = function(result) {
         if (result.rows.length === 0) {
-            sendError(r, 19, "This challenge request has expired or does not exist.");
+            sendTextMessage(r, "This challenge request has expired or does not exist.");
         }
         else if (result.rows.length > 1){
             sendError(r, 20);
@@ -634,7 +633,7 @@ function respondToChallenge(su, r, response) {
         }
         else {
             if(result.rows[0].in_duel !== 0){
-                sendError(r, 18, su + " is currently in a duel. Please try accepting again soon.");
+                sendTextMessage(r,su + " is currently in a duel. Please try accepting again soon.");
             }
             else {
                 s = result.rows[0].id;
@@ -650,7 +649,7 @@ function respondToChallenge(su, r, response) {
             sendError(r, 13);
         }
         else if(result.rows[0].in_duel !== 0) {
-            sendError(r, 14, "You are currently in a duel!");
+            sendTextMessage(r, "You are currently in a duel!");
         }
         else {
             //username of the responder
@@ -744,7 +743,7 @@ function makeMoveSetup(s, type){
         data = result.rows[0];
         turn_id = data.user_turn;
         if (s != turn_id) {
-            sendError(s, 35, "It's not your turn. Please wait.");
+            sendTextMessage(s, "It's not your turn. Please wait.");
         }
         else {
             //we know s is attacker. Is s sender_id or recipient_id?
@@ -783,7 +782,7 @@ function makeMoveSetup(s, type){
             move.attacker_name = result.rows[0].name;
             move.attacker_gender = result.rows[0].gender;
             if (move.duel_id === 0) {
-                sendError(s, 36, "You are not currently in a duel.");
+                sendTextMessage(s, "You are not currently in a duel.");
             }
             else {
                 q_get_duel = 'SELECT * FROM duel_table WHERE duel_id = ' + move.duel_id;
@@ -963,7 +962,7 @@ function forfeitDuel(lid) {
             makeQuery(q_get_all_info, e, s_get_all_info);
         }
         else {
-            sendError(lid, 39, "You are not currently in a duel.");
+            sendTextMessage(lid,"You are not currently in a duel.");
         }
     };
     makeQuery(q_get_did, e, s_get_did);
@@ -1071,7 +1070,7 @@ function addFriend(s, fu) {
     };
     e = function(err) {
         if (err.detail.indexOf("already exists") > -1) {
-            sendError(s, 113, "This person is already on your friends list!");
+            sendTextMessage(s,"This person is already on your friends list!");
         }
         else {
             sendError(s, 114);
