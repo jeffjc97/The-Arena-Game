@@ -153,12 +153,17 @@ app.post('/webhook/', function (req, res) {
                                 sendError(sender, 100, "Please include your feedback after the command.");
                             }
                             break;
+                        case "@friend":
+                            if (words.length == 2) {
+                                addFriend(sender, username);
+                            }
+                            else {
+                                sendError(sender, 116, "Invalid friends command. See @help for more information.");
+                            }
+                            break;
                         case "@friends":
                             if (words.length == 1) {
                                 listFriends(sender);
-                            }
-                            else if (words.length == 2) {
-                                addFriend(sender, username);
                             }
                             else {
                                 sendError(sender, 111, "Invalid friends command. See @help for more information.");
@@ -987,16 +992,25 @@ function sendNormalMessage(s, text) {
 }
 
 function listFriends(s) {
-    // TODO
     s_get_friends = function(result) {
         friend_string = "";
         for (i = 0; i < result.rows.length; i++) {
-            friend_string += ", " + result.rows[i].name;
+            if (i === 0) {
+                friend_string += result.rows[i].name;
+            }
+            else {
+                friend_string += ", " + result.rows[i].name;
+            }
         }
         sendTextMessage(s, friend_string);
     };
     e = function(err) {
-        sendError(s, 113);
+        if (err.detail.indexOf("already exists") > -1) {
+            sendError(s, 113, "This person is already on your friends list!");
+        }
+        else {
+            sendError(s, 114);
+        }
     };
     q_get_friends = "select u.name as \"name\" from friend_table f join user_table u on (f.friend_id = u.id)";
     makeQuery(q_get_friends, e, s_get_friends);
