@@ -523,57 +523,6 @@ function getPersonalInfo(s){
     makeQuery(q_get_username, e, s_get_username);
 }
 
-function setupChallenge(sender, username, stake_val){
-    if (!stake_val) {
-        stake_val = 0;
-    }
-    q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
-    e_validate_val = function(err){
-        sendError(sender, 44);
-    };
-    s_validate_val = function(result){
-        if (result.rows.length != 2) {
-            sendTextMessage(sender, "Username not found. Please try again.");
-        }
-        else{
-            challenger_p = result.rows[0].points;
-            challenger_name = result.rows[0].name;
-            challenger_in_duel = result.rows[0].in_duel;
-            receiver_p = result.rows[1].points;
-            receiver_id = result.rows[1].id;
-            receiver_in_duel = result.rows[1].in_duel;
-            if (result.rows[1].id == sender) {
-                challenger_p = result.rows[1].points;
-                challenger_name = result.rows[1].name;
-                challenger_in_duel = result.rows[1].in_duel;
-                receiver_p = result.rows[0].points;
-                receiver_id = result.rows[0].id;
-                receiver_in_duel = result.rows[0].in_duel;
-            }
-            if (stake_val > challenger_p) {
-                sendTextMessage(sender, "You don't have enough coins for this stake!");
-                return;
-            }
-            if (stake_val > receiver_p) {
-                sendTextMessage(sender, username + " doesn't have enough coins for this stake!");
-                return;
-            }
-            if (challenger_in_duel) {
-                sendTextMessage(sender, "You are currently in a duel!");
-                return;
-            }
-            if (receiver_in_duel) {
-                sendTextMessage(sender, username+" is currently in a duel. Please try again later.");
-            }
-            else{
-                //both parties have enough points for the challenge and are not in duels
-                sendChallenge(sender, challenger_name, receiver_id, username, stake_val);
-            }
-        }
-    };
-    makeQuery(q_validate_val, e_validate_val, s_validate_val);
-}
-
 //invariant: neither party is in a duel and both parties have enough for the stake
 function sendChallenge(sender, challenger_name, receiver_id, username, stake_val){
     q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ',default, '+stake_val+',1)';
