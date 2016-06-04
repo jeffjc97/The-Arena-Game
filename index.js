@@ -325,12 +325,13 @@ function setupChallenge(sender, username, stake_val){
     if (!stake_val) {
         stake_val = 0;
     }
-    q_max_challenges = 'SELECT COUNT(*) from challenge_table WHERE sender_id = \''+sender+'\'';
+    q_max_challenges = 'SELECT COUNT(*) from challenge_table WHERE sender = \''+sender+'\'';
     e_validate_val = function(err){
         sendError(sender, 44);
     };
     s_max_challenges = function(result){
-        if (result.rows[0].count > 1) {
+        sendTextMessage(sender, JSON.stringify(result.rows[0]).substring(0,200));
+        if (result.rows[0].count >= 1) {
             sendTextMessage(sender, "You have too many challenges pending. Please cancel some before issuing any more.");
         }else{
             q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
