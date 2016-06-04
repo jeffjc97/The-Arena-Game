@@ -315,11 +315,14 @@ function makeQuery(q, error, success) {
 
 function sendError(uid, eid, msg) {
     if (typeof msg === 'undefined') {
-        sendTextMessage(uid, "Sorry - something bad happened! Please try again. (" + eid + ")");
+        msg =  "Sorry - something bad happened! Please try again. (" + eid + ")";
     }
-    else {
+    q_insert_error = "INSERT INTO error_log (error, time, user) VALUES (\'"+msg+"\', default, \'"+uid+"\')";
+    e = function(err){return;};
+    s_insert_error = function(result){
         sendTextMessage(uid, msg);
     }
+    makeQuery(q_insert_error, e, s_insert_error);
 }
 
 function setupChallenge(sender, username, stake_val){

@@ -22,6 +22,10 @@
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
 <bounds x="69" y="382" width="170" height="110"/>
 </OView>
+<OView class="oracle.dbtools.crest.swingui.relational.TVTable" oid="501B05ED-EB56-4F33-9B90-901671DD448C" otype="Table" vid="38030BBE-9582-C47C-2B5A-843A2950C576">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="762" y="20" width="170" height="110"/>
+</OView>
 <OView class="oracle.dbtools.crest.swingui.relational.TVTable" oid="AC6E7639-5352-81B0-5048-88DB0CB77E6B" otype="Table" vid="559AA416-B7A4-5993-765C-7D6E00F940B7">
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
 <bounds x="569" y="15" width="170" height="110"/>
