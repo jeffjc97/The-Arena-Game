@@ -572,7 +572,7 @@ function randomChallenge(s) {
             randomChallenge(s);
         }
         else{
-            sendTextMessage(s, "You have challenged everyone possible!");
+            sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
         }
     };
     s_get_sender = function(result) {
