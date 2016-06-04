@@ -120,9 +120,15 @@ app.post('/webhook/', function (req, res) {
                                 sendError(sender, 100, "Invalid challenge command. See @help for more information.");
                             }
                             break;
+                        case "@random":
+                            randomChallenge(sender);
+                            break;
                         case "@accept":
                             if (words.length == 2) {
                                 respondToChallenge(username, sender, true);
+                            }
+                            else if (words.length == 1) {
+                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @accept jeff).");
                             }
                             else {
                                 sendError(sender, 100, "Invalid accept command. See @help for more information.");
@@ -131,6 +137,9 @@ app.post('/webhook/', function (req, res) {
                         case "@reject":
                             if (words.length == 2) {
                                 respondToChallenge(username, sender, false);
+                            }
+                            else if (words.length == 1) {
+                                sendError(sender, 100, "Make sure to include the challenger's username (ex. @reject jeff).");
                             }
                             else {
                                 sendError(sender, 100, "Invalid reject command. See @help for more information.");
@@ -142,6 +151,22 @@ app.post('/webhook/', function (req, res) {
                             }
                             else {
                                 sendError(sender, 100, "Please include your feedback after the command.");
+                            }
+                            break;
+                        case "@friend":
+                            if (words.length == 2) {
+                                addFriend(sender, username);
+                            }
+                            else {
+                                sendError(sender, 116, "Invalid friends command. See @help for more information.");
+                            }
+                            break;
+                        case "@friends":
+                            if (words.length == 1) {
+                                listFriends(sender);
+                            }
+                            else {
+                                sendError(sender, 111, "Invalid friends command. See @help for more information.");
                             }
                             break;
                         case "@d":
@@ -421,6 +446,7 @@ function sendHelpMessage(sender) {
     });
 }
 
+// used on register
 function getUserInfo(sender) {
     // curl -X GET "https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
     request({
@@ -492,6 +518,57 @@ function getPersonalInfo(s){
     makeQuery(q_get_username, e, s_get_username);
 }
 
+function setupChallenge(sender, username, stake_val){
+    if (!stake_val) {
+        stake_val = 0;
+    }
+    q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
+    e_validate_val = function(err){
+        sendError(sender, 44);
+    };
+    s_validate_val = function(result){
+        if (result.rows.length != 2) {
+            sendTextMessage(sender, "Username not found. Please try again.");
+        }
+        else{
+            challenger_p = result.rows[0].points;
+            challenger_name = result.rows[0].name;
+            challenger_in_duel = result.rows[0].in_duel;
+            receiver_p = result.rows[1].points;
+            receiver_id = result.rows[1].id;
+            receiver_in_duel = result.rows[1].in_duel;
+            if (result.rows[1].id == sender) {
+                challenger_p = result.rows[1].points;
+                challenger_name = result.rows[1].name;
+                challenger_in_duel = result.rows[1].in_duel;
+                receiver_p = result.rows[0].points;
+                receiver_id = result.rows[0].id;
+                receiver_in_duel = result.rows[0].in_duel;
+            }
+            if (stake_val > challenger_p) {
+                sendTextMessage(sender, "You don't have enough coins for this stake!");
+                return;
+            }
+            if (stake_val > receiver_p) {
+                sendTextMessage(sender, username + " doesn't have enough coins for this stake!");
+                return;
+            }
+            if (challenger_in_duel) {
+                sendTextMessage(sender, "You are currently in a duel!");
+                return;
+            }
+            if (receiver_in_duel) {
+                sendTextMessage(sender, username+" is currently in a duel. Please try again later.");
+            }
+            else{
+                //both parties have enough points for the challenge and are not in duels
+                sendChallenge(sender, challenger_name, receiver_id, username, stake_val);
+            }
+        }
+    };
+    makeQuery(q_validate_val, e_validate_val, s_validate_val);
+}
+
 //invariant: neither party is in a duel and both parties have enough for the stake
 function sendChallenge(sender, challenger_name, receiver_id, username, stake_val){
     q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ',default, '+stake_val+',1)';
@@ -515,6 +592,32 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
         }
     };
     makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
+}
+
+// bug - can send request to someone where request is already pending
+function randomChallenge(s) {
+    s_get_random = function(result) {
+        r = result.rows[0].id;
+        ru = result.rows[0].name;
+        sendChallenge(s, su, r, ru, 0);
+    };
+    s_get_sender = function(result) {
+        su = result.rows[0].name;
+        s_in_duel = result.rows[0].in_duel;
+        if (s_in_duel) {
+            sendTextMessage(sender, "You are currently in a duel!");
+        }
+        else {
+            q_get_random = "select id, name  from user_table where in_duel = 0 and id != '" + s + "' offset floor(random() * (select count(*) from user_table)) limit 1";
+            makeQuery(q_get_random, e, s_get_random);
+        }
+    };
+    e = function(err) {
+        sendError(s, 110);
+    };
+    var rid, ru, su;
+    q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
+    makeQuery(q_get_sender, e, s_get_sender);
 }
 
 //r (id) is responding to challenge from su (name) with response 
@@ -602,6 +705,22 @@ function respondToChallenge(su, r, response) {
     q_get_recipient = 'SELECT points, name, in_duel FROM user_table where id= \'' + r + '\'';
     makeQuery(q_get_recipient, e, s_get_recipient);
 
+}
+
+function cancelChallenge(s, u){
+    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
+    e = function(err){
+        sendError(s, 46);
+    };
+    s_cancel = function(result){
+        if (result.rows.length != 1) {
+            e(null);
+        }
+        else{
+            sendTextMessage(s, "Your challenge to "+u+" has been cancelled.");
+        }
+    };
+    makeQuery(q_cancel, e, s_cancel);
 }
 
 // invariant: neither party is in a duel
@@ -945,6 +1064,52 @@ function sendNormalMessage(s, text) {
         }
     };
     makeQuery(q_get_user_info, e, s_get_user_info);
+}
+
+function listFriends(s) {
+    s_get_friends = function(result) {
+        friend_string = "";
+        for (i = 0; i < result.rows.length; i++) {
+            if (i === 0) {
+                friend_string += result.rows[i].name;
+            }
+            else {
+                friend_string += ", " + result.rows[i].name;
+            }
+        }
+        sendTextMessage(s, friend_string);
+    };
+    e = function(err) {
+        if (err.detail.indexOf("already exists") > -1) {
+            sendError(s, 113, "This person is already on your friends list!");
+        }
+        else {
+            sendError(s, 114);
+        }
+    };
+    q_get_friends = "select u.name as \"name\" from friend_table f join user_table u on (f.friend_id = u.id)";
+    makeQuery(q_get_friends, e, s_get_friends);
+}
+
+function addFriend(s, fu) {
+    s_add_friend = function(result) {
+        sendTextMessage(s, fu + " added to your friends list! Type @friends to see all friends.");
+    };
+    s_validate_fu = function(result) {
+        if (result.rows.length) {
+            fid = result.rows[0].id;
+            q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
+            makeQuery(q_add_friend, e, s_add_friend);
+        }
+        else {
+            sendTextMessage(s, "Username not found. Please try again.");
+        }
+    };
+    e = function(err) {
+        sendError(s, 112);
+    };
+    q_validate_fu = "select id from user_table where name = '" + fu + "'";
+    makeQuery(q_validate_fu, e, s_validate_fu);
 }
 
 function getStats(user, s){
