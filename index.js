@@ -407,11 +407,22 @@ function sendHelpMessage(sender) {
             "elements":[
               {
                 "title":"Bot Fun: Help",
-                "subtitle":"Commands that can be used outside of a duel.",
-                "image_url":"http://i.imgur.com/uSjGWnc.png",
+                "subtitle":"Commands that can be used outside of a duel. (1/2)",
+                "image_url":"http://i.imgur.com/33ecJLi.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/uSjGWnc.png",
+                    "url":"http://i.imgur.com/33ecJLi.png",
+                    "title":"Larger image"
+                }
+                ]
+              },
+              {
+                "title":"Bot Fun: Help",
+                "subtitle":"Commands that can be used outside of a duel. (2/2)",
+                "image_url":"http://i.imgur.com/Fc0gm4l.png",
+                "buttons":[{
+                    "type":"web_url",
+                    "url":"http://i.imgur.com/Fc0gm4l.png",
                     "title":"Larger image"
                 }
                 ]
