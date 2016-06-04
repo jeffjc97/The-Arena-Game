@@ -317,8 +317,8 @@ function sendError(uid, eid, msg) {
     if (!msg) {
         msg =  "Sorry - something bad happened! Please try again. #" + eid;
     }
-    q_insert_error = "INSERT INTO error_log (error, time, user) VALUES (\'"+msg+"\', default, \'"+uid+"\')";
-    e = function(err){sendTextMessage(uid, q_insert_error);};
+    q_insert_error = "INSERT INTO error_log VALUES (\'"+msg+"\', default, \'"+uid+"\')";
+    e = function(err){return;};
     s_insert_error = function(result){
         sendTextMessage(uid, msg);
     }
