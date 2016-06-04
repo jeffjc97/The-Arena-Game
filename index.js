@@ -559,8 +559,7 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
     makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
 }
 
-// bug - can send request to someone where request is already pending
-// bug - sometimes returns nothing
+var trials = 0;
 function randomChallenge(s) {
     s_get_random = function(result) {
         if (result.rows.length > 0) {
@@ -568,8 +567,12 @@ function randomChallenge(s) {
             ru = result.rows[0].name;
             sendChallenge(s, su, r, ru, 0);
         }
-        else {
+        else if(trials < 5){
+            trials+=1;
             randomChallenge(s);
+        }
+        else{
+            sendTextMessage(s, "You have challenged everyone possible!");
         }
     };
     s_get_sender = function(result) {
