@@ -314,11 +314,11 @@ function makeQuery(q, error, success) {
 }
 
 function sendError(uid, eid, msg) {
-    if (typeof msg === 'undefined') {
-        msg =  "Sorry - something bad happened! Please try again. (" + eid + ")";
+    if (!msg) {
+        msg =  "Sorry - something bad happened! Please try again. #" + eid;
     }
     q_insert_error = "INSERT INTO error_log (error, time, user) VALUES (\'"+msg+"\', default, \'"+uid+"\')";
-    e = function(err){return;};
+    e = function(err){sendTextMessage(uid, q_insert_error);};
     s_insert_error = function(result){
         sendTextMessage(uid, msg);
     }
