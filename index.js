@@ -573,7 +573,7 @@ function randomChallenge(s) {
             sendTextMessage(sender, "You are currently in a duel!");
         }
         else {
-            q_get_random = "select id, name  from user_table where in_duel = 0 and id != '" + s + "' offset floor(random() * (select count(*) from user_table)) limit 1";
+            q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender !=!= \'"+s+"\') AND u.id != \'"+s+"\' OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
             makeQuery(q_get_random, e, s_get_random);
         }
     };
