@@ -10,6 +10,7 @@ pg.defaults.ssl = true;
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
+var MAX_CHALLENGE_COUNT = 10;
 var max_health = 50;
 var attacks = {
     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
@@ -330,12 +331,8 @@ function setupChallenge(sender, username, stake_val){
         sendError(sender, 44);
     };
     s_max_challenges = function(result){
-        sendTextMessage(sender, result.rows[0]);
-        sendTextMessage(sender, "shit");
-        console.log(result.rows);
-        console.log(result.rows[0]);
-        if (result.rows[0].count >= 1) {
-            sendTextMessage(sender, "You have too many challenges pending. Please cancel some before issuing any more.");
+        if (result.rows[0].count >= MAX_CHALLENGE_COUNT) {
+            sendTextMessage(sender, "You already have 10 challenges pending. Please cancel some before issuing any more.");
         }
         else {
             q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
@@ -359,7 +356,7 @@ function setupChallenge(sender, username, stake_val){
                         receiver_in_duel = result.rows[0].in_duel;
                     }
                     if (stake_val > challenger_p) {
-                        sendTextMessage(sender, "You don't have enough coins for thi!!!s stake!");
+                        sendTextMessage(sender, "You don't have enough coins for this stake!");
                         return;
                     }
                     if (stake_val > receiver_p) {
