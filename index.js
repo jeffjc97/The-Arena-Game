@@ -1068,7 +1068,7 @@ function sendNormalMessage(s, text) {
 
 function listFriends(s) {
     s_get_friends = function(result) {
-        friend_string = "";
+        friend_string = "Friends List: ";
         for (i = 0; i < result.rows.length; i++) {
             if (i === 0) {
                 friend_string += result.rows[i].name;
@@ -1080,12 +1080,7 @@ function listFriends(s) {
         sendTextMessage(s, friend_string);
     };
     e = function(err) {
-        if (err.detail.indexOf("already exists") > -1) {
-            sendError(s, 113, "This person is already on your friends list!");
-        }
-        else {
-            sendError(s, 114);
-        }
+        sendError(s, 112);
     };
     q_get_friends = "select u.name as \"name\" from friend_table f join user_table u on (f.friend_id = u.id)";
     makeQuery(q_get_friends, e, s_get_friends);
@@ -1106,7 +1101,12 @@ function addFriend(s, fu) {
         }
     };
     e = function(err) {
-        sendError(s, 112);
+        if (err.detail.indexOf("already exists") > -1) {
+            sendError(s, 113, "This person is already on your friends list!");
+        }
+        else {
+            sendError(s, 114);
+        }
     };
     q_validate_fu = "select id from user_table where name = '" + fu + "'";
     makeQuery(q_validate_fu, e, s_validate_fu);
