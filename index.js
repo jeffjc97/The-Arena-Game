@@ -1071,16 +1071,20 @@ function sendNormalMessage(s, text) {
 
 function listFriends(s) {
     s_get_friends = function(result) {
-        friend_string = "Friends List: ";
-        for (i = 0; i < result.rows.length; i++) {
-            if (i === 0) {
-                friend_string += result.rows[i].name;
+        friend_string = "Friends List:\n";
+        num_messages = result.rows.length / 20 + 1;
+        for (i = 0; i < num_messages; i++) {
+            friend_string = "Friends:";
+            for (j = 20 * i; j < 20 * (i + 1); j++) {
+                if (j % 20 === 0) {
+                    friend_string += result.rows[j].name;
+                }
+                else {
+                    friend_string += ", " + result.rows[j].name;
+                }
             }
-            else {
-                friend_string += ", " + result.rows[i].name;
-            }
+            sendTextMessage(s, friend_string);
         }
-        sendTextMessage(s, friend_string);
     };
     e = function(err) {
         sendError(s, 112);
