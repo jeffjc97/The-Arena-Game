@@ -1074,11 +1074,11 @@ function listFriends(s) {
         for (i = 0; i < num_messages; i++) {
             friend_string = "Friends:";
             for (j = 20 * i; j < 20 * (i + 1); j++) {
-                if (i === 0) {
-                    friend_string += result.rows[i].name;
+                if (j % 20 === 0) {
+                    friend_string += result.rows[j].name;
                 }
                 else {
-                    friend_string += ", " + result.rows[i].name;
+                    friend_string += ", " + result.rows[j].name;
                 }
             }
             sendTextMessage(s, friend_string);
