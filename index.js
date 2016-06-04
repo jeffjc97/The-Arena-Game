@@ -1131,6 +1131,7 @@ function getPendingChallenges(s){
                     result_string = "You've been challenged by:";
                     for (i = result.rows.length - 1; i >= 0; i--) {
                         recip_val = result.rows[i].recipient;
+                        val = result.rows[i].val;
                         if (recip_val == name) {
                             result_string+="\n";
                             result_string += result.rows[i].sender;
