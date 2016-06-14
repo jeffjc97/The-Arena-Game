@@ -1,10 +1,18 @@
+var debug = true;
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
 var pg = require('pg');
 var JSONbig = require('json-bigint');
 var app = express();
+
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
+if (debug) {
+    token = "EAADmDCnJ9gcBAK1pZBJmzs7caZB6E4EDZBTiRs1gXFqGjiL2okjegsSXKRQrTDHICFgmL61ITWEvyWvdvZA2lrJLYq72zUygN9ZB3Cve1xXP0rWbIXrD9dY0wDVkZASvPXEWe4FvkLx9RQYzrU1TjErqVtrqUagfyv7GDCMzRLmQZDZD";
+}
+
+
 pg.defaults.ssl = true;
 
 app.set('port', (process.env.PORT || 5000));
