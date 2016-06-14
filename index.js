@@ -65,7 +65,9 @@ app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'we_are_astronauts_baby_8409') {
         res.send(req.query['hub.challenge']);
     }
-    res.send('Error, wrong token');
+    else {
+        res.send('Error, wrong token');
+    }
 });
 
 // Spin up the server
