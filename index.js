@@ -63,6 +63,7 @@ app.get('/', function (req, res) {
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'we_are_astronauts_baby_8409') {
+        console.log("HERE!!!!!!!!!!!!!!!!");
         res.send(req.query['hub.challenge']);
     }
     else {
