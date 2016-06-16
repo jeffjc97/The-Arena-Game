@@ -1,10 +1,18 @@
+var debug = true;
+
 var express = require('express');
-// var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 var request = require('request');
 var pg = require('pg');
 var JSONbig = require('json-bigint');
 var app = express();
+
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
+if (debug) {
+    token = "EAAIrIlaiok0BAMltmAAL9rrXYdi7EymNA135BZCjddqjXQUBSNyxEZCaSQJdiucnRsoofUIfZATDqeizPQDtZBQElB96PeMKRuJk2rj9PEM4206QxWuQ40i7myOzwbZAi9Xsn4AKrzlaMlrnIKd0ZAXmWjnsZCWE0OSVLQUqeBJUAZDZD";
+}
+
+
 pg.defaults.ssl = true;
 
 app.set('port', (process.env.PORT || 5000));
@@ -20,45 +28,47 @@ var attacks = {
 };
 
 // Process application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false}));
 
 // Process application/json
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
-app.use(function(req, res, next){
-  if (req.method == 'POST') {
-    var body = '';
+// app.use(function(req, res, next){
+//   if (req.method == 'POST') {
+//     var body = '';
 
-    req.on('data', function (data) {
-      body += data;
+//     req.on('data', function (data) {
+//       body += data;
 
-      // Too much POST data, kill the connection!
-      // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-      if (body.length > 1e6)
-        req.connection.destroy();
-    });
+//       // Too much POST data, kill the connection!
+//       // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+//       if (body.length > 1e6)
+//         req.connection.destroy();
+//     });
 
-    req.on('end', function () {
-      // console.log(body); // should work
-        // use post['blah'], etc.
-      req.body = JSONbig.parse(body);
-      next();
-    });
-  }
-});
+//     req.on('end', function () {
+//       // console.log(body); // should work
+//         // use post['blah'], etc.
+//       req.body = JSONbig.parse(body);
+//       next();
+//     });
+//   }
+// });
 
 // Index route
 app.get('/', function (req, res) {
-    res.render('index', { title: 'Express' });
-    // res.send('BOT FUN - a messenger chat game.');
+    res.send('The Arena - a messenger chat game by Jeffrey Chang and Roy Falik. Play at m.me/TheArenaGame');
 });
 
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'we_are_astronauts_baby_8409') {
+        console.log("HERE!!!!!!!!!!!!!!!!");
         res.send(req.query['hub.challenge']);
     }
-    res.send('Error, wrong token');
+    else {
+        res.send('Error, wrong token');
+    }
 });
 
 // Spin up the server
@@ -67,6 +77,7 @@ app.listen(app.get('port'), function() {
 });
 
 app.post('/webhook/', function (req, res) {
+    console.log("HERE!!!!!!!!!!!!!!!!");
     messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
@@ -1043,23 +1054,28 @@ function sendNormalMessage(s, text) {
 function listFriends(s) {
     s_get_friends = function(result) {
         num_messages = Math.ceil(result.rows.length / 20);
-        for (i = 0; i < num_messages; i++) {
-            friend_string = "Friends:\n";
-            for (j = 20 * i; j < Math.min(result.rows.length, 20 * (i + 1)); j++) {
-                if (j % 20 === 0) {
-                    friend_string += result.rows[j].name;
+        if (result.rows.length === 0) {
+            sendTextMessage(s, "Add some friends to get started! (Ex. @friend jeff)");
+        }
+        else {
+            for (i = 0; i < num_messages; i++) {
+                friend_string = "Friends:\n";
+                for (j = 20 * i; j < Math.min(result.rows.length, 20 * (i + 1)); j++) {
+                    if (j % 20 === 19) {
+                        friend_string += result.rows[j].name + " - " + result.rows[j].fname;
+                    }
+                    else {
+                        friend_string += result.rows[j].name + " - " + result.rows[j].fname + "\n";
+                    }
                 }
-                else {
-                    friend_string += ", " + result.rows[j].name;
-                }
+                sendTextMessage(s, friend_string);
             }
-            sendTextMessage(s, friend_string);
         }
     };
     e = function(err) {
         sendError(s, 112);
     };
-    q_get_friends = "select u.name as \"name\" from friend_table f join user_table u on (f.friend_id = u.id)";
+    q_get_friends = "select u.name as \"name\", u.first_name as \"fname\" from friend_table f join user_table u on (f.friend_id = u.id)";
     makeQuery(q_get_friends, e, s_get_friends);
 }
 
