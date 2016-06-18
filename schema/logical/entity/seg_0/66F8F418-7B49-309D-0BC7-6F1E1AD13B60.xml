@@ -1,0 +1,46 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="66F8F418-7B49-309D-0BC7-6F1E1AD13B60" name="user_classes">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:00:43 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="class" id="050FC309-7F51-C0BB-3FF3-0644709ADC08">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:09:13 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id" id="8B7D3893-ED40-AF98-61C0-FA218D02EA3A">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:17:58 UTC</createdTime>
+<generatorID>8A421ACC-3E2B-4193-4724-38F6FFB9042A</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<engineerTo>
+<item key="7A9F5D4A-63E0-9CC2-547F-EDAAC5A59597" value="true"/>
+</engineerTo>
+<referedAttribute>CF8FE623-C6C1-6A26-EDF0-7E8B94403103</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+</Entity>
