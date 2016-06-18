@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -130,6 +130,7 @@ app.post('/webhook/', function (req, res) {
                             }
                             break;
                         default:
+                            console.log(sender);
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
                             break;
                     }
@@ -240,6 +241,9 @@ app.post('/webhook/', function (req, res) {
                             break;
                         case "@pressure":
                             setPressure(sender);
+                            break;
+                        case "@shop":
+                            presentShop(sender);
                             break;
                         case "@cancel":
                             if (words.length == 2) {
@@ -769,14 +773,14 @@ function setupDuel(s, r, stake_val) {
 
 // starts the duel, called from setupDuel
 function startDuel(s, r, f_id) {
-    // q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
-    q_duel = 'SELECT id, name, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
+    q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
+    // q_duel = 'SELECT id, name, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
     e = function(err) {
         sendError(s, 25);
         sendError(r, 25);
     };
     s_duel = function(result) {
-        first = result.rows[0].id = f_id ? result.rows[0].name : result.rows[1].name;
+        first = result.rows[0].name;
         if (result.rows[0].id == s) {
             sendTextMessage(s, "The duel has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(r, "The duel has begun! " + first + " has the first move. To message your opponent, just type normally in the chat.");
