@@ -23,38 +23,38 @@ var max_health = 50;
 var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
 var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
-// var attacks = {
-//     0: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.25, min: 9, max: 12},
-//         d: {miss: 0.15, min: 5, max: 7},
-//         c: {miss: 0.5, min: 12, max: 15}},
-//     1: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.15, min: 9, max: 12},
-//         d: {miss: 0.05, min: 5, max: 7},
-//         c: {miss: 0.45, min: 12, max: 15}},
-//     2: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.3, min: 9, max: 12},
-//         d: {miss: 0.2, min: 5, max: 7},
-//         c: {miss: 0.55, min: 12, max: 15},
-//         heal_chance: 0.5,
-//         heal_percentage: 0.5},
-//     3: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.25,
-//             0: {min: 9, max: 12},
-//             1: {min: 9, max: 13},
-//             2: {min: 10, max: 14},
-//             3: {min: 10, max: 16}},
-//         d: {miss: 0.15,
-//             0: {min: 5, max: 7},
-//             1: {min: 5, max: 8},
-//             2: {min: 6, max: 9},
-//             3: {min: 6, max: 11}},
-//         c: {miss: 0.5,
-//             0: {min: 12, max: 15},
-//             1: {min: 12, max: 16},
-//             2: {min: 13, max: 17},
-//             3: {min: 13, max: 19}}}
-// };
+var attacks = {
+    0: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.25, min: 9, max: 12},
+        d: {miss: 0.15, min: 5, max: 7},
+        c: {miss: 0.5, min: 12, max: 15}},
+    1: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.15, min: 9, max: 12},
+        d: {miss: 0.05, min: 5, max: 7},
+        c: {miss: 0.45, min: 12, max: 15}},
+    2: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.3, min: 9, max: 12},
+        d: {miss: 0.2, min: 5, max: 7},
+        c: {miss: 0.55, min: 12, max: 15},
+        heal_chance: 0.5,
+        heal_percentage: 0.5},
+    3: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.25,
+            0: {min: 9, max: 12},
+            1: {min: 9, max: 13},
+            2: {min: 10, max: 14},
+            3: {min: 10, max: 16}},
+        d: {miss: 0.15,
+            0: {min: 5, max: 7},
+            1: {min: 5, max: 8},
+            2: {min: 6, max: 9},
+            3: {min: 6, max: 11}},
+        c: {miss: 0.5,
+            0: {min: 12, max: 15},
+            1: {min: 12, max: 16},
+            2: {min: 13, max: 17},
+            3: {min: 13, max: 19}}}
+};
 
 var attacks = {
     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
@@ -785,21 +785,28 @@ function setupDuel(s, r, stake_val) {
 
 // starts the duel, called from setupDuel
 function startDuel(s, r, f_id) {
-    q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
-    // q_duel = 'SELECT id, name, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
+    // q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
+    q_duel = 'SELECT id, name, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
     e = function(err) {
         sendError(s, 25);
         sendError(r, 25);
     };
     s_duel = function(result) {
-        first = result.rows[0].name;
-        if (result.rows[0].id == s) {
-            sendTextMessage(s, "The duel has begun! You have the first move. To message your opponent, just type normally in the chat.");
-            sendTextMessage(r, "The duel has begun! " + first + " has the first move. To message your opponent, just type normally in the chat.");
+        s_index = 0;
+        r_index = 1;
+        if (s == result.rows[1].id) {
+            s_index = 1;
+            r_index = 0;
+        }
+        first_player = f_id == s ? s_index : r_index;
+        // s goes first
+        if (first_player == s_index) {
+            sendTextMessage(s, "The duel with " + result.rows[r_index].name + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(r, "The duel with " + result.rows[s_index].name + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
         }
         else {
-            sendTextMessage(r, "The duel has begun! You have the first move. To message your opponent, just type normally in the chat.");
-            sendTextMessage(s, "The duel has begun! " + first + " has the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(r, "The duel with " + result.rows[s_index].name + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(s, "The duel with " + result.rows[r_index].name + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
         }
     };
     makeQuery(q_duel, e, s_duel);
@@ -881,41 +888,42 @@ function makeMoveSetup(s, type){
     makeQuery(q_get_s, e, s_get_s);
 }
 
-var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
-var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
-var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
-var attacks = {
-    0: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.25, min: 9, max: 12},
-        d: {miss: 0.15, min: 5, max: 7},
-        c: {miss: 0.5, min: 12, max: 15}},
-    1: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.15, min: 9, max: 12},
-        d: {miss: 0.05, min: 5, max: 7},
-        c: {miss: 0.45, min: 12, max: 15}},
-    2: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.3, min: 9, max: 12},
-        d: {miss: 0.2, min: 5, max: 7},
-        c: {miss: 0.55, min: 12, max: 15},
-        heal_chance: 0.5,
-        heal_percentage: 0.5},
-    3: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.25,
-            0: {min: 9, max: 12},
-            1: {min: 9, max: 13},
-            2: {min: 10, max: 14},
-            3: {min: 10, max: 16}},
-        d: {miss: 0.15,
-            0: {min: 5, max: 7},
-            1: {min: 5, max: 8},
-            2: {min: 6, max: 9},
-            3: {min: 6, max: 11}},
-        c: {miss: 0.5,
-            0: {min: 12, max: 15},
-            1: {min: 12, max: 16},
-            2: {min: 13, max: 17},
-            3: {min: 13, max: 19}}}
-};
+// DELETE ME!!!!
+// var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
+// var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
+// var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
+// var attacks = {
+//     0: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.25, min: 9, max: 12},
+//         d: {miss: 0.15, min: 5, max: 7},
+//         c: {miss: 0.5, min: 12, max: 15}},
+//     1: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.15, min: 9, max: 12},
+//         d: {miss: 0.05, min: 5, max: 7},
+//         c: {miss: 0.45, min: 12, max: 15}},
+//     2: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.3, min: 9, max: 12},
+//         d: {miss: 0.2, min: 5, max: 7},
+//         c: {miss: 0.55, min: 12, max: 15},
+//         heal_chance: 0.5,
+//         heal_percentage: 0.5},
+//     3: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.25,
+//             0: {min: 9, max: 12},
+//             1: {min: 9, max: 13},
+//             2: {min: 10, max: 14},
+//             3: {min: 10, max: 16}},
+//         d: {miss: 0.15,
+//             0: {min: 5, max: 7},
+//             1: {min: 5, max: 8},
+//             2: {min: 6, max: 9},
+//             3: {min: 6, max: 11}},
+//         c: {miss: 0.5,
+//             0: {min: 12, max: 15},
+//             1: {min: 12, max: 16},
+//             2: {min: 13, max: 17},
+//             3: {min: 13, max: 19}}}
+// };
 
 // called by makeMoveSetup
 //invariant: it is currently the attacker's turn
