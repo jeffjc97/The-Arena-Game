@@ -20,11 +20,40 @@ app.set('view engine', 'ejs');
 
 var MAX_CHALLENGE_COUNT = 10;
 var max_health = 50;
+var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
+var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
+var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
 var attacks = {
-    h: {miss: 0, min: 10, max: 10, verb: 'healed'},
-    s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
-    d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
-    c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
+    0: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.25, min: 9, max: 12},
+        d: {miss: 0.15, min: 5, max: 7},
+        c: {miss: 0.5, min: 12, max: 15}},
+    1: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.15, min: 9, max: 12},
+        d: {miss: 0.05, min: 5, max: 7},
+        c: {miss: 0.45, min: 12, max: 15}},
+    2: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.3, min: 9, max: 12},
+        d: {miss: 0.2, min: 5, max: 7},
+        c: {miss: 0.55, min: 12, max: 15},
+        heal_chance: 0.5,
+        heal_percentage: 0.5},
+    3: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.25,
+            0: {min: 9, max: 12},
+            1: {min: 9, max: 13},
+            2: {min: 10, max: 14},
+            3: {min: 10, max: 16}},
+        d: {miss: 0.15,
+            0: {min: 5, max: 7},
+            1: {min: 5, max: 8},
+            2: {min: 6, max: 9},
+            3: {min: 6, max: 11}},
+        c: {miss: 0.5,
+            0: {min: 12, max: 15},
+            1: {min: 12, max: 16},
+            2: {min: 13, max: 17},
+            3: {min: 13, max: 19}}}
 };
 
 // Process application/x-www-form-urlencoded
@@ -63,7 +92,6 @@ app.get('/', function (req, res) {
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'we_are_astronauts_baby_8409') {
-        console.log("HERE!!!!!!!!!!!!!!!!");
         res.send(req.query['hub.challenge']);
     }
     else {
@@ -77,7 +105,6 @@ app.listen(app.get('port'), function() {
 });
 
 app.post('/webhook/', function (req, res) {
-    console.log("HERE!!!!!!!!!!!!!!!!");
     messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
@@ -309,6 +336,7 @@ function sendTextMessage(sender, text) {
     });
 }
 
+// Function used to query the database
 function makeQuery(q, error, success) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         client.query(q, function(err, result) {
@@ -324,6 +352,7 @@ function makeQuery(q, error, success) {
     });
 }
 
+// Function used to send errors to the users
 function sendError(uid, eid, msg) {
     if (!msg) {
         msg =  "Sorry - something bad happened! Please try again. #" + eid;
@@ -336,6 +365,8 @@ function sendError(uid, eid, msg) {
     makeQuery(q_insert_error, e, s_insert_error);
 }
 
+// First function that gets called when someone sends a challenge
+// Leads into sendChallenge
 function setupChallenge(sender, username, stake_val){
     if (!stake_val) {
         stake_val = 0;
@@ -396,6 +427,7 @@ function setupChallenge(sender, username, stake_val){
     makeQuery(q_max_challenges, e_validate_val, s_max_challenges);
 }
 
+// @cancel <username>
 function cancelChallenge(s, u){
     q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
@@ -412,6 +444,7 @@ function cancelChallenge(s, u){
     makeQuery(q_cancel, e, s_cancel);
 }
 
+// @help
 function sendHelpMessage(sender) {
     messageData = {
         "attachment":{
@@ -473,9 +506,8 @@ function sendHelpMessage(sender) {
     });
 }
 
-// used on register
+// Function used on register to get the user's personal information
 function getUserInfo(sender) {
-    // curl -X GET "https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
     request({
         url: 'https://graph.facebook.com/v2.6/' + sender ,
         qs: {fields:"first_name,last_name,profile_pic", access_token:token},
@@ -491,6 +523,7 @@ function getUserInfo(sender) {
     });
 }
 
+// @register
 function registerUser(s, username) {
     pat = "^[A-Za-z0-9]{1,12}$";
     reg = new RegExp(pat);
@@ -527,6 +560,7 @@ function registerUser(s, username) {
     }
 }
 
+// Get game info about a user, related to @stats <username>
 function getPersonalInfo(s){
     q_get_username = "SELECT name, points FROM user_table WHERE id = \'"+s+"\'";
     e = function(err){
@@ -545,6 +579,7 @@ function getPersonalInfo(s){
     makeQuery(q_get_username, e, s_get_username);
 }
 
+// @challenge <username>, after setupChallenge
 //invariant: neither party is in a duel and both parties have enough for the stake
 function sendChallenge(sender, challenger_name, receiver_id, username, stake_val){
     q_insert_duel = 'INSERT into challenge_table values (' + sender + ', ' + receiver_id + ',default, '+stake_val+',1)';
@@ -570,6 +605,7 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
     makeQuery(q_insert_duel, e_insert_duel, s_insert_duel);
 }
 
+// @random
 var trials = 0;
 function randomChallenge(s) {
     s_get_random = function(result) {
@@ -605,6 +641,7 @@ function randomChallenge(s) {
     makeQuery(q_get_sender, e, s_get_sender);
 }
 
+// @accept <username>, @reject <username>
 //r (id) is responding to challenge from su (name) with response 
 function respondToChallenge(su, r, response) {
     s_delete_challenge = function(result) {
@@ -692,6 +729,7 @@ function respondToChallenge(su, r, response) {
 
 }
 
+// @cancel <username>
 function cancelChallenge(s, u){
     q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
@@ -708,6 +746,7 @@ function cancelChallenge(s, u){
     makeQuery(q_cancel, e, s_cancel);
 }
 
+// called from respondToDuel, on accept, followed by startDuel
 // invariant: neither party is in a duel
 function setupDuel(s, r, stake_val) {
     s_update_s = function(result) {
@@ -728,14 +767,16 @@ function setupDuel(s, r, stake_val) {
 
 }
 
+// starts the duel, called from setupDuel
 function startDuel(s, r, f_id) {
-    q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
+    // q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
+    q_duel = 'SELECT id, name, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
     e = function(err) {
         sendError(s, 25);
         sendError(r, 25);
     };
     s_duel = function(result) {
-        first = result.rows[0].name;
+        first = result.rows[0].id = f_id ? result.rows[0].name : result.rows[1].name;
         if (result.rows[0].id == s) {
             sendTextMessage(s, "The duel has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(r, "The duel has begun! " + first + " has the first move. To message your opponent, just type normally in the chat.");
@@ -748,6 +789,7 @@ function startDuel(s, r, f_id) {
     makeQuery(q_duel, e, s_duel);
 }
 
+// followed by makeMove
 function makeMoveSetup(s, type){
     s_get_defender = function(result) {
         if (result.rows.length !== 1) {
@@ -756,6 +798,7 @@ function makeMoveSetup(s, type){
         else{
             move.defender_name = result.rows[0].name;
             move.defender_gender = result.rows[0].gender;
+            move.defender_class = result.rows[0].current_class;
             makeMove(move);
         }
     };
@@ -789,7 +832,7 @@ function makeMoveSetup(s, type){
                 move.stun_attacker = data.stun_sender;
             }
             //query for defender's name
-            q_get_defender = 'SELECT name, gender FROM user_table WHERE id= \'' + move.defender_id + '\'';
+            q_get_defender = 'SELECT name, gender, current_class FROM user_table WHERE id= \'' + move.defender_id + '\'';
             makeQuery(q_get_defender, e, s_get_defender);
         }
     };
@@ -801,6 +844,7 @@ function makeMoveSetup(s, type){
             move.duel_id = result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
             move.attacker_gender = result.rows[0].gender;
+            move.attacker_class = result.rows[0].current_class;
             if (move.duel_id === 0) {
                 sendTextMessage(s, "You are not currently in a duel.");
             }
@@ -817,14 +861,51 @@ function makeMoveSetup(s, type){
         type_of_attack: type,
         attacker_id: s
     };
-    q_get_s = 'SELECT name, id, gender, in_duel FROM user_table where id= \'' + s + '\'';
+    q_get_s = 'SELECT name, id, gender, in_duel, current_class FROM user_table where id= \'' + s + '\'';
     makeQuery(q_get_s, e, s_get_s);
 }
 
+var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
+var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
+var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
+var attacks = {
+    0: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.25, min: 9, max: 12},
+        d: {miss: 0.15, min: 5, max: 7},
+        c: {miss: 0.5, min: 12, max: 15}},
+    1: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.15, min: 9, max: 12},
+        d: {miss: 0.05, min: 5, max: 7},
+        c: {miss: 0.45, min: 12, max: 15}},
+    2: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.3, min: 9, max: 12},
+        d: {miss: 0.2, min: 5, max: 7},
+        c: {miss: 0.55, min: 12, max: 15},
+        heal_chance: 0.5,
+        heal_percentage: 0.5},
+    3: {h: {miss: 0, min: 10, max: 10},
+        s: {miss: 0.25,
+            0: {min: 9, max: 12},
+            1: {min: 9, max: 13},
+            2: {min: 10, max: 14},
+            3: {min: 10, max: 16}},
+        d: {miss: 0.15,
+            0: {min: 5, max: 7},
+            1: {min: 5, max: 8},
+            2: {min: 6, max: 9},
+            3: {min: 6, max: 11}},
+        c: {miss: 0.5,
+            0: {min: 12, max: 15},
+            1: {min: 12, max: 16},
+            2: {min: 13, max: 17},
+            3: {min: 13, max: 19}}}
+};
+
+// called by makeMoveSetup
 //invariant: it is currently the attacker's turn
 // move: type_of_attack, attacker/defender/duel_id, attacker/defender_name
 // attacker/defender_health, attacker_is_sender, potions_attacker/defender
-// bleed_attacker/defender, stun_attacker/defender, attacker_gender
+// bleed_attacker/defender, stun_attacker/defender, attacker_gender, attacker/defender_class
 function makeMove(move){
     move.bleed = 0;
     var q_update_duel;
