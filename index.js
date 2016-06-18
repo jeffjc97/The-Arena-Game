@@ -1,7 +1,7 @@
 var debug = false;
 
 var express = require('express');
-// var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 var request = require('request');
 var pg = require('pg');
 var JSONbig = require('json-bigint');
@@ -64,32 +64,32 @@ var attacks = {
 };
 
 // Process application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false}));
 
 // Process application/json
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
-app.use(function(req, res, next){
-  if (req.method == 'POST') {
-    var body = '';
+// app.use(function(req, res, next){
+//   if (req.method == 'POST') {
+//     var body = '';
 
-    req.on('data', function (data) {
-      body += data;
+//     req.on('data', function (data) {
+//       body += data;
 
-      // Too much POST data, kill the connection!
-      // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-      if (body.length > 1e6)
-        req.connection.destroy();
-    });
+//       // Too much POST data, kill the connection!
+//       // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+//       if (body.length > 1e6)
+//         req.connection.destroy();
+//     });
 
-    req.on('end', function () {
-      // console.log(body); // should work
-        // use post['blah'], etc.
-      req.body = JSONbig.parse(body);
-      next();
-    });
-  }
-});
+//     req.on('end', function () {
+//       // console.log(body); // should work
+//         // use post['blah'], etc.
+//       req.body = JSONbig.parse(body);
+//       next();
+//     });
+//   }
+// });
 
 // Index route
 app.get('/', function (req, res) {
@@ -115,7 +115,7 @@ app.post('/webhook/', function (req, res) {
     messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
-        sender = event.sender.id.toString();
+        sender = event.sender.id;
         if (event.message && event.message.text) {
             text = event.message.text;
             words = text.split(" ");
