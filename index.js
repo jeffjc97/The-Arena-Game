@@ -24,7 +24,7 @@ var attacks = {
     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
     s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
-    c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
+    c: {miss: 0.5, min: 12, max: 15, verb: 'crushed'}
 };
 
 // Process application/x-www-form-urlencoded
@@ -63,7 +63,6 @@ app.get('/', function (req, res) {
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'we_are_astronauts_baby_8409') {
-        console.log("HERE!!!!!!!!!!!!!!!!");
         res.send(req.query['hub.challenge']);
     }
     else {
@@ -77,7 +76,6 @@ app.listen(app.get('port'), function() {
 });
 
 app.post('/webhook/', function (req, res) {
-    console.log("HERE!!!!!!!!!!!!!!!!");
     messaging_events = req.body.entry[0].messaging;
     for (i = 0; i < messaging_events.length; i++) {
         event = req.body.entry[0].messaging[i];
