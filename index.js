@@ -214,6 +214,9 @@ app.post('/webhook/', function (req, res) {
                         case "@pressure":
                             setPressure(sender);
                             break;
+                        case "@shop":
+                            presentShop(sender);
+                            break;
                         case "@cancel":
                             if (words.length == 2) {
                                 cancelChallenge(sender, username);
