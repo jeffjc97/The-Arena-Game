@@ -24,6 +24,7 @@ var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
 var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
 var attacks = {
+<<<<<<< HEAD
     0: {h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.25, min: 9, max: 12},
         d: {miss: 0.15, min: 5, max: 7},
@@ -54,6 +55,12 @@ var attacks = {
             1: {min: 12, max: 16},
             2: {min: 13, max: 17},
             3: {min: 13, max: 19}}}
+=======
+    h: {miss: 0, min: 10, max: 10, verb: 'healed'},
+    s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
+    d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
+    c: {miss: 0.5, min: 12, max: 15, verb: 'crushed'}
+>>>>>>> 03c85a0d075a63bc2ac3ba2c65a8ead95148467e
 };
 
 // Process application/x-www-form-urlencoded
@@ -227,6 +234,9 @@ app.post('/webhook/', function (req, res) {
                             break;
                         case "@forfeit":
                             forfeitDuel(sender);
+                            break;
+                        case "@shop":
+                            presentShop(sender);
                             break;
                         case "@stats":
                             if (words.length == 2) {

@@ -162,6 +162,19 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="current_class" id="56554B8F-7811-0848-18C5-04A0048391F2">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:21:11 UTC</createdTime>
+<generatorID>3716D8D1-9F53-5704-54F9-2F34DE16AC8B</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="B840F81D-A1C0-994B-7A79-CB5F9F9945CC" name="user_table_PK">

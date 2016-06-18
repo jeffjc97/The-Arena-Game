@@ -1,0 +1,52 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="18260B48-A61F-02E3-23AA-DD334827699B" name="user_classes">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:21:11 UTC</createdTime>
+<generatorID>66F8F418-7B49-309D-0BC7-6F1E1AD13B60</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="class" id="43096E69-81F8-30D0-3C18-5DFA8135B1EE">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:21:11 UTC</createdTime>
+<generatorID>050FC309-7F51-C0BB-3FF3-0644709ADC08</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="id" id="81C8A4D0-3E0E-85D1-1FDC-850194238070">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:21:11 UTC</createdTime>
+<generatorID>8B7D3893-ED40-AF98-61C0-FA218D02EA3A</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="F41F4518-606F-D1F6-076F-10A878FA6DFB" referredColumn="CA32BE1E-46D7-66D4-BC66-D3B72182556D"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9E6113CB-50C2-AADB-E437-A279AE91275E" name="classes_owned">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-18 05:21:11 UTC</createdTime>
+<generatorID>8A421ACC-3E2B-4193-4724-38F6FFB9042A</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="81C8A4D0-3E0E-85D1-1FDC-850194238070"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
