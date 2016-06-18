@@ -103,6 +103,7 @@ app.post('/webhook/', function (req, res) {
                             }
                             break;
                         default:
+                            console.log(sender);
                             sendTextMessage(sender, "You haven't registered a username yet! Type @register followed by your username to begin playing. (Ex. @register jeff)");
                             break;
                     }
