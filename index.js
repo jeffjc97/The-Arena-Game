@@ -474,38 +474,6 @@ function sendHelpMessage(sender) {
     });
 }
 
-function presentShop(sender) {
-    messageData = {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements":[
-              {
-                "title":"Shop",
-                "subtitle":"Purchase Things!",
-                "image_url":"http://images.rapgenius.com/6d0f31c832f3dfbbc8ddb2ae0a6cb5fa.560x344x1.jpg"
-              }
-            ]
-          }
-        }
-    };
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-        }
-    });
-}
 
 // used on register
 function getUserInfo(sender) {
