@@ -23,44 +23,44 @@ var max_health = 50;
 var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
 var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
+// var attacks = {
+//     0: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.25, min: 9, max: 12},
+//         d: {miss: 0.15, min: 5, max: 7},
+//         c: {miss: 0.5, min: 12, max: 15}},
+//     1: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.15, min: 9, max: 12},
+//         d: {miss: 0.05, min: 5, max: 7},
+//         c: {miss: 0.45, min: 12, max: 15}},
+//     2: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.3, min: 9, max: 12},
+//         d: {miss: 0.2, min: 5, max: 7},
+//         c: {miss: 0.55, min: 12, max: 15},
+//         heal_chance: 0.5,
+//         heal_percentage: 0.5},
+//     3: {h: {miss: 0, min: 10, max: 10},
+//         s: {miss: 0.25,
+//             0: {min: 9, max: 12},
+//             1: {min: 9, max: 13},
+//             2: {min: 10, max: 14},
+//             3: {min: 10, max: 16}},
+//         d: {miss: 0.15,
+//             0: {min: 5, max: 7},
+//             1: {min: 5, max: 8},
+//             2: {min: 6, max: 9},
+//             3: {min: 6, max: 11}},
+//         c: {miss: 0.5,
+//             0: {min: 12, max: 15},
+//             1: {min: 12, max: 16},
+//             2: {min: 13, max: 17},
+//             3: {min: 13, max: 19}}}
+// };
+
 var attacks = {
-<<<<<<< HEAD
-    0: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.25, min: 9, max: 12},
-        d: {miss: 0.15, min: 5, max: 7},
-        c: {miss: 0.5, min: 12, max: 15}},
-    1: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.15, min: 9, max: 12},
-        d: {miss: 0.05, min: 5, max: 7},
-        c: {miss: 0.45, min: 12, max: 15}},
-    2: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.3, min: 9, max: 12},
-        d: {miss: 0.2, min: 5, max: 7},
-        c: {miss: 0.55, min: 12, max: 15},
-        heal_chance: 0.5,
-        heal_percentage: 0.5},
-    3: {h: {miss: 0, min: 10, max: 10},
-        s: {miss: 0.25,
-            0: {min: 9, max: 12},
-            1: {min: 9, max: 13},
-            2: {min: 10, max: 14},
-            3: {min: 10, max: 16}},
-        d: {miss: 0.15,
-            0: {min: 5, max: 7},
-            1: {min: 5, max: 8},
-            2: {min: 6, max: 9},
-            3: {min: 6, max: 11}},
-        c: {miss: 0.5,
-            0: {min: 12, max: 15},
-            1: {min: 12, max: 16},
-            2: {min: 13, max: 17},
-            3: {min: 13, max: 19}}}
-=======
     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
     s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
-    c: {miss: 0.5, min: 12, max: 15, verb: 'crushed'}
->>>>>>> 03c85a0d075a63bc2ac3ba2c65a8ead95148467e
+    c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
 };
 
 // Process application/x-www-form-urlencoded
