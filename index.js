@@ -558,7 +558,7 @@ function registerUser(s, username) {
                 console.log('Error: ', response.body.error);
             } else {
                 body = JSONbig.parse(body);
-                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\')';
+                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
                         sendTextMessage(s, "Username already exists, please try another.");
