@@ -792,21 +792,19 @@ function startDuel(s, r, f_id) {
         sendError(r, 25);
     };
     s_duel = function(result) {
-        s_index = 0;
-        r_index = 1;
-        if (s == result.rows[1].id) {
-            s_index = 1;
-            r_index = 0;
-        }
+        s_index = s == result.rows[0].id ? 0 : 1;
+        r_index = s_index ? 0 : 1;
         first_player = f_id == s ? s_index : r_index;
+        s_class = result.rows[s_index].current_class ? " (" + classes[result.rows[s_index].current_class] + ")" : "";
+        r_class = result.rows[r_index].current_class ? " (" + classes[result.rows[r_index].current_class] + ")" : "";
         // s goes first
         if (first_player == s_index) {
-            sendTextMessage(s, "The duel with " + result.rows[r_index].name + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
-            sendTextMessage(r, "The duel with " + result.rows[s_index].name + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
         }
         else {
-            sendTextMessage(r, "The duel with " + result.rows[s_index].name + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
-            sendTextMessage(s, "The duel with " + result.rows[r_index].name + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
         }
     };
     makeQuery(q_duel, e, s_duel);
