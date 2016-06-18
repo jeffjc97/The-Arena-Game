@@ -198,9 +198,6 @@ app.post('/webhook/', function (req, res) {
                         case "@forfeit":
                             forfeitDuel(sender);
                             break;
-                        case "@shop":
-                            presentShop(sender);
-                            break;
                         case "@stats":
                             if (words.length == 2) {
                                 getStats(username, sender);
