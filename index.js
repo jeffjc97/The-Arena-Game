@@ -1414,7 +1414,7 @@ function setPressure(s){
 }
 
 function userFeedback(s, feedback) {
-    q_feedback = 'INSERT INTO feedback_table(id, feedback) VALUES (\'' + s + '\', \'' + escape(feedback.substr(0, 1000)) + '\')';
+    q_feedback = 'INSERT INTO feedback_table(id, feedback) VALUES (\'' + s + '\', \'' + escape.string(feedback.substr(0, 1000)) + '\')';
     e = function(err){
         console.log(err);
         sendError(s, 105);
