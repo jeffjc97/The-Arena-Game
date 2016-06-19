@@ -265,6 +265,13 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid buy command. See @shop for more information.");   
                             }
                             break;
+                        case "@class":
+                            if (words.length == 2) {
+                                changeClass(sender, username);
+                            }
+                            else{
+                                sendTextMessage(sender, "Invalid class command. See @help for more information.");   
+                            }
                         case "@cancel":
                             if (words.length == 2) {
                                 cancelChallenge(sender, username);
@@ -775,7 +782,6 @@ function respondToChallenge(su, r, response) {
 function cancelChallenge(s, u){
     q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = E\'"+mysql_real_escape_string(u)+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
-        sendTextMessage(s, err);
         sendError(s, 46);
     };
     s_cancel = function(result){
@@ -1426,6 +1432,17 @@ function purchase(sender, classname){
     makeQuery(q_points, e, s_points);
 }
 
+function changeClass(sender, classname) {
+    classNum = validClass(classname);
+    if (classNum == -1) {
+        sendTextMessage(sender, "Invalid class name.");
+        return;
+    }
+    // query to see if they own the class
+    // if so, then change current class
+}
+
+// add tolowercase
 function validClass(text){
     for (var classNum in classes) {
         if (classNum != 0 && classes[classNum] == text) {
