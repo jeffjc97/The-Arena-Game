@@ -1445,6 +1445,7 @@ function changeClass(sender, classname) {
     s_check_unlock = function(result) {
         if (result.rows.length) {
             q_update_class = "UPDATE user_table SET current_class = " + classNum + " WHERE id = '" + sender + "'";
+            makeQuery(q_update_class, e, s_update_class);
         }
         else {
             sendTextMessage(sender, "You have not unlocked this class. Use the shop to unlock it!");
