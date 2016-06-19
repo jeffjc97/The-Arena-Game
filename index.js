@@ -926,7 +926,7 @@ function makeMoveSetup(s, type){
 // assumes a hit, not miss
 // returns move damage, given user attack style, class, and health (for berserker)
 function getDamage(attack, user_class, health) {
-    var max; var min;
+    var damage;
     function getTier(health) {
         for (var i = 0; i < 4; i++) {
             if (health > health_tiers[i]) {
@@ -944,9 +944,19 @@ function getDamage(attack, user_class, health) {
     // berserker
     if (user_class == 3) {
         tier = getTier(health);
-        max = attacks[user_class][attack][tier].max;
-        min = attacks[user_class][attack][tier].min;
+        damage = {
+            max: attacks[user_class][attack][tier].max,
+            min: attacks[user_class][attack][tier].min
+        };
     }
+    else {
+        damage = {
+            max: attacks[user_class][attack].max,
+            min: attacks[user_class][attack].min
+        };
+    }
+
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 // called by makeMoveSetup
@@ -957,8 +967,7 @@ function getDamage(attack, user_class, health) {
 function makeMove(move){
     move.bleed = 0;
     var q_update_duel;
-    var attack = attacks[move.type_of_attack];
-    var max = attack.max; var min = attack.min; var verb = attack.verb; var miss = attack.miss;
+    var verb = verbs[move.type_of_attack];
 
     // attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
     // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
