@@ -1451,13 +1451,27 @@ function changeClass(sender, classname) {
             sendTextMessage(sender, "You have not unlocked this class. Use the shop to unlock it!");
         }
     };
-
-    e = function(err){
-        sendError(sender, 124);
+    s_check_induel = function(result) {
+        if (result.rows.length) {
+            if (result.rows[0].in_duel) {
+                sendTextMessage(sender, "You can't change your class during a duel!");
+            }
+            else {
+                q_check_unlock = "SELECT * from user_classes WHERE id = '" + sender + "' AND class = " + classNum;
+                makeQuery(q_check_unlock, e, s_check_unlock);
+            }
+        }
+        else {
+            sendError(sender, 128);
+        }
     };
+    e = function(err){
+        sendError(sender, 127);
+    };
+    q_check_induel = "SELECT in_duel FROM user_table WHERE id ='" + sender + "'";
+    makeQuery(q_check_induel, e, s_check_induel);
 
-    q_check_unlock = "SELECT * from user_classes WHERE id = '" + sender + "' AND class = " + classNum;
-    makeQuery(q_check_unlock, e, s_check_unlock);
+    
 }
 
 // add tolowercase
