@@ -1413,7 +1413,7 @@ function setPressure(s){
 }
 
 function userFeedback(s, feedback) {
-    q_feedback = 'INSERT INTO feedback_table(id, feedback) VALUES (\'' + s + '\', \'' + mysql_real_escape_string(feedback.substr(0, 1000)) + '\')';
+    q_feedback = 'INSERT INTO feedback_table(id, feedback) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(feedback.substr(0, 1000)) + '\')';
     e = function(err){
         console.log(err);
         sendError(s, 105);
