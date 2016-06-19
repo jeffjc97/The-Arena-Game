@@ -774,6 +774,7 @@ function respondToChallenge(su, r, response) {
 function cancelChallenge(s, u){
     q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = E\'"+mysql_real_escape_string(u)+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
+        sendTextMessage(s, err);
         sendError(s, 46);
     };
     s_cancel = function(result){
