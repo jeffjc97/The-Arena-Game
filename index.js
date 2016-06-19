@@ -401,7 +401,7 @@ function setupChallenge(sender, username, stake_val){
             sendTextMessage(sender, "You already have 10 challenges pending. Please cancel some before issuing any more.");
         }
         else {
-            q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = \''+username+'\'';
+            q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = E\''+mysql_real_escape_string(username)+'\'';
             s_validate_val = function(result){
                 if (result.rows.length != 2) {
                     sendTextMessage(sender, "Username not found. Please try again.");
@@ -450,7 +450,7 @@ function setupChallenge(sender, username, stake_val){
 
 // @cancel <username>
 function cancelChallenge(s, u){
-    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
+    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = E\'"+mysql_real_escape_string(u)+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
         sendError(s, 46);
     };
@@ -597,7 +597,7 @@ function registerUser(s, username) {
                 console.log('Error: ', response.body.error);
             } else {
                 body = JSONbig.parse(body);
-                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', \'' + username + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
                         sendTextMessage(s, "Username already exists, please try another.");
@@ -768,7 +768,7 @@ function respondToChallenge(su, r, response) {
             ru = result.rows[0].name;
             rp = result.rows[0].points;
             //get sender id and status
-            q_get_sender = 'SELECT points, id, in_duel FROM user_table where name = \'' + su + '\'';
+            q_get_sender = 'SELECT points, id, in_duel FROM user_table where name = E\'' + mysql_real_escape_string(su) + '\'';
             makeQuery(q_get_sender, e, s_get_sender);
         }
     };
@@ -786,7 +786,7 @@ function respondToChallenge(su, r, response) {
 
 // @cancel <username>
 function cancelChallenge(s, u){
-    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = \'"+u+"\' RETURNING user_table.name, user_table.id";
+    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = E\'"+mysql_real_escape_string(u)+"\' RETURNING user_table.name, user_table.id";
     e = function(err){
         sendError(s, 46);
     };
@@ -925,42 +925,6 @@ function makeMoveSetup(s, type){
     makeQuery(q_get_s, e, s_get_s);
 }
 
-// DELETE ME!!!!
-// var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
-// var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
-// var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
-// var attacks = {
-//     0: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.25, min: 9, max: 12},
-//         d: {miss: 0.15, min: 5, max: 7},
-//         c: {miss: 0.5, min: 12, max: 15}},
-//     1: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.15, min: 9, max: 12},
-//         d: {miss: 0.05, min: 5, max: 7},
-//         c: {miss: 0.45, min: 12, max: 15}},
-//     2: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.3, min: 9, max: 12},
-//         d: {miss: 0.2, min: 5, max: 7},
-//         c: {miss: 0.55, min: 12, max: 15},
-//         heal_chance: 0.5,
-//         heal_percentage: 0.5},
-//     3: {h: {miss: 0, min: 10, max: 10},
-//         s: {miss: 0.25,
-//             0: {min: 9, max: 12},
-//             1: {min: 9, max: 13},
-//             2: {min: 10, max: 14},
-//             3: {min: 10, max: 16}},
-//         d: {miss: 0.15,
-//             0: {min: 5, max: 7},
-//             1: {min: 5, max: 8},
-//             2: {min: 6, max: 9},
-//             3: {min: 6, max: 11}},
-//         c: {miss: 0.5,
-//             0: {min: 12, max: 15},
-//             1: {min: 12, max: 16},
-//             2: {min: 13, max: 17},
-//             3: {min: 13, max: 19}}}
-// };
 
 // assumes a hit, not miss
 // returns move damage, given user attack style, class, and health (for berserker)
@@ -1292,12 +1256,12 @@ function addFriend(s, fu) {
             sendError(s, 114);
         }
     };
-    q_validate_fu = "select id from user_table where name = '" + fu + "'";
+    q_validate_fu = "select id from user_table where name = E\'" + mysql_real_escape_string(fu) + "\'";
     makeQuery(q_validate_fu, e, s_validate_fu);
 }
 
 function getStats(user, s){
-    q_get_stats = "SELECT * FROM user_table where name= \'" + user + "\'";
+    q_get_stats = "SELECT * FROM user_table where name= E\'" + mysql_real_escape_string(user) + "\'";
     e = function(err){
         sendError(s, 32);
     };
