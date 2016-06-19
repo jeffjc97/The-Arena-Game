@@ -1148,8 +1148,8 @@ function loseDuel(lid, wid, lname, wname, did) {
             sendError(wid, 27);
         };
         s_update_w = function(result) {
-            sendTextMessage(lid, "The duel has ended. To remember your opponent, add them to your friends list with @friend " + wname + ".");
-            sendTextMessage(wid, "The duel has ended. To remember your opponent, add them to your friends list with @friend " + lname + ".");
+            sendTextMessage(lid, "The duel has ended. To remember your opponent, add them to your friends list with '@friend " + wname + "'.");
+            sendTextMessage(wid, "The duel has ended. To remember your opponent, add them to your friends list with '@friend " + lname + "'.");
         };
         s_update_l = function(result) {
             if (!stake) {
