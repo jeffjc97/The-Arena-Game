@@ -23,6 +23,7 @@
     "express": "^4.13.4",
     "json-bigint": "^0.2.0",
     "pg": "4.x",
+    "pg-escape": "^0.2.0",
     "request": "^2.72.0"
   }
 }
