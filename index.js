@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var pg = require('pg');
 var JSONbig = require('json-bigint');
+var escape = require('pg-escape');
 var app = express();
 
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
