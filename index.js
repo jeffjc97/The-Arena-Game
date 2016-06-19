@@ -1343,7 +1343,7 @@ function setPressure(s){
     q_user_in_duel = "SELECT duel_id FROM duel_table WHERE winner_id='none' AND (sender_id =\'"+s+"\' OR recipient_id=\'"+s+"\')";
     e = function(err){
         sendError(s, 50);
-    }
+    };
     s_user_in_duel = function(result){
         if (result.rows.length != 1) {
             sendTextMessage(s, "You are not currently in a duel!");
@@ -1352,7 +1352,7 @@ function setPressure(s){
             q_update_duel = "UPDATE duel_table SET pressure_time = now() WHERE duel_id="+duel_id+" AND user_turn !=\'"+s+"\' RETURNING user_turn, sender_id, recipient_id";
             makeQuery(q_update_duel, e, s_update_duel);
         }
-    }
+    };
     s_update_duel = function(result){
         if (result.rows.length != 1) {
             sendTextMessage(s, "It is currently your turn, please make a move.");
@@ -1388,7 +1388,7 @@ function purchase(sender, classname){
     q_points = 'SELECT in_duel, points FROM user_table WHERE id =\''+sender+'\'';
     e=function(err){
         sendError(sender, 123);
-    }
+    };
     s_points = function(result){
         if (result.rows.length != 1) {
             sendError(sender, 124);
@@ -1419,16 +1419,16 @@ function purchase(sender, classname){
                             q_new_class = "INSERT INTO user_classes(id, class) VALUES (\'"+sender+"\', "+classNum+")";
                             s_new_class = function(result){
                                 sendTextMessage(sender, "Successfully purchased the "+classes[classNum]+" class!");
-                            }
+                            };
                             makeQuery(q_new_class, e, s_new_class);
-                        }
+                        };
                         makeQuery(q_purchase, e, s_purchase);
                     }
                 }
-            }
+            };
             makeQuery(q_already_owned, e, s_already_owned);
         }
-    }
+    };
     makeQuery(q_points, e, s_points);
 }
 
@@ -1438,14 +1438,30 @@ function changeClass(sender, classname) {
         sendTextMessage(sender, "Invalid class name.");
         return;
     }
-    // query to see if they own the class
-    // if so, then change current class
+    s_update_class = function(result) {
+        sendTextMessage(sender, "Class successfully changed!");
+    };
+    s_check_unlock = function(result) {
+        if (result.rows.length) {
+            q_update_class = "UPDATE user_table SET current_class = " + classNum + " WHERE id = '" + sender + "'";
+        }
+        else {
+            sendTextMessage(sender, "You have not unlocked this class. Use the shop to unlock it!");
+        }
+    };
+
+    e = function(err){
+        sendError(sender, 124);
+    };
+
+    q_check_unlock = "SELECT * from user_classes WHERE id = '" + sender + "' AND class = " + classNum;
+    makeQuery(q_check_unlock, e, s_check_unlock);
 }
 
 // add tolowercase
 function validClass(text){
     for (var classNum in classes) {
-        if (classNum != 0 && classes[classNum] == text) {
+        if (classNum !== 0 && classes[classNum] == text) {
             return classNum;
         }
     }
