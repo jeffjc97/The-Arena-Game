@@ -450,23 +450,6 @@ function setupChallenge(sender, username, stake_val){
     makeQuery(q_max_challenges, e_validate_val, s_max_challenges);
 }
 
-// @cancel <username>
-function cancelChallenge(s, u){
-    q_cancel = "DELETE FROM challenge_table USING user_table WHERE sender=\'"+s+"\' AND recipient = user_table.id and user_table.name = E\'"+mysql_real_escape_string(u)+"\' RETURNING user_table.name, user_table.id";
-    e = function(err){
-        sendError(s, 46);
-    };
-    s_cancel = function(result){
-        if (result.rows.length != 1) {
-            e(null);
-        }
-        else{
-            sendTextMessage(s, "Your challenge to "+u+" has been cancelled.");
-        }
-    };
-    makeQuery(q_cancel, e, s_cancel);
-}
-
 // @help
 function sendHelpMessage(sender) {
     messageData = {
