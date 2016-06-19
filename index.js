@@ -923,6 +923,32 @@ function makeMoveSetup(s, type){
 //             3: {min: 13, max: 19}}}
 // };
 
+// assumes a hit, not miss
+// returns move damage, given user attack style, class, and health (for berserker)
+function getDamage(attack, user_class, health) {
+    var max; var min;
+    function getTier(health) {
+        for (var i = 0; i < 4; i++) {
+            if (health > health_tiers[i]) {
+                return i - 1;
+            }
+        }
+        return 3;
+    }
+
+    // heal
+    if (attack == "h") {
+        return 10;
+    }
+
+    // berserker
+    if (user_class == 3) {
+        tier = getTier(health);
+        max = attacks[user_class][attack][tier].max;
+        min = attacks[user_class][attack][tier].min;
+    }
+}
+
 // called by makeMoveSetup
 //invariant: it is currently the attacker's turn
 // move: type_of_attack, attacker/defender/duel_id, attacker/defender_name
@@ -934,8 +960,10 @@ function makeMove(move){
     var attack = attacks[move.type_of_attack];
     var max = attack.max; var min = attack.min; var verb = attack.verb; var miss = attack.miss;
 
-    attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
-    
+    // attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
+    // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
+    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.attacker_health) : 0;
+
     // dealing with heal
     if (move.type_of_attack == "h") {
         if (move.potions_attacker) {
