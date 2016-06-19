@@ -254,6 +254,13 @@ app.post('/webhook/', function (req, res) {
                         case "@shop":
                             presentShop(sender);
                             break;
+                        case "@buy":
+                            if (words.length == 2) {
+                                purchase(sender, username);
+                            }
+                            else{
+                                sendTextMessage(sender, "Invalid buy command. See @shop for more information.");   
+                            }
                         case "@cancel":
                             if (words.length == 2) {
                                 cancelChallenge(sender, username);
@@ -519,7 +526,7 @@ function sendHelpMessage(sender) {
     });
 }
 
-// @help
+// @shop
 function presentShop(sender) {
     messageData = {
         "attachment":{
@@ -1397,6 +1404,7 @@ function setPressure(s){
 function userFeedback(s, feedback) {
     q_feedback = 'INSERT INTO feedback_table(id, feedback) VALUES (\'' + s + '\', \'' + feedback.substr(0, 1000) + '\')';
     e = function(err){
+        console.log(err);
         sendError(s, 105);
     };
     s_feedback = function(result) {
@@ -1404,3 +1412,13 @@ function userFeedback(s, feedback) {
     };
     makeQuery(q_feedback, e, s_feedback);
 }
+
+// function purchase(sender, classname){
+//     q_points = 'SELECT in_duel, points FROM user_table WHERE id =\''+sender+'\'';
+//     e=function(err){
+//         sendError(s, 123);
+//     }
+//     s_points = function(result){
+
+//     }
+// }
