@@ -264,6 +264,7 @@ app.post('/webhook/', function (req, res) {
                             else{
                                 sendTextMessage(sender, "Invalid buy command. See @shop for more information.");   
                             }
+                            break;
                         case "@cancel":
                             if (words.length == 2) {
                                 cancelChallenge(sender, username);
