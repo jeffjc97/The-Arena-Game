@@ -615,6 +615,7 @@ function registerUser(s, username) {
     }
 }
 
+// @me
 // Get game info about a user, related to @stats <username>
 function getPersonalInfo(s){
     q_get_username = "SELECT name, points FROM user_table WHERE id = \'"+s+"\'";
@@ -1272,7 +1273,8 @@ function getStats(user, s){
             if (data.games_played === 0) {
                 pct = "N/A";
             }
-            sendTextMessage(s, "STATS: " + user + "\nWins: " + data.wins + "\nLosses: " + data.losses+"\nDraws: " + data.draws + "\nGames: " + data.games_played + "\nWin %: " + pct);
+            user_class = result.rows[0].current_class ? " (" + classes[result.rows[0].current_class] + ")" : "";
+            sendTextMessage(s, "STATS: " + user + user_class + "\nWins: " + data.wins + "\nLosses: " + data.losses+"\nDraws: " + data.draws + "\nGames: " + data.games_played + "\nWin %: " + pct);
             if (data.id == s) {
                 sendTextMessage(s, "You have "+ data.points+" coins.");
             }else{
