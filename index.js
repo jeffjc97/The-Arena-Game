@@ -1004,6 +1004,7 @@ function getDamage(attack, user_class, health) {
 // bleed_attacker/defender, stun_attacker/defender, attacker_gender, attacker/defender_class
 function makeMove(move){
     move.bleed = 0;
+    move.vampire = 0;
     var q_update_duel;
     var verb = verbs[move.type_of_attack];
 
@@ -1035,6 +1036,12 @@ function makeMove(move){
         }
     }
     else {
+        // vampire
+        if (move.attacker_class == 2 && Math.random() > 0.5 && attack_value) {
+            move.vampire = Math.floor(attack_value / 2);
+            move.health_attacker += move.vampire;
+
+        }
         move.health_defender = move.health_defender - attack_value;
         // update the duel
         // stun, just keep the next turn id the same
@@ -1052,9 +1059,9 @@ function makeMove(move){
             move.health_defender -= move.bleed;
             move.bleed_defender -= 1;
         }
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = ' + move.health_attacker + ', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         if (move.attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = ' + move.health_attacker + ', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         }
     }
 
@@ -1091,6 +1098,10 @@ function makeMove(move){
         if (move.bleed) {
             sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
             sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+        }
+        if (move.vampire) {
+            sendTextMessage(move.defender_id,  move.attacker_name + " regenerated " + move.vampire + " health.");
+            sendTextMessage(move.attacker_id,  "You drained " + move.defender_name + " for " + move.vampire + " health!");
         }
         if (move.type_of_attack === "h") {
             att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
