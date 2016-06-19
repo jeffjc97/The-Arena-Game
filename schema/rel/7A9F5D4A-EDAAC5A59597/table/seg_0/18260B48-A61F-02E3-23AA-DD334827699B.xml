@@ -37,6 +37,17 @@
 </Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="A385CBE3-2BCD-3BA1-27B8-7C11B8B08344" name="user_classes__UN">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-19 03:26:15 UTC</createdTime>
+<ownerDesignName>schema</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="43096E69-81F8-30D0-3C18-5DFA8135B1EE"/>
+<colUsage columnID="81C8A4D0-3E0E-85D1-1FDC-850194238070"/>
+</indexColumnUsage>
+</ind_PK_UK>
 <ind_PK_UK id="9E6113CB-50C2-AADB-E437-A279AE91275E" name="classes_owned">
 <createdBy>Roy</createdBy>
 <createdTime>2016-06-18 05:21:11 UTC</createdTime>

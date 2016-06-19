@@ -30,6 +30,10 @@
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
 <bounds x="472" y="218" width="170" height="110"/>
 </OView>
+<OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="58EB6698-A030-E786-126D-4AA63AFE8F94" otype="Entity" vid="9DB70F69-3935-7975-AF46-7100B438BBC8">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="20" y="20" width="280" height="320"/>
+</OView>
 <OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="66F8F418-7B49-309D-0BC7-6F1E1AD13B60" otype="Entity" vid="4A4D36DF-F33A-C8A9-A70A-C73719882CEA">
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
 <bounds x="299" y="388" width="170" height="110"/>
