@@ -57,6 +57,8 @@ var attacks = {
             3: {min: 13, max: 19}}}
 };
 
+var class_cost = 300;
+
 // var attacks = {
 //     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
 //     s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
@@ -1391,12 +1393,59 @@ function userFeedback(s, feedback) {
     makeQuery(q_feedback, e, s_feedback);
 }
 
-// function purchase(sender, classname){
-//     q_points = 'SELECT in_duel, points FROM user_table WHERE id =\''+sender+'\'';
-//     e=function(err){
-//         sendError(s, 123);
-//     }
-//     s_points = function(result){
+function purchase(sender, classname){
+    q_points = 'SELECT in_duel, points FROM user_table WHERE id =\''+sender+'\'';
+    e=function(err){
+        sendError(sender, 123);
+    }
+    s_points = function(result){
+        if (result.row.length != 1) {
+            sendError(sender, 124);
+        }else{
+            if (result.rows[0].in_duel > 0) {
+                sendTextMessage(sender, "You cannot do this during a duel.");
+                return;
+            }
+            classNum = validClass(classname);
+            if (classNum == -1) {
+                sendTextMessage(sender, "Invalid purchase name.");
+                return;
+            }
+            else if(result.rows[0].points < class_cost){
+                sendTextMessage(sender, "You do not have enough points to purchase this.");
+                return;
+            }
+            q_already_owned = "SELECT id, class from user_classes WHERE id=\'"+sender+"\' AND class="+classNum;
+            s_already_owned = function(result){
+                if (result.rows.length > 1) {
+                    sendError(sender, 125);
+                }else{
+                    if (result.rows.length == 1) {
+                        sendTextMessage(sender, "You already own this class.");
+                    }else{
+                        q_purchase = "UPDATE user_table SET points = points-"+class_cost+" WHERE id=\'"+sender+"\'";
+                        s_purchase = function(result){
+                            q_new_class = "INSERT INTO user_classes(id, class) VALUES (\'"+sender+"\', "+classNum+")";
+                            s_new_class = function(result){
+                                sendTextMessage(sender, "Successfully purchased the "+classes[classNum]+" class!");
+                            }
+                            makeQuery(q_new_class, e, s_new_class);
+                        }
+                        makeQuery(q_purchase, e, s_purchase);
+                    }
+                }
+            }
+            makeQuery(q_already_owned, e, s_already_owned);
+        }
+    }
+    makeQuery(q_points, e, s_points);
+}
 
-//     }
-// }
+function validClass(text){
+    for (var classNum in classes) {
+        if (classes[classNum] == text) {
+            return classNum;
+        }
+    }
+    return -1;
+}
