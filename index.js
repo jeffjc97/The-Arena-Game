@@ -1477,7 +1477,7 @@ function changeClass(sender, classname) {
 // add tolowercase
 function validClass(text){
     for (var classNum in classes) {
-        if (classNum !== 0 && classes[classNum] == text) {
+        if (classNum !== 0 && classes[classNum].toLowerCase() == text.toLowerCase()) {
             return classNum;
         }
     }
