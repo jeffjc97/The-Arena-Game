@@ -237,9 +237,6 @@ app.post('/webhook/', function (req, res) {
                         case "@forfeit":
                             forfeitDuel(sender);
                             break;
-                        case "@shop":
-                            presentShop(sender);
-                            break;
                         case "@stats":
                             if (words.length == 2) {
                                 getStats(username, sender);
@@ -501,6 +498,40 @@ function sendHelpMessage(sender) {
                 }
                 ]
               },
+            ]
+          }
+        }
+    };
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:token},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+    });
+}
+
+// @help
+function presentShop(sender) {
+    messageData = {
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"generic",
+            "elements":[
+              {
+                "title":"Shop For Some Gay Shit",
+                "subtitle":"Welcome to Bompton",
+                "image_url":"http://images.rapgenius.com/6d0f31c832f3dfbbc8ddb2ae0a6cb5fa.560x344x1.jpg"
+              }
             ]
           }
         }
