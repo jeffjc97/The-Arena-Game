@@ -56,12 +56,12 @@ var attacks = {
             3: {min: 13, max: 19}}}
 };
 
-var attacks = {
-    h: {miss: 0, min: 10, max: 10, verb: 'healed'},
-    s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
-    d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
-    c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
-};
+// var attacks = {
+//     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
+//     s: {miss: 0.35, min: 9, max: 11, verb: 'slashed'},
+//     d: {miss: 0.15, min: 5, max: 7, verb: 'stabbed'},
+//     c: {miss: 0.5, min: 12, max: 17, verb: 'crushed'}
+// };
 
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}));
@@ -971,6 +971,7 @@ function makeMove(move){
 
     // attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
     // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
+    
     attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.attacker_health) : 0;
 
     // dealing with heal
