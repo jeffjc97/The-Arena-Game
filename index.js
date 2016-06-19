@@ -956,7 +956,7 @@ function getDamage(attack, user_class, health) {
         };
     }
 
-    return Math.floor(Math.random() * (max - min)) + min;
+    return Math.floor(Math.random() * (damage.max - damage.min)) + damage.min;
 }
 
 // called by makeMoveSetup
