@@ -1399,7 +1399,7 @@ function purchase(sender, classname){
         sendError(sender, 123);
     }
     s_points = function(result){
-        if (result.row.length != 1) {
+        if (result.rows.length != 1) {
             sendError(sender, 124);
         }else{
             if (result.rows[0].in_duel > 0) {
@@ -1443,7 +1443,7 @@ function purchase(sender, classname){
 
 function validClass(text){
     for (var classNum in classes) {
-        if (classes[classNum] == text) {
+        if (classNum != 0 && classes[classNum] == text) {
             return classNum;
         }
     }
