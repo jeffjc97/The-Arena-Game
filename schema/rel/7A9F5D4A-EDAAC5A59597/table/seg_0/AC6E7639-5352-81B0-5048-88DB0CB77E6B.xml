@@ -32,5 +32,18 @@
 <ownDataTypeParameters>1000,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="time" id="294C7610-B30D-4EFF-E0B2-38446D63EDCD">
+<createdBy>Roy</createdBy>
+<createdTime>2016-06-24 22:06:47 UTC</createdTime>
+<generatorID>3DB20517-A8F7-CE68-990B-6DFDCC834A33</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT046</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>now()</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 </Table>
