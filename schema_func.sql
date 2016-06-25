@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION feedback_trigger() RETURNS trigger AS $feedback$
 DECLARE
 	count_var INTEGER;
 BEGIN
-	SELECT count(id) into count_var FROM feedback_table WHERE id=NEW.id AND TIME > (CURRENT_TIMESTAMP - INTERVAL '10 seconds');
+	SELECT count(id) into count_var FROM feedback_table WHERE id=NEW.id AND TIME > (CURRENT_TIMESTAMP - INTERVAL '3 minutes');
     IF count_var > 0 THEN
     	RETURN null;
     ELSE
