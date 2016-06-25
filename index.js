@@ -210,7 +210,15 @@ app.post('/webhook/', function (req, res) {
                                 addFriend(sender, username);
                             }
                             else {
-                                sendTextMessage(sender, "Invalid friends command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid friend command. See @help for more information.");
+                            }
+                            break;
+                        case "@unfriend":
+                            if (words.length == 2) {
+                                removeFriend(sender, username);
+                            }
+                            else {
+                                sendTextMessage(sender, "Invalid unfriend command. See @help for more information.");
                             }
                             break;
                         case "@friends":
@@ -1238,6 +1246,38 @@ function addFriend(s, fu) {
             fid = result.rows[0].id;
             q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
             makeQuery(q_add_friend, e, s_add_friend);
+        }
+        else {
+            sendTextMessage(s, "Username not found. Please try again.");
+        }
+    };
+    e = function(err) {
+        if (err.detail.indexOf("already exists") > -1) {
+            sendTextMessage(s,"This person is already on your friends list!");
+        }
+        else {
+            sendError(s, 114);
+        }
+    };
+    q_validate_fu = "select id from user_table where name = E\'" + mysql_real_escape_string(fu) + "\'";
+    makeQuery(q_validate_fu, e, s_validate_fu);
+}
+
+function removeFriend(s, fu) {
+    s_remove_friend = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(s, fu + " successfully removed from your friends list.");
+        }
+        else {
+            sendTextMessage(s, fu + " is not on your friends list. Please try again.");
+        }
+        sendTextMessage(s, fu + " added to your friends list! Type @friends to see all friends.");
+    };
+    s_validate_fu = function(result) {
+        if (result.rows.length) {
+            fid = result.rows[0].id;
+            q_remove_friend = "delete from friends_table where owner_id = E\'" + mysql_real_escape_string(s) + "\' and friend_id = E\'" + mysql_real_escape_string(fid) + "\' returning *";
+            makeQuery(q_add_friend, e, s_remove_friend);
         }
         else {
             sendTextMessage(s, "Username not found. Please try again.");
