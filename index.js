@@ -1380,8 +1380,11 @@ function userFeedback(s, feedback) {
         sendError(s, 105);
     };
     s_feedback = function(result) {
-        sendTextMessage(s, "Thanks for your feedback! We really appreciate it.");
-        sendTextMessage(s, JSON.stringify(result));
+        if (result.rowCount > 0) {
+            sendTextMessage(s, "Thanks for your feedback! We really appreciate it.");   
+        }else{
+            sendTextMessage(s, "You have been giving too much feedback. Please try again in a few minutes.");
+        }
     };
     makeQuery(q_feedback, e, s_feedback);
 }
