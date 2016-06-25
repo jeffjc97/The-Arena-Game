@@ -1277,7 +1277,7 @@ function removeFriend(s, fu) {
         if (result.rows.length) {
             fid = result.rows[0].id;
             q_remove_friend = "delete from friends_table where owner_id = E\'" + mysql_real_escape_string(s) + "\' and friend_id = E\'" + mysql_real_escape_string(fid) + "\' returning *";
-            makeQuery(q_add_friend, e, s_remove_friend);
+            makeQuery(q_remove_friend, e, s_remove_friend);
         }
         else {
             sendTextMessage(s, "Username not found. Please try again.");
