@@ -1283,7 +1283,8 @@ function removeFriend(s, fu) {
         }
     };
     e = function(err) {
-        sendError(s, 155, err);
+        sendTextMessage(s, err.toString());
+        sendError(s, 155);
     };
     q_validate_fu = "select id from user_table where name = E\'" + mysql_real_escape_string(fu) + "\'";
     makeQuery(q_validate_fu, e, s_validate_fu);
