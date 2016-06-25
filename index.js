@@ -1271,7 +1271,6 @@ function removeFriend(s, fu) {
         else {
             sendTextMessage(s, fu + " is not on your friends list. Please try again.");
         }
-        sendTextMessage(s, fu + " added to your friends list! Type @friends to see all friends.");
     };
     s_validate_fu = function(result) {
         if (result.rows.length) {
@@ -1284,12 +1283,7 @@ function removeFriend(s, fu) {
         }
     };
     e = function(err) {
-        if (err.detail.indexOf("already exists") > -1) {
-            sendTextMessage(s,"This person is already on your friends list!");
-        }
-        else {
-            sendError(s, 114);
-        }
+        sendError(s, 155, err.substr(0, 200));
     };
     q_validate_fu = "select id from user_table where name = E\'" + mysql_real_escape_string(fu) + "\'";
     makeQuery(q_validate_fu, e, s_validate_fu);
