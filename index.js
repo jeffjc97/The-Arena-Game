@@ -1490,6 +1490,7 @@ function purchase(sender, classname){
     makeQuery(q_points, e, s_points);
 }
 
+// @class
 function changeClass(sender, classname) {
     classNum = validClass(classname);
     if (classNum == -1) {
