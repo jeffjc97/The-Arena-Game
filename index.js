@@ -990,7 +990,7 @@ function getDamage(attack, user_class, health) {
 // called by makeMoveSetup
 //invariant: it is currently the attacker's turn
 // move: type_of_attack, attacker/defender/duel_id, attacker/defender_name
-// attacker/defender_health, attacker_is_sender, potions_attacker/defender
+// health_attacker/defender, attacker_is_sender, potions_attacker/defender
 // bleed_attacker/defender, stun_attacker/defender, attacker_gender, attacker/defender_class
 function makeMove(move){
     move.bleed = 0;
@@ -1001,7 +1001,7 @@ function makeMove(move){
     // attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
     // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
     
-    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.attacker_health) : 0;
+    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.health_attacker) : 0;
 
     // dealing with heal
     if (move.type_of_attack == "h") {
