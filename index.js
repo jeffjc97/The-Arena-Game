@@ -538,10 +538,20 @@ function presentShop(sender) {
             "template_type":"generic",
             "elements":[
               {
-                "title":"Shop For Some Gay Shit",
-                "subtitle":"Welcome to Bompton",
-                "image_url":"http://images.rapgenius.com/6d0f31c832f3dfbbc8ddb2ae0a6cb5fa.560x344x1.jpg"
-              }
+                "title":"Unlock Warrior Class: " + class_cost + " coins",
+                "subtitle":"Warriors deal attacks with greater accuracy.",
+                "image_url":"http://i.imgur.com/RJUkNgn.png",
+              },
+              {
+                "title":"Shop: Unlock Berserker Class: " + class_cost + " coins",
+                "subtitle":"Berkserkers deal more damage the lower their health",
+                "image_url":"http://i.imgur.com/vO92Yr2.png",
+              },
+              {
+                "title":"Shop: Unlock Vampire Class: " + class_cost + " coins",
+                "subtitle":"Vampires often drain their opponents health, healing themselvese.",
+                "image_url":"http://i.imgur.com/cV45OrU.png",
+              },
             ]
           }
         }
