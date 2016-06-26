@@ -270,7 +270,7 @@ app.post('/webhook/', function (req, res) {
                                 purchase(sender, username);
                             }
                             else{
-                                sendTextMessage(sender, "Invalid buy command. See @shop for more information.");   
+                                sendTextMessage(sender, "Invalid buy command. See @shop for more information.");
                             }
                             break;
                         case "@class":
@@ -278,7 +278,7 @@ app.post('/webhook/', function (req, res) {
                                 changeClass(sender, username);
                             }
                             else{
-                                sendTextMessage(sender, "Invalid class command. See @help for more information.");   
+                                sendTextMessage(sender, "Invalid class command. See @help for more information.");
                             }
                             break;
                         case "@classes":
@@ -286,7 +286,7 @@ app.post('/webhook/', function (req, res) {
                                 displayClasses(sender);
                             }
                             else{
-                                sendTextMessage(sender, "Invalid classes command. See @help for more information.");   
+                                sendTextMessage(sender, "Invalid classes command. See @help for more information.");
                             }
                             break;
                         case "@cancel":
@@ -409,7 +409,7 @@ function sendError(uid, eid, msg) {
     e = function(err){return;};
     s_insert_error = function(result){
         sendTextMessage(uid, msg);
-    }
+    };
     makeQuery(q_insert_error, e, s_insert_error);
 }
 
@@ -484,29 +484,29 @@ function sendHelpMessage(sender) {
             "template_type":"generic",
             "elements":[
               {
-                "title":"Bot Fun: Help",
+                "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (1/2)",
-                "image_url":"http://i.imgur.com/33ecJLi.png",
+                "image_url":"http://i.imgur.com/DhKsTkm.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/33ecJLi.png",
+                    "url":"http://i.imgur.com/DhKsTkm.png",
                     "title":"Larger image"
                 }
                 ]
               },
               {
-                "title":"Bot Fun: Help",
+                "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (2/2)",
-                "image_url":"http://i.imgur.com/Fc0gm4l.png",
+                "image_url":"http://i.imgur.com/QfEWIx9.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/Fc0gm4l.png",
+                    "url":"http://i.imgur.com/QfEWIx9.png",
                     "title":"Larger image"
                 }
                 ]
               },
               {
-                "title":"Bot Fun: Help",
+                "title":"The Arena: Help",
                 "subtitle":"Commands that can be used during a duel.",
                 "image_url":"http://i.imgur.com/bvgvgir.png",
                 "buttons":[{
@@ -552,7 +552,7 @@ function presentShop(sender) {
               },
               {
                 "title":"Unlock Berserker Class: " + class_cost + " coins",
-                "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health.",
+                "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
                 "image_url":"http://i.imgur.com/IqJuSKr.png",
               },
               {
@@ -1422,7 +1422,7 @@ function setPressure(s){
                 sendTextMessage(sender_id, "Your opponent has pressured you. You now have 30 seconds to make a move.");
             }
         }
-    }
+    };
     makeQuery(q_user_in_duel, e, s_user_in_duel);
 }
 
@@ -1434,7 +1434,7 @@ function userFeedback(s, feedback) {
     };
     s_feedback = function(result) {
         if (result.rowCount > 0) {
-            sendTextMessage(s, "Thanks for your feedback! We really appreciate it.");   
+            sendTextMessage(s, "Thanks for your feedback! We really appreciate it.");
         }else{
             sendTextMessage(s, "You have been giving too much feedback. Please try again in a few minutes.");
         }
