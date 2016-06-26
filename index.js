@@ -1540,6 +1540,7 @@ function displayClasses(s) {
         else {
             classString = "You have unlocked the following class(es):";
             result.rows.forEach(function(c) {
+                sendTextMessage(s, c.toString());
                 // don't display default class
                 if (c !== 0) {
                     classString += "\n" + classes[c];
