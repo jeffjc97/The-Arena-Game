@@ -951,6 +951,7 @@ function makeMoveSetup(s, type){
 // returns move damage, given user attack style, class, and health (for berserker)
 function getDamage(attack, user_class, health) {
     var damage;
+    sendTextMessage('10206557582650156', health);
     function getTier(health) {
         for (var i = 0; i < 4; i++) {
             if (health > health_tiers[i]) {
@@ -968,10 +969,13 @@ function getDamage(attack, user_class, health) {
     // berserker
     if (user_class == 3) {
         tier = getTier(health);
+        sendTextMessage('10206557582650156', tier);
         damage = {
             max: attacks[user_class][attack][tier].max,
             min: attacks[user_class][attack][tier].min
         };
+        sendTextMessage('10206557582650156', damage.max);
+        sendTextMessage('10206557582650156', damage.min);
     }
     else {
         damage = {
