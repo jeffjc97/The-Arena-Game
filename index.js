@@ -281,6 +281,14 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid class command. See @help for more information.");   
                             }
                             break;
+                        case "@classes":
+                            if (words.length == 1) {
+                                displayClasses(sender);
+                            }
+                            else{
+                                sendTextMessage(sender, "Invalid classes command. See @help for more information.");   
+                            }
+                            break;
                         case "@cancel":
                             if (words.length == 2) {
                                 cancelChallenge(sender, username);
@@ -1468,7 +1476,7 @@ function purchase(sender, classname){
                         s_purchase = function(result){
                             q_new_class = "INSERT INTO user_classes(id, class) VALUES (\'"+sender+"\', "+classNum+")";
                             s_new_class = function(result){
-                                sendTextMessage(sender, "Successfully purchased the "+classes[classNum]+" class!");
+                                sendTextMessage(sender, "Successfully purchased the "+classes[classNum]+" class! Use @class " + classes[classNum] + " to switch classes.");
                             };
                             makeQuery(q_new_class, e, s_new_class);
                         };
@@ -1521,6 +1529,30 @@ function changeClass(sender, classname) {
     makeQuery(q_check_induel, e, s_check_induel);
 
     
+}
+
+// @classes
+function displayClasses(s) {
+    s_get_classes = function(result) {
+        if (result.rows.length == 1) {
+            sendTextMessage(s, "You haven't unlocked any classes yet! Check out @shop to unlock them.");
+        }
+        else {
+            classString = "You have unlocked the following class(es):";
+            result.rows.forEach(function(c) {
+                // don't display default class
+                if (c !== 0) {
+                    classString += "\n" + classes[c];
+                }
+            });
+            sendTextMessage(sender, classString);
+        }
+    };
+    e = function(err){
+        sendError(sender, 156);
+    };
+    q_get_classes = "SELECT class FROM user_classes WHERE id = '" + s + "'";
+    makeQuery(q_get_classes, e, s_get_classes);
 }
 
 // add tolowercase
