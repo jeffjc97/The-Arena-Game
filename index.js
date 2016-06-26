@@ -538,18 +538,18 @@ function presentShop(sender) {
             "template_type":"generic",
             "elements":[
               {
-                "title":"Unlock Knight Class: " + class_cost + " coins",
+                "title":"Unlock Knight Class: " + class_cost + " coins (@buy knight)",
                 "subtitle":"Knights deal attacks with greater accuracy.",
                 "image_url":"http://i.imgur.com/qNq4v4i.png",
               },
               {
-                "title":"Shop: Unlock Berserker Class: " + class_cost + " coins",
-                "subtitle":"Berkserkers deal more damage the lower their health",
+                "title":"Unlock Berserker Class: " + class_cost + " coins (@buy berserker)",
+                "subtitle":"Berkserkers deal more damage the lower their health.",
                 "image_url":"http://i.imgur.com/IqJuSKr.png",
               },
               {
-                "title":"Shop: Unlock Vampire Class: " + class_cost + " coins",
-                "subtitle":"Vampires often drain their opponents health, healing themselvese.",
+                "title":"Unlock Vampire Class: " + class_cost + " coins (@buy vampire)",
+                "subtitle":"Vampires often drain their opponents health, healing themselves.",
                 "image_url":"http://i.imgur.com/A50KhEF.png",
               },
             ]
