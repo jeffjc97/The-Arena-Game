@@ -557,7 +557,7 @@ function presentShop(sender) {
               },
               {
                 "title":"Unlock Vampire Class: " + class_cost + " coins",
-                "subtitle":"[@buy vampire] Vampires often drain their opponents health, healing themselves.",
+                "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
                 "image_url":"http://i.imgur.com/A50KhEF.png",
               },
             ]
@@ -1540,10 +1540,9 @@ function displayClasses(s) {
         else {
             classString = "You have unlocked the following class(es):";
             result.rows.forEach(function(c) {
-                sendTextMessage(s, c.toString());
                 // don't display default class
-                if (c !== 0) {
-                    classString += "\n" + classes[c];
+                if (c.class !== 0) {
+                    classString += "\n" + classes[c.class];
                 }
             });
             sendTextMessage(sender, classString);
