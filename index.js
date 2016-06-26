@@ -1275,7 +1275,7 @@ function removeFriend(s, fu) {
     s_validate_fu = function(result) {
         if (result.rows.length) {
             fid = result.rows[0].id;
-            q_remove_friend = "delete from friends_table where owner_id = E\'" + mysql_real_escape_string(s) + "\' and friend_id = E\'" + mysql_real_escape_string(fid) + "\' returning *";
+            q_remove_friend = "delete from friend_table where owner_id = E\'" + mysql_real_escape_string(s) + "\' and friend_id = E\'" + mysql_real_escape_string(fid) + "\' returning *";
             makeQuery(q_remove_friend, e, s_remove_friend);
         }
         else {
