@@ -1026,6 +1026,7 @@ function makeMove(move){
         if (move.attacker_class == 2 && Math.random() > 0.5 && attack_value) {
             move.vampire = Math.floor(attack_value / 2);
             move.health_attacker += move.vampire;
+            move.health_attacker = Math.min(50, move.health_attacker);
 
         }
         move.health_defender = move.health_defender - attack_value;
