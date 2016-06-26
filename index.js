@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 
 var MAX_CHALLENGE_COUNT = 10;
 var max_health = 50;
-var classes = {0: 'Default', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
+var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
 var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
 var attacks = {
@@ -1540,10 +1540,7 @@ function displayClasses(s) {
         else {
             classString = "You have unlocked the following class(es):";
             result.rows.forEach(function(c) {
-                // don't display default class
-                if (c.class !== 0) {
-                    classString += "\n" + classes[c.class];
-                }
+                classString += "\n" + classes[c.class];
             });
             sendTextMessage(sender, classString);
         }
