@@ -1107,7 +1107,7 @@ function makeMove(move){
             }
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
