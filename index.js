@@ -19,7 +19,7 @@ pg.defaults.ssl = true;
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
-var MAX_CHALLENGE_COUNT = 10;
+var MAX_CHALLENGE_COUNT = 5;
 var max_health = 50;
 var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
