@@ -508,10 +508,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used during a duel.",
-                "image_url":"http://i.imgur.com/bvgvgir.png",
+                "image_url":"http://i.imgur.com/7RWUH4c.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/bvgvgir.png",
+                    "url":"http://i.imgur.com/7RWUH4c.png",
                     "title":"Larger image"
                 }
                 ]
