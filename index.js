@@ -1250,7 +1250,7 @@ function listFriends(s) {
     e = function(err) {
         sendError(s, 112);
     };
-    q_get_friends = "select u.name as \"name\", u.first_name as \"fname\" from friend_table f join user_table u on (f.friend_id = u.id)";
+    q_get_friends = "select u.name as \"name\", u.first_name as \"fname\" from friend_table f join user_table u on (f.friend_id = u.id) where owner_id = '" + s + "'";
     makeQuery(q_get_friends, e, s_get_friends);
 }
 
