@@ -121,9 +121,9 @@ app.post('/webhook/', function (req, res) {
         sender = event.sender.id;
         if (event.message && event.message.text) {
             text = event.message.text;
-            if (event.message.quick_reply) {
-                text = event.message.quick_reply.payload;
-            }
+            // if (event.message.quick_reply) {
+            //     text = event.message.quick_reply.payload;
+            // }
             words = text.split(" ");
             username = words[words.length - 1];
             console.log("1");
@@ -756,7 +756,7 @@ function randomChallenge(s) {
             sendTextMessage(sender, "You are currently in a duel!");
         }
         else {
-            q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
+            q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' AND u.in_duel = 0 OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
             makeQuery(q_get_random, e, s_get_random);
         }
     };
@@ -912,12 +912,12 @@ function startDuel(s, r, f_id) {
         if (first_player == s_index) {
             sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
-            sendAttackMenu(s);
+            // sendAttackMenu(s);
         }
         else {
             sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
-            sendAttackMenu(r);
+            // sendAttackMenu(r);
         }
     };
     makeQuery(q_duel, e, s_duel);
@@ -1152,22 +1152,22 @@ function makeMove(move){
         else {
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             if (attack_value === 0) {
-                sendTextMessage(move.defender_id, move.attacker_name + " missed!", sendTextMessage(move.defender_id, health, sendAttackMenu(move.defender_id)));
-                sendTextMessage(move.attacker_id, "You missed!", sendTextMessage(move.attacker_id, health));
+                sendTextMessage(move.defender_id, move.attacker_name + " missed!");
+                sendTextMessage(move.attacker_id, "You missed!");
                 // sendAttackMenu(move.defender_id);
             }
             else {
-                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!", sendTextMessage(move.defender_id, health, sendAttackMenu(move.defender_id)));
-                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!", sendTextMessage(move.attacker_id, health));
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
+                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
                 // sendAttackMenu(move.defender_id);
             }
             if (move.stun) {
-                sendTextMessage(move.defender_id, "You've been stunned!", sendTextMessage(move.defender_id, health));
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!", sendTextMessage(move.attacker_id, health, sendAttackMenu(move.attacker_id)));
+                sendTextMessage(move.defender_id, "You've been stunned!");
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
                 // sendAttackMenu(move.attacker_id);
             }
-            // sendTextMessage(move.defender_id, health);
-            // sendTextMessage(move.attacker_id, health);
+            sendTextMessage(move.defender_id, health);
+            sendTextMessage(move.attacker_id, health);
         }
     };
     makeQuery(q_update_duel, e, s_update_duel);
