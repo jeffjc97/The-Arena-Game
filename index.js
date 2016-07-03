@@ -817,7 +817,7 @@ function respondToChallenge(su, r, response) {
         }
         else {
             if(result.rows[0].in_duel !== 0){
-                sendTextMessage(r,su + " is currently in a duel. Please try accepting again soon.");
+                sendTextMessage(r,su + " is currently in a duel. Please try again soon.");
             }
             else {
                 s = result.rows[0].id;
