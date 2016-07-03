@@ -365,7 +365,7 @@ function mysql_real_escape_string (str) {
     });
 }
 
-function sendTextMessage(sender, text) {
+function sendTextMessage(sender, text, cb) {
     messageData = {
         text:text
     };
@@ -383,6 +383,11 @@ function sendTextMessage(sender, text) {
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
             // console.log('Error: ', response);
+        }
+        else {
+            if (cb) {
+                cb();
+            }
         }
     });
 }
@@ -1145,24 +1150,24 @@ function makeMove(move){
             sendTextMessage(move.attacker_id, health);
         }
         else {
+            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             if (attack_value === 0) {
-                sendTextMessage(move.defender_id, move.attacker_name + " missed!");
-                sendTextMessage(move.attacker_id, "You missed!");
-                sendAttackMenu(move.defender_id);
+                sendTextMessage(move.defender_id, move.attacker_name + " missed!", sendTextMessage(move.defender_id, health, sendAttackMenu(move.defender_id)));
+                sendTextMessage(move.attacker_id, "You missed!", sendTextMessage(move.attacker_id, health));
+                // sendAttackMenu(move.defender_id);
             }
             else {
-                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
-                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
-                sendAttackMenu(move.defender_id);
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!", sendTextMessage(move.defender_id, health, sendAttackMenu(move.defender_id)));
+                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!", sendTextMessage(move.attacker_id, health));
+                // sendAttackMenu(move.defender_id);
             }
             if (move.stun) {
-                sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
-                sendAttackMenu(move.attacker_id);
+                sendTextMessage(move.defender_id, "You've been stunned!", sendTextMessage(move.defender_id, health));
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!", sendTextMessage(move.attacker_id, health, sendAttackMenu(move.attacker_id)));
+                // sendAttackMenu(move.attacker_id);
             }
-            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
-            sendTextMessage(move.defender_id, health);
-            sendTextMessage(move.attacker_id, health);
+            // sendTextMessage(move.defender_id, health);
+            // sendTextMessage(move.attacker_id, health);
         }
     };
     makeQuery(q_update_duel, e, s_update_duel);
