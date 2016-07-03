@@ -1246,7 +1246,7 @@ function loseDuel(lid, wid, lname, wname, did) {
         };
         q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\' RETURNING stake";
         makeQuery(q_update_d, e, s_update_d);
-    }, 5000);
+    }, 9000);
 }
 
 function sendNormalMessage(s, text) {
