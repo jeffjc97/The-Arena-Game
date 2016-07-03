@@ -126,9 +126,7 @@ app.post('/webhook/', function (req, res) {
             // }
             words = text.split(" ");
             username = words[words.length - 1];
-            console.log("1");
             getUserInfo(sender);
-            console.log("2");
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
@@ -733,39 +731,72 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
 }
 
 // @random
-var trials = 0;
+// var trials = 0;
+// function randomChallenge(s) {
+//     s_get_random = function(result) {
+//         if (result.rows.length > 0) {
+//             r = result.rows[0].id;
+//             ru = result.rows[0].name;
+//             sendChallenge(s, su, r, ru, 0);
+//         }
+//         else if(trials < 5){
+//             trials+=1;
+//             randomChallenge(s);
+//         }
+//         else{
+//             sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
+//         }
+//     };
+//     s_get_sender = function(result) {
+//         su = result.rows[0].name;
+//         s_in_duel = result.rows[0].in_duel;
+//         if (s_in_duel) {
+//             sendTextMessage(sender, "You are currently in a duel!");
+//         }
+//         else {
+//             q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' AND u.in_duel = 0 OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
+//             makeQuery(q_get_random, e, s_get_random);
+//         }
+//     };
+//     e = function(err) {
+//         sendError(s, 110);
+//     };
+//     var rid, ru, su;
+//     q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
+//     makeQuery(q_get_sender, e, s_get_sender);
+// }
+
 function randomChallenge(s) {
-    s_get_random = function(result) {
-        if (result.rows.length > 0) {
-            r = result.rows[0].id;
-            ru = result.rows[0].name;
-            sendChallenge(s, su, r, ru, 0);
-        }
-        else if(trials < 5){
-            trials+=1;
-            randomChallenge(s);
-        }
-        else{
-            sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
-        }
-    };
-    s_get_sender = function(result) {
-        su = result.rows[0].name;
-        s_in_duel = result.rows[0].in_duel;
-        if (s_in_duel) {
-            sendTextMessage(sender, "You are currently in a duel!");
+    s_insert_pool = function(result) {
+        checkPool();
+    }
+    s_check_pool = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(sender, "You are already in the random pool! We'll find you a duel as soon as possible.")
         }
         else {
-            q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' AND u.in_duel = 0 OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
-            makeQuery(q_get_random, e, s_get_random);
+            // insert into random pool, do work to see if other people are in pool
+            q_insert_pool = "insert into random_pool(id, entry_time) values ('" + s + "', default) returning count(*)";
+            makeQuery(q_insert_pool, e, s_insert_pool);
+        }
+    }
+    s_check_sender = function(result) {
+        if (result.rows[0].in_duel) {
+            sendTextMessage(sender, "You can't do that during a duel.");
+        }
+        else {
+            // check if person already in pool
+            q_check_pool = "select * from random_pool where id = '" + s + "'";
+            makeQuery(q_check_pool, e, s_check_pool);
         }
     };
     e = function(err) {
-        sendError(s, 110);
+        sendError(s, 200);
     };
-    var rid, ru, su;
-    q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
-    makeQuery(q_get_sender, e, s_get_sender);
+    // check if person already in duel
+    q_check_sender = "select in_duel from user_table where id = '" + s + "'";
+    makeQuery(q_check_sender, e, s_check_sender);
+
 }
 
 // @accept <username>, @reject <username>
