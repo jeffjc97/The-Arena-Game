@@ -122,7 +122,7 @@ app.post('/webhook/', function (req, res) {
         if (event.message && event.message.text) {
             text = event.message.text;
             if (event.message.quick_reply) {
-                text = event.message.quick_reply;
+                text = event.message.quick_reply.payload;
             }
             words = text.split(" ");
             username = words[words.length - 1];
@@ -907,10 +907,12 @@ function startDuel(s, r, f_id) {
         if (first_player == s_index) {
             sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+            sendAttackMenu(s);
         }
         else {
             sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+            sendAttackMenu(r);
         }
     };
     makeQuery(q_duel, e, s_duel);
