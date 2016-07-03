@@ -1,4 +1,4 @@
-var debug = false;
+var debug = true;
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -121,6 +121,9 @@ app.post('/webhook/', function (req, res) {
         sender = event.sender.id;
         if (event.message && event.message.text) {
             text = event.message.text;
+            if (event.message.quick_reply) {
+                text = event.message.quick_reply;
+            }
             words = text.split(" ");
             username = words[words.length - 1];
             console.log("1");
@@ -519,6 +522,49 @@ function sendHelpMessage(sender) {
             ]
           }
         }
+    };
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:token},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+    });
+}
+
+function sendAttackMenu(sender) {
+    messageData = {
+    "text":"Make a move!",
+    "quick_replies":[
+        {
+            "content_type":"text",
+            "title":"Heal",
+            "payload":"@heal"
+        },
+        {
+            "content_type":"text",
+            "title":"Sword",
+            "payload":"@sword"
+        },
+        {
+            "content_type":"text",
+            "title":"Dagger",
+            "payload":"@dagger"
+        },
+        {
+            "content_type":"text",
+            "title":"Club",
+            "payload":"@club"
+        }
+        ]
     };
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -1100,14 +1146,17 @@ function makeMove(move){
             if (attack_value === 0) {
                 sendTextMessage(move.defender_id, move.attacker_name + " missed!");
                 sendTextMessage(move.attacker_id, "You missed!");
+                sendAttackMenu(move.defender_id);
             }
             else {
                 sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
                 sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
+                sendAttackMenu(move.defender_id);
             }
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
+                sendAttackMenu(move.attacker_id);
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
