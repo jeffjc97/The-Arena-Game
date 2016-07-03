@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -126,9 +126,7 @@ app.post('/webhook/', function (req, res) {
             // }
             words = text.split(" ");
             username = words[words.length - 1];
-            console.log("1");
             getUserInfo(sender);
-            console.log("2");
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
