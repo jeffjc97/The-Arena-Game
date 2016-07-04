@@ -45,7 +45,7 @@ app.use(function(req, res, next){
 
 //OnInterval
 var ClearChallenges = function(){
-    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'20 second\'";
+    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'7 minute\'";
     q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
     e = function(err){
         sendError(10206557582650156, "Challenge Clearer has failed");
@@ -89,7 +89,7 @@ var CheckMovesExpire = function(){
     makeQuery(q_get_stale_duels, e, s_get_stale_duels);
 };
 var CheckRandomExpire = function(){
-    q_get_stale_random = "SELECT id FROM random_pool WHERE entry_time < NOW()- interval \'7 minute\'";
+    q_get_stale_random = "SELECT id FROM random_pool WHERE entry_time < NOW()- interval \'20 second\'";
     e = function(err){
         sendError(10206557582650156, "CheckRandomExpire has failed");
         sendError(10205320360242528, "CheckRandomExpire has failed");
