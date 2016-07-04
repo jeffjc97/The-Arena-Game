@@ -508,10 +508,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (1/2)",
-                "image_url":"http://i.imgur.com/ErlHn8m.png",
+                "image_url":"http://i.imgur.com/puZKRy9.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/ErlHn8m.png",
+                    "url":"http://i.imgur.com/puZKRy9.png",
                     "title":"Larger image"
                 }
                 ]
@@ -519,10 +519,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (2/2)",
-                "image_url":"http://i.imgur.com/QfEWIx9.png",
+                "image_url":"http://i.imgur.com/Web5aOI.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/QfEWIx9.png",
+                    "url":"http://i.imgur.com/Web5aOI.png",
                     "title":"Larger image"
                 }
                 ]
