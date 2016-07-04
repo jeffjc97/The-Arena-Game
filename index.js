@@ -305,9 +305,14 @@ app.post('/webhook/', function (req, res) {
                             }
                             break;
                         case "@chat":
-                            username = words[1];
-                            msg = words.slice(2).join(" ");
-                            chatMessage(sender, username, msg);
+                            if (words.length < 3) {
+                                sendTextMessage(sender, "Invalid message command. See @help for more information.")
+                            }
+                            else {
+                                username = words[1];
+                                msg = words.slice(2).join(" ");
+                                chatMessage(sender, username, msg);
+                            }
                             break;
                         case "@stake":
                             if (words.length == 3) {
