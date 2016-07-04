@@ -1721,7 +1721,7 @@ function chatMessage(s, r, msg){
         }else{
             recipient_id = result.rows[0].id;
             sender_name = result.rows[1].name;
-            if (s = result.rows[0].id) {
+            if (s == result.rows[0].id) {
                 recipient_id = result.rows[1].id;
                 sender_name = result.rows[0].name;
             }
@@ -1731,7 +1731,7 @@ function chatMessage(s, r, msg){
                     sendTextMessage(recipient_id, sender_name+": "+msg);
                 }else{
                     //determine whether s doesn't have r as friend or r doesn't have s as friend
-                    if (result.rows.length == 0) {
+                    if (result.rows.length === 0) {
                         sendTextMessage(s, "You do not have "+r+" as a friend.");
                     }else if(result.rows.length == 1){
                         if (result.rows[0].owner_id == s) {
@@ -1743,10 +1743,10 @@ function chatMessage(s, r, msg){
                         e();
                     }
                 }
-            }
+            };
             makeQuery(q_check_friends, e, s_check_friends);
         }
-    }
+    };
     q_get_recipient_id = "SELECT id, name from user_table where name = E'"+mysql_real_escape_string(r)+"' OR id = '"+s+"'";
     makeQuery(q_get_recipient_id, e, s_get_recipient_id);
 }
