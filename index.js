@@ -1717,7 +1717,7 @@ function chatMessage(s, r, msg){
     }
     s_get_recipient_id = function(result){
         if (result.rows.length != 2) {
-            sendTextMessage(s, "There is no user with this username.");
+            sendTextMessage(s, "Username not found. Please try again.");
         }else{
             recipient_id = result.rows[0].id;
             sender_name = result.rows[1].name;
@@ -1732,12 +1732,12 @@ function chatMessage(s, r, msg){
                 }else{
                     //determine whether s doesn't have r as friend or r doesn't have s as friend
                     if (result.rows.length === 0) {
-                        sendTextMessage(s, "You do not have "+r+" as a friend.");
+                        sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
                     }else if(result.rows.length == 1){
                         if (result.rows[0].owner_id == s) {
-                            sendTextMessage(s, "You do not have "+r+" as a friend.");
+                            sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
                         }else{
-                            sendTextMessage(s, r+" does not have you as a friend.");
+                            sendTextMessage(s, "You are not on " + r + "'s friend list. Hopefully they'll add you soon!");
                         }
                     }else{
                         e();
