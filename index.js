@@ -792,7 +792,8 @@ function randomChallenge(s) {
         }
     };
     e = function(err) {
-        sendError(s, 200, err.toString().substr(300));
+        console.log(err);
+        sendError(s, 200);
     };
     // check if person already in duel
     q_check_sender = "select in_duel from user_table where id = '" + s + "'";
