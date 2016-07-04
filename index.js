@@ -794,7 +794,7 @@ function randomChallenge2(s) {
         else {
             // get the oldest row in random_pool and delete it & return it
             // if there's no rows, it won't return anything
-            q_get_pool_user = "delete from random_pool where entry_time = (select MIN(entry_time) from random_pool) returning id";
+            q_get_pool_user = "delete from random_pool where id = (select id from random_pool order by entry_time ASC limit 1) returning id";
             makeQuery(q_get_pool_user, e, s_get_pool_user);
         }
     };
@@ -1671,4 +1671,49 @@ function validClass(text){
         }
     }
     return -1;
+}
+
+//@chat
+function chatMessage(s, r, msg){
+    e = function(err){
+        sendError(sender, 201);
+    };
+    if (msg.length > 200) {
+        sendTextMessage(s, "Please limit the length of your message. It will not be delivered.");
+        return;
+    }
+    s_get_recipient_id = function(result){
+        if (result.rows.length != 2) {
+            sendTextMessage(s, "There is no user with this username.");
+        }else{
+            recipient_id = result.rows[0].id;
+            sender_name = result.rows[1].name;
+            if (s = result.rows[0].id) {
+                recipient_id = result.rows[1].id;
+                sender_name = result.rows[0].name;
+            }
+            q_check_friends = "SELECT * from friend_table where owner_id in ('"+s+"','"+recipient_id"') AND friend_id in ('"+s+"', '"+recipient_id+"')";
+            s_check_friends = function(result){
+                if (result.rows.length == 2) {
+                    sendTextMessage(recipient_id, sender_name+": "+msg);
+                }else{
+                    //determine whether s doesn't have r as friend or r doesn't have s as friend
+                    if (result.rows.length == 0) {
+                        sendTextMessage(s, "You do not have "+r+" as a friend.");
+                    }else if(result.rows.length == 1){
+                        if (result.rows[0].owner_id == s) {
+                            sendTextMessage(s, "You do not have "+r+" as a friend.");
+                        }else{
+                            sendTextMessage(s, r+" does not have you as a friend.");
+                        }
+                    }else{
+                        e();
+                    }
+                }
+            }
+            makeQuery(q_check_friends, e, s_check_friends);
+        }
+    }
+    q_get_recipient_id = "SELECT id, name from user_table where name = E'"+mysql_real_escape_string(r)+"' OR id = '"+s+"'";
+    makeQuery(q_get_recipient_id, e, s_get_recipient_id);
 }
