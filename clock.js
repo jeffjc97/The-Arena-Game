@@ -39,7 +39,7 @@ app.use(function(req, res, next){
 
 //OnInterval
 var ClearChallenges = function(){
-    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'7 minute\'";
+    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'20 second\'";
     q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
     e = function(err){
         sendError(10206557582650156, "Challenge Clearer has failed");
@@ -102,7 +102,7 @@ var CheckRandomExpire = function(){
 };
 setInterval(ClearChallenges, 300000);
 setInterval(CheckMovesExpire, 5000);
-setInterval(CheckRandomExpire, 300000);
+setInterval(CheckRandomExpire, 5000);
 
 function timeOutDuel(lid, wid, lname, wname, did) {
     sendTextMessage(lid, "You lost to " + wname + " because you did not make a move.");
