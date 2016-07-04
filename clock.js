@@ -89,7 +89,7 @@ var CheckMovesExpire = function(){
     makeQuery(q_get_stale_duels, e, s_get_stale_duels);
 };
 var CheckRandomExpire = function(){
-    q_get_stale_random = "SELECT id FROM random_pool WHERE entry_time < NOW()- interval \'20 second\'";
+    q_get_stale_random = "SELECT id FROM random_pool WHERE entry_time < NOW()- interval \'7 minute\'";
     e = function(err){
         sendError(10206557582650156, "CheckRandomExpire has failed");
         sendError(10205320360242528, "CheckRandomExpire has failed");
@@ -108,7 +108,7 @@ var CheckRandomExpire = function(){
 };
 setInterval(ClearChallenges, 300000);
 setInterval(CheckMovesExpire, 5000);
-setInterval(CheckRandomExpire, 5000);
+setInterval(CheckRandomExpire, 300000);
 
 function timeOutDuel(lid, wid, lname, wname, did) {
     sendTextMessage(lid, "You lost to " + wname + " because you did not make a move.");
