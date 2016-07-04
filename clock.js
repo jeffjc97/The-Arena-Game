@@ -104,7 +104,7 @@ var CheckRandomExpire = function(){
     s_delete_random = function(result) {
         sendTextMessage(result.rows[0].id, "Unfortunately, we couldn't find you a random match at this time. Please try again!");
     };
-    makeQuery(q_get_stale_duels, e, s_get_stale_duels);
+    makeQuery(q_get_stale_random, e, s_get_stale_random);
 };
 setInterval(ClearChallenges, 300000);
 setInterval(CheckMovesExpire, 5000);
