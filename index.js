@@ -126,9 +126,7 @@ app.post('/webhook/', function (req, res) {
             // }
             words = text.split(" ");
             username = words[words.length - 1];
-            console.log("1");
             getUserInfo(sender);
-            console.log("2");
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
@@ -177,6 +175,9 @@ app.post('/webhook/', function (req, res) {
                             break;
                         case "@random":
                             randomChallenge(sender);
+                            break;
+                        case "@random2":
+                            randomChallenge2(sender);
                             break;
                         case "@accept":
                             if (words.length == 2) {
@@ -768,6 +769,55 @@ function randomChallenge(s) {
     makeQuery(q_get_sender, e, s_get_sender);
 }
 
+function randomChallenge2(s) {
+    // only gets called if they are the only one in random pool
+    s_insert_pool = function(result) {
+        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible!");
+    };
+    s_get_pool_user = function(result) {
+        if (result.rows.length) {
+            opponent_id = result.rows[0].id;
+            sendTextMessage(s, "We've found you a match! Starting the duel...");
+            sendTextMessage(opponent_id, "We've found you a match! Starting the duel...");
+            setupDuel(s, opponent_id, 0);
+        }
+        else {
+            // only need to insert into db if there wasn't anything in there before
+            q_insert_pool = "insert into random_pool(id, entry_time) values ('" + s + "', default)";
+            makeQuery(q_insert_pool, e, s_insert_pool);
+        }
+    };
+    s_check_pool = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(sender, "You are already in the random pool! We'll find you a duel as soon as possible.");
+        }
+        else {
+            // get the oldest row in random_pool and delete it & return it
+            // if there's no rows, it won't return anything
+            q_get_pool_user = "delete from random_pool where entry_time = (select MIN(entry_time) from random_pool) returning id";
+            makeQuery(q_get_pool_user, e, s_get_pool_user);
+        }
+    };
+    s_check_sender = function(result) {
+        if (result.rows[0].in_duel) {
+            sendTextMessage(sender, "You can't do that during a duel.");
+        }
+        else {
+            // check if person already in pool
+            q_check_pool = "select * from random_pool where id = '" + s + "'";
+            makeQuery(q_check_pool, e, s_check_pool);
+        }
+    };
+    e = function(err) {
+        console.log(err);
+        sendError(s, 200);
+    };
+    // check if person already in duel
+    q_check_sender = "select in_duel from user_table where id = '" + s + "'";
+    makeQuery(q_check_sender, e, s_check_sender);
+
+}
+
 // @accept <username>, @reject <username>
 //r (id) is responding to challenge from su (name) with response 
 function respondToChallenge(su, r, response) {
@@ -808,6 +858,11 @@ function respondToChallenge(su, r, response) {
         }
     };
 
+    s_delete_from_random = function(result) {
+        q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+        makeQuery(q_get_challenge, e, s_get_challenge);
+    };
+
     s_get_sender = function(result) {
         if (result.rows.length === 0) {
             sendTextMessage(r, "Username " + su + " does not exist.");
@@ -822,8 +877,8 @@ function respondToChallenge(su, r, response) {
             else {
                 s = result.rows[0].id;
                 sp = result.rows[0].points;
-                q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
-                makeQuery(q_get_challenge, e, s_get_challenge);
+                q_delete_from_random = "delete from random_pool where id = '" + s + "' or id = '" + r + "'";
+                makeQuery(q_delete_from_random, e, s_delete_from_random);
             }
         }
     };
@@ -1163,7 +1218,7 @@ function makeMove(move){
             }
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
                 // sendAttackMenu(move.attacker_id);
             }
             sendTextMessage(move.defender_id, health);
@@ -1220,8 +1275,8 @@ function forfeitDuel(lid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
-    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
-    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
+    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 10 seconds...");
+    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 10 seconds...");
     setTimeout(function(){
         var stake = 0;
         e = function(err) {
