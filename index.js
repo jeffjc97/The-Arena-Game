@@ -179,6 +179,9 @@ app.post('/webhook/', function (req, res) {
                         case "@random2":
                             randomChallenge2(sender);
                             break;
+                        case "@leave":
+                            leaveRandomChallenge(sender);
+                            break;
                         case "@accept":
                             if (words.length == 2) {
                                 respondToChallenge(username, sender, true);
@@ -772,7 +775,7 @@ function randomChallenge(s) {
 function randomChallenge2(s) {
     // only gets called if they are the only one in random pool
     s_insert_pool = function(result) {
-        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible!");
+        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible! To leave the pool, use @leave");
     };
     s_get_pool_user = function(result) {
         if (result.rows.length) {
@@ -816,6 +819,22 @@ function randomChallenge2(s) {
     q_check_sender = "select in_duel from user_table where id = '" + s + "'";
     makeQuery(q_check_sender, e, s_check_sender);
 
+}
+
+function leaveRandomChallenge(s) {
+    s_leave_challenge = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(s, "Successfully left the random pool.");
+        }
+        else {
+            sendTextMessage(s, "You are not currently in the random pool!");
+        }
+    };
+    e = function(err) {
+        sendError(s, 201);
+    };
+    q_leave_challenge = "delete from random_pool where id = '" + s + "' returning *";
+    makeQuery(q_leave_sender, e, s_leave_sender);
 }
 
 // @accept <username>, @reject <username>
