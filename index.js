@@ -306,7 +306,7 @@ app.post('/webhook/', function (req, res) {
                             break;
                         case "@chat":
                             username = words[1];
-                            msg = words.slice(2).join(“ “);
+                            msg = words.slice(2).join(" ");
                             chatMessage(sender, username, msg);
                             break;
                         case "@stake":
