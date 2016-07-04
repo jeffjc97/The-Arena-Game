@@ -775,8 +775,7 @@ function randomChallenge(s) {
         if (result.rows.length) {
             opponent_id = result.rows[0].id;
             sendTextMessage(s, opponent_id);
-            first = Math.random() < 0.5 ? s : opponent_id;
-            startDuel(s, opponent_id, first);
+            setupDuel(s, opponent_id, 0);
         }
         else {
             // only need to insert into db if there wasn't anything in there before
