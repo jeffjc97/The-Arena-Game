@@ -672,7 +672,7 @@ function registerUser(s, username) {
                 console.log('Error: ', response.body.error);
             } else {
                 body = JSONbig.parse(body);
-                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                q_check_username = "SELECT id FROM user_table WHERE name ilike E'" + mysql_real_escape_string(username) + "'";
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
                         sendTextMessage(s, "Username already exists, please try another.");
@@ -681,10 +681,19 @@ function registerUser(s, username) {
                         sendError(s, 30);
                     }
                 };
+                s_check_username = function(result) {
+                    if (result.rows.length) {
+                        sendTextMessage(s, "Username already exists, please try another.");
+                    }
+                    else {
+                        q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                        makeQuery(q_add_username, e, s_add_username);
+                    }
+                };
                 s_add_username = function(result) {
                     sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
                 };
-                makeQuery(q_add_username, e, s_add_username);
+                makeQuery(q_check_username, e, s_check_username);
             }
         });
     }
