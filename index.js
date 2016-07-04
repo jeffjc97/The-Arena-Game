@@ -1745,9 +1745,9 @@ function chatMessage(s, r, msg){
                         sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
                     }else if(result.rows.length == 1){
                         if (result.rows[0].owner_id == s) {
-                            sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
-                        }else{
                             sendTextMessage(s, "You are not on " + r + "'s friend list. Hopefully they'll add you soon!");
+                        }else{
+                            sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
                         }
                     }else{
                         e();
