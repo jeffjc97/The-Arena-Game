@@ -1400,8 +1400,13 @@ function addFriend(s, fu) {
     s_validate_fu = function(result) {
         if (result.rows.length) {
             fid = result.rows[0].id;
-            q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
-            makeQuery(q_add_friend, e, s_add_friend);
+            if (fid == s) {
+                sendTextMessage(s, "You can't add yourself to your own friends list!");
+            }
+            else {
+                q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
+                makeQuery(q_add_friend, e, s_add_friend);
+            }
         }
         else {
             sendTextMessage(s, "Username not found. Please try again.");
