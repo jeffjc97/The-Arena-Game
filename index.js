@@ -775,7 +775,7 @@ function randomChallenge(s) {
 function randomChallenge2(s) {
     // only gets called if they are the only one in random pool
     s_insert_pool = function(result) {
-        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible! To leave the pool, use @leave");
+        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible! To leave the pool, use @leave.");
     };
     s_get_pool_user = function(result) {
         if (result.rows.length) {
