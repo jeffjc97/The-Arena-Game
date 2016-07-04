@@ -768,18 +768,19 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
 
 function randomChallenge(s) {
     s_insert_pool = function(result) {
+        sendTextMessage(s, result.rows[0]);
         checkPool();
-    }
+    };
     s_check_pool = function(result) {
         if (result.rows.length) {
-            sendTextMessage(sender, "You are already in the random pool! We'll find you a duel as soon as possible.")
+            sendTextMessage(sender, "You are already in the random pool! We'll find you a duel as soon as possible.");
         }
         else {
             // insert into random pool, do work to see if other people are in pool
             q_insert_pool = "insert into random_pool(id, entry_time) values ('" + s + "', default) returning count(*)";
             makeQuery(q_insert_pool, e, s_insert_pool);
         }
-    }
+    };
     s_check_sender = function(result) {
         if (result.rows[0].in_duel) {
             sendTextMessage(sender, "You can't do that during a duel.");
