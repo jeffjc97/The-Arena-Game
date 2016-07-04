@@ -767,18 +767,30 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
 // }
 
 function randomChallenge(s) {
+    // only gets called if they are the only one in random pool
     s_insert_pool = function(result) {
-        sendTextMessage(s, result.rows[0]);
-        checkPool();
+        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible!");
+    };
+    s_get_pool_user = function(result) {
+        if (result.rows.length) {
+            opponent_id = result.rows[0].id;
+            sendTextMessage(s, opponent_id);
+        }
+        else {
+            // only need to insert into db if there wasn't anything in there before
+            q_insert_pool = "insert into random_pool(id, entry_time) values ('" + s + "', default)";
+            makeQuery(q_insert_pool, e, s_insert_pool);
+        }
     };
     s_check_pool = function(result) {
         if (result.rows.length) {
             sendTextMessage(sender, "You are already in the random pool! We'll find you a duel as soon as possible.");
         }
         else {
-            // insert into random pool, do work to see if other people are in pool
-            q_insert_pool = "insert into random_pool(id, entry_time) values ('" + s + "', default) returning count(*)";
-            makeQuery(q_insert_pool, e, s_insert_pool);
+            // get the oldest row in random_pool and delete it & return it
+            // if there's no rows, it won't return anything
+            q_get_pool_user = "delete from random_pool where entry_time = (select MIN(entry_time) from random_pool) returning id";
+            makeQuery(q_get_pool_user, e, s_get_pool_user);
         }
     };
     s_check_sender = function(result) {
@@ -1196,7 +1208,7 @@ function makeMove(move){
             }
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
                 // sendAttackMenu(move.attacker_id);
             }
             sendTextMessage(move.defender_id, health);
