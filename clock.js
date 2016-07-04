@@ -39,7 +39,7 @@ app.use(function(req, res, next){
 
 //OnInterval
 var ClearChallenges = function(){
-    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'10 minute\'";
+    q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'7 minute\'";
     q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
     e = function(err){
         sendError(10206557582650156, "Challenge Clearer has failed");
@@ -64,7 +64,7 @@ var CheckMovesExpire = function(){
     e = function(err){
         sendError(10206557582650156, "CheckMovesExpire has failed");
         sendError(10205320360242528, "CheckMovesExpire has failed");
-    }
+    };
     s_get_stale_duels = function(result){
         for (var i = 0; i < result.rows.length; i++) {
             sender_id = result.rows[i].sender_id;
@@ -78,12 +78,31 @@ var CheckMovesExpire = function(){
             }else{
                 timeOutDuel(recipient_id, sender_id, recipient_name, sender_name, duel_id);
             }
-        };
-    }
+        }
+    };
     makeQuery(q_get_stale_duels, e, s_get_stale_duels);
-}
+};
+var CheckRandomExpire = function(){
+    q_get_stale_random = "SELECT id FROM random_pool WHERE entry_time < NOW()- interval \'7 minute\'";
+    e = function(err){
+        sendError(10206557582650156, "CheckRandomExpire has failed");
+        sendError(10205320360242528, "CheckRandomExpire has failed");
+    };
+    s_get_stale_random = function(result){
+        for (var i = 0; i < result.rows.length; i++) {
+            uid = result.rows[i].id;
+            q_delete_random = "DELETE FROM random_pool where id = '" + uid + "' RETURNING id";
+            makeQuery(q_delete_random, e, s_delete_random);
+        }
+    };
+    s_delete_random = function(result) {
+        sendTextMessage(result.rows[0].id, "Unfortunately, we couldn't find you a random match at this time. Please try again!");
+    };
+    makeQuery(q_get_stale_duels, e, s_get_stale_duels);
+};
 setInterval(ClearChallenges, 300000);
 setInterval(CheckMovesExpire, 5000);
+setInterval(CheckRandomExpire, 300000);
 
 function timeOutDuel(lid, wid, lname, wname, did) {
     sendTextMessage(lid, "You lost to " + wname + " because you did not make a move.");

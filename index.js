@@ -176,6 +176,9 @@ app.post('/webhook/', function (req, res) {
                         case "@random":
                             randomChallenge(sender);
                             break;
+                        case "@random2":
+                            randomChallenge2(sender);
+                            break;
                         case "@accept":
                             if (words.length == 2) {
                                 respondToChallenge(username, sender, true);
@@ -731,42 +734,42 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
 }
 
 // @random
-// var trials = 0;
-// function randomChallenge(s) {
-//     s_get_random = function(result) {
-//         if (result.rows.length > 0) {
-//             r = result.rows[0].id;
-//             ru = result.rows[0].name;
-//             sendChallenge(s, su, r, ru, 0);
-//         }
-//         else if(trials < 5){
-//             trials+=1;
-//             randomChallenge(s);
-//         }
-//         else{
-//             sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
-//         }
-//     };
-//     s_get_sender = function(result) {
-//         su = result.rows[0].name;
-//         s_in_duel = result.rows[0].in_duel;
-//         if (s_in_duel) {
-//             sendTextMessage(sender, "You are currently in a duel!");
-//         }
-//         else {
-//             q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' AND u.in_duel = 0 OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
-//             makeQuery(q_get_random, e, s_get_random);
-//         }
-//     };
-//     e = function(err) {
-//         sendError(s, 110);
-//     };
-//     var rid, ru, su;
-//     q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
-//     makeQuery(q_get_sender, e, s_get_sender);
-// }
-
+var trials = 0;
 function randomChallenge(s) {
+    s_get_random = function(result) {
+        if (result.rows.length > 0) {
+            r = result.rows[0].id;
+            ru = result.rows[0].name;
+            sendChallenge(s, su, r, ru, 0);
+        }
+        else if(trials < 5){
+            trials+=1;
+            randomChallenge(s);
+        }
+        else{
+            sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
+        }
+    };
+    s_get_sender = function(result) {
+        su = result.rows[0].name;
+        s_in_duel = result.rows[0].in_duel;
+        if (s_in_duel) {
+            sendTextMessage(sender, "You are currently in a duel!");
+        }
+        else {
+            q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' AND u.in_duel = 0 OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
+            makeQuery(q_get_random, e, s_get_random);
+        }
+    };
+    e = function(err) {
+        sendError(s, 110);
+    };
+    var rid, ru, su;
+    q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
+    makeQuery(q_get_sender, e, s_get_sender);
+}
+
+function randomChallenge2(s) {
     // only gets called if they are the only one in random pool
     s_insert_pool = function(result) {
         sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible!");
