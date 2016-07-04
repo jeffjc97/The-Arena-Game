@@ -1725,7 +1725,7 @@ function chatMessage(s, r, msg){
                 recipient_id = result.rows[1].id;
                 sender_name = result.rows[0].name;
             }
-            q_check_friends = "SELECT * from friend_table where owner_id in ('"+s+"','"+recipient_id"') AND friend_id in ('"+s+"', '"+recipient_id+"')";
+            q_check_friends = "SELECT * from friend_table where owner_id in ('"+s+"','"+recipient_id+"') AND friend_id in ('"+s+"', '"+recipient_id+"')";
             s_check_friends = function(result){
                 if (result.rows.length == 2) {
                     sendTextMessage(recipient_id, sender_name+": "+msg);
