@@ -774,7 +774,8 @@ function randomChallenge(s) {
     s_get_pool_user = function(result) {
         if (result.rows.length) {
             opponent_id = result.rows[0].id;
-            sendTextMessage(s, opponent_id);
+            sendTextMessage(s, "We've found you a match! Starting the duel...");
+            sendTextMessage(opponent_id, "We've found you a match! Starting the duel...");
             setupDuel(s, opponent_id, 0);
         }
         else {
