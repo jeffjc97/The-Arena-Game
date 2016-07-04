@@ -855,6 +855,11 @@ function respondToChallenge(su, r, response) {
         }
     };
 
+    s_delete_from_random = function(result) {
+        q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+        makeQuery(q_get_challenge, e, s_get_challenge);
+    };
+
     s_get_sender = function(result) {
         if (result.rows.length === 0) {
             sendTextMessage(r, "Username " + su + " does not exist.");
@@ -869,8 +874,8 @@ function respondToChallenge(su, r, response) {
             else {
                 s = result.rows[0].id;
                 sp = result.rows[0].points;
-                q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
-                makeQuery(q_get_challenge, e, s_get_challenge);
+                q_delete_from_random = "delete from random_pool where id = '" + s + "' or id = '" + r + "'";
+                makeQuery(q_delete_from_random, e, s_delete_from_random);
             }
         }
     };
@@ -1267,8 +1272,8 @@ function forfeitDuel(lid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
-    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
-    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
+    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 10 seconds...");
+    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 10 seconds...");
     setTimeout(function(){
         var stake = 0;
         e = function(err) {
