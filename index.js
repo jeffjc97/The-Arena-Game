@@ -314,6 +314,15 @@ app.post('/webhook/', function (req, res) {
                                 chatMessage(sender, username, msg);
                             }
                             break;
+                        case "@blast":
+                            if (words.length < 2) {
+                                sendTextMessage(sender, "Not a valid command. See @help for more information.");
+                            }
+                            else {
+                                msg = words.slice(1).join(" ");
+                                sendBlast(sender, msg);
+                            }
+                            break;
                         case "@stake":
                             if (words.length == 3) {
                                 username = words[words.length - 2];
@@ -1715,6 +1724,41 @@ function validClass(text){
     }
     return -1;
 }
+
+//@blast
+function sendBlast(sender, text) {
+    verified = false;
+    if (!debug) {
+        if (sender == '10206557582650156' || sender == '10205320360242528') {
+            verified = true;
+        }
+    }
+    else {
+        if (sender == '1115352495195167' || sender == '1122723541134914') {
+            verified = true;
+        }
+    }
+    if (verified) {
+        if (text.length > 200) {
+            sendTextMessage(s, "Please limit the length of your message. It will not be delivered.");
+            return;
+        }
+        q_send_blast = "select id from user_table";
+        e = function(err) {
+            sendError(sender, 999);
+        };
+        s_send_blast = function(result) {
+            result.rows.forEach(function(u) {
+                sendTextMessage(u.id, text);
+            });
+        };
+        makeQuery(q_send_blast, e, s_send_blast);
+    }
+    else {
+        sendTextMessage(sender, "Not a valid command. See @help for more information");
+    }
+}
+
 
 //@chat
 function chatMessage(s, r, msg){
