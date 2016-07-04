@@ -304,6 +304,11 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
                             }
                             break;
+                        case "@chat":
+                            username = words[1];
+                            msg = words.slice(2).join(“ “);
+                            chatMessage(sender, username, msg);
+                            break;
                         case "@stake":
                             if (words.length == 3) {
                                 username = words[words.length - 2];
