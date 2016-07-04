@@ -179,6 +179,9 @@ app.post('/webhook/', function (req, res) {
                         case "@random2":
                             randomChallenge2(sender);
                             break;
+                        case "@leave":
+                            leaveRandomChallenge(sender);
+                            break;
                         case "@accept":
                             if (words.length == 2) {
                                 respondToChallenge(username, sender, true);
@@ -669,7 +672,7 @@ function registerUser(s, username) {
                 console.log('Error: ', response.body.error);
             } else {
                 body = JSONbig.parse(body);
-                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                q_check_username = "SELECT id FROM user_table WHERE name ilike E'" + mysql_real_escape_string(username) + "'";
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
                         sendTextMessage(s, "Username already exists, please try another.");
@@ -678,10 +681,19 @@ function registerUser(s, username) {
                         sendError(s, 30);
                     }
                 };
+                s_check_username = function(result) {
+                    if (result.rows.length) {
+                        sendTextMessage(s, "Username already exists, please try another.");
+                    }
+                    else {
+                        q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                        makeQuery(q_add_username, e, s_add_username);
+                    }
+                };
                 s_add_username = function(result) {
                     sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
                 };
-                makeQuery(q_add_username, e, s_add_username);
+                makeQuery(q_check_username, e, s_check_username);
             }
         });
     }
@@ -772,7 +784,7 @@ function randomChallenge(s) {
 function randomChallenge2(s) {
     // only gets called if they are the only one in random pool
     s_insert_pool = function(result) {
-        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible!");
+        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible! To leave the pool, use @leave.");
     };
     s_get_pool_user = function(result) {
         if (result.rows.length) {
@@ -816,6 +828,22 @@ function randomChallenge2(s) {
     q_check_sender = "select in_duel from user_table where id = '" + s + "'";
     makeQuery(q_check_sender, e, s_check_sender);
 
+}
+
+function leaveRandomChallenge(s) {
+    s_leave_challenge = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(s, "Successfully left the random pool.");
+        }
+        else {
+            sendTextMessage(s, "You are not currently in the random pool!");
+        }
+    };
+    e = function(err) {
+        sendError(s, 201);
+    };
+    q_leave_challenge = "delete from random_pool where id = '" + s + "' returning *";
+    makeQuery(q_leave_challenge, e, s_leave_challenge);
 }
 
 // @accept <username>, @reject <username>
