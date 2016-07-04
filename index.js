@@ -794,7 +794,7 @@ function randomChallenge2(s) {
         else {
             // get the oldest row in random_pool and delete it & return it
             // if there's no rows, it won't return anything
-            q_get_pool_user = "delete from random_pool where entry_time = (select MIN(entry_time) from random_pool) returning id";
+            q_get_pool_user = "delete from random_pool where id = (select id from random_pool order by entry_time ASC limit 1) returning id";
             makeQuery(q_get_pool_user, e, s_get_pool_user);
         }
     };
