@@ -834,7 +834,7 @@ function leaveRandomChallenge(s) {
         sendError(s, 201);
     };
     q_leave_challenge = "delete from random_pool where id = '" + s + "' returning *";
-    makeQuery(q_leave_sender, e, s_leave_sender);
+    makeQuery(q_leave_challenge, e, s_leave_challenge);
 }
 
 // @accept <username>, @reject <username>
