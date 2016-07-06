@@ -1819,8 +1819,9 @@ function sendLeaderBoard(s){
     };
     s_get_most_wins = function(result){
         for (i = 0; i < result.rows.length; i++) {
+                spot = i+1;
                 leader_string = "Top Games:\n";
-                leader_string += (i+1) +". " + result.rows[i].name + " - " + result.rows[i].wins +" wins out of "+ result.rows[i].games_played +" games played";
+                leader_string += spot +". " + result.rows[i].name + " - " + result.rows[i].wins +" wins out of "+ result.rows[i].games_played +" games played";
         }   
         sendTextMessage(s, leader_string);
     }
