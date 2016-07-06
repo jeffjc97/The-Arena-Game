@@ -1209,7 +1209,7 @@ function makeMove(move){
     // at this point, health_defender is the health after attack and poison
     // attack_value is the value of just the attack
     // move.bleed is the value of the bleed
-    if (move.health_defender <= 0 && move.type_of_attack != 'h') {
+    if (move.health_defender <= 0) {
         def_gender_noun = move.defender_gender == "male" ? "He" : "She";
         // if you're bleeding when you lose
         if (move.bleed) {
@@ -1786,12 +1786,12 @@ function chatMessage(s, r, msg){
                 }else{
                     //determine whether s doesn't have r as friend or r doesn't have s as friend
                     if (result.rows.length === 0) {
-                        sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
+                        sendTextMessage(s, r + " is not on your friends list. Please add them with @friend " + r + " to directly message them.");
                     }else if(result.rows.length == 1){
                         if (result.rows[0].owner_id == s) {
                             sendTextMessage(s, "You are not on " + r + "'s friend list. Hopefully they'll add you soon!");
                         }else{
-                            sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
+                            sendTextMessage(s, r + " is not on your friends list. Please add them with @friend" + r + " to directly message them.");
                         }
                     }else{
                         e();
