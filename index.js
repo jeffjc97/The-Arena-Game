@@ -304,6 +304,12 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
                             }
                             break;
+                        case "@leaderboard":
+                            if (words.length > 1) {
+                                sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
+                            }else{
+                                sendLeaderBoard(sender);
+                            }
                         case "@chat":
                             if (words.length < 3) {
                                 sendTextMessage(sender, "Invalid message command. See @help for more information.")
@@ -1803,4 +1809,20 @@ function chatMessage(s, r, msg){
     };
     q_get_recipient_id = "SELECT id, name from user_table where name = E'"+mysql_real_escape_string(r)+"' OR id = '"+s+"'";
     makeQuery(q_get_recipient_id, e, s_get_recipient_id);
+}
+
+//@leaderboard
+function sendLeaderBoard(s){
+    q_get_most_wins = "SELECT name, wins, games_played from user_table ORDER BY wins DESC LIMIT 5";
+    e = function(err){
+        sendError(sender, 202);
+    };
+    s_get_most_wins = function(result){
+        for (i = 0; i < 5; i++) {
+                leader_string = "Top Games:\n";
+                leader_string += (i+1) +". " + result.rows[i].name + " - " + result.rows[i].wins +" wins out of "+ result.rows[i].games_played " games played";
+        }   
+        sendTextMessage(s, leader_string);
+    }
+    makeQuery(q_get_most_wins, e, s_get_most_wins);
 }
