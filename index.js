@@ -1766,7 +1766,7 @@ function sendBlast(sender, text) {
         makeQuery(q_send_blast, e, s_send_blast);
     }
     else {
-        sendTextMessage(sender, "Not a valid command. See @help for more information");
+        sendTextMessage(sender, "Not a valid command. See @help for more information.");
     }
 }
 
