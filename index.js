@@ -310,6 +310,7 @@ app.post('/webhook/', function (req, res) {
                             }else{
                                 sendLeaderBoard(sender);
                             }
+                            break;
                         case "@chat":
                             if (words.length < 3) {
                                 sendTextMessage(sender, "Invalid message command. See @help for more information.")
