@@ -310,7 +310,7 @@ app.post('/webhook/', function (req, res) {
                             break;
                         case "@leaderboard":
                             if (words.length > 1) {
-                                sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
+                                sendTextMessage(sender, "Invalid leaderboard command. See @help for more information.");
                             }else{
                                 sendLeaderBoard(sender);
                             }
@@ -1823,7 +1823,7 @@ function sendLeaderBoard(s){
         sendError(sender, 202);
     };
     s_get_most_wins = function(result){
-        leader_string = "Top Games:";
+        leader_string = "Top Players (by games won):";
         for (i = 0; i < result.rows.length; i++) {
                 spot = i+1;
                 leader_string += "\n" + spot +". " + result.rows[i].name + " - " + result.rows[i].wins +" wins out of "+ result.rows[i].games_played +" games played";
