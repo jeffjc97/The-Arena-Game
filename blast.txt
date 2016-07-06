@@ -1,0 +1,7 @@
+We just added the @leaderboard feature! This lists the top 5 players with most wins! Feel free to challenge them to duel, but beware- they're all very good.
+In other news, we have tweaked the balance of classes a little bit to hopefully encourage more diversity.
+
+On an unrelated note, in case you were interested, here are some statistics from the 3 days we've been up and running:
+➡We thus far have 8 knights, 5 vampires, and 2 berserkers
+➡3 users own all 3 classes
+➡We've had 287 duels played between 72 users
