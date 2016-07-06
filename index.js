@@ -25,21 +25,25 @@ var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
 var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
 var attacks = {
-    0: {h: {miss: 0, min: 10, max: 10},
+    0: {name: "newbie",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.25, min: 9, max: 12},
         d: {miss: 0.15, min: 5, max: 7},
         c: {miss: 0.5, min: 12, max: 15}},
-    1: {h: {miss: 0, min: 10, max: 10},
+    1: {name: "knight",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.15, min: 9, max: 12},
         d: {miss: 0.05, min: 5, max: 7},
         c: {miss: 0.45, min: 12, max: 15}},
-    2: {h: {miss: 0, min: 10, max: 10},
+    2: {name: "vampire",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.3, min: 9, max: 12},
         d: {miss: 0.2, min: 5, max: 7},
         c: {miss: 0.55, min: 12, max: 15},
-        heal_chance: 0.5,
+        heal_chance: 0.75,
         heal_percentage: 0.5},
-    3: {h: {miss: 0, min: 10, max: 10},
+    3: {name: "berserker",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.25,
             0: {min: 9, max: 12},
             1: {min: 9, max: 13},
@@ -302,6 +306,13 @@ app.post('/webhook/', function (req, res) {
                             }
                             else {
                                 sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
+                            }
+                            break;
+                        case "@leaderboard":
+                            if (words.length > 1) {
+                                sendTextMessage(sender, "Invalid leaderboard command. See @help for more information.");
+                            }else{
+                                sendLeaderBoard(sender);
                             }
                             break;
                         case "@chat":
@@ -1178,8 +1189,8 @@ function makeMove(move){
     }
     else {
         // vampire
-        if (move.attacker_class == 2 && Math.random() > 0.5 && attack_value) {
-            move.vampire = Math.floor(attack_value / 2);
+        if (move.attacker_class == 2 && Math.random() < attacks[2].heal_chance && attack_value) {
+            move.vampire = Math.floor(attack_value * attacks[2].heal_percentage);
             move.health_attacker += move.vampire;
         }
         move.health_defender = move.health_defender - attack_value;
@@ -1739,8 +1750,8 @@ function sendBlast(sender, text) {
         }
     }
     if (verified) {
-        if (text.length > 200) {
-            sendTextMessage(s, "Please limit the length of your message. It will not be delivered.");
+        if (text.length > 300) {
+            sendTextMessage(sender, "Please limit the length of your message. It will not be delivered.");
             return;
         }
         q_send_blast = "select id from user_table";
@@ -1755,7 +1766,7 @@ function sendBlast(sender, text) {
         makeQuery(q_send_blast, e, s_send_blast);
     }
     else {
-        sendTextMessage(sender, "Not a valid command. See @help for more information");
+        sendTextMessage(sender, "Not a valid command. See @help for more information.");
     }
 }
 
@@ -1786,12 +1797,12 @@ function chatMessage(s, r, msg){
                 }else{
                     //determine whether s doesn't have r as friend or r doesn't have s as friend
                     if (result.rows.length === 0) {
-                        sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
+                        sendTextMessage(s, r + " is not on your friends list. Please add them with @friend " + r + " to directly message them.");
                     }else if(result.rows.length == 1){
                         if (result.rows[0].owner_id == s) {
                             sendTextMessage(s, "You are not on " + r + "'s friend list. Hopefully they'll add you soon!");
                         }else{
-                            sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
+                            sendTextMessage(s, r + " is not on your friends list. Please add them with @friend" + r + " to directly message them.");
                         }
                     }else{
                         e();
@@ -1803,4 +1814,21 @@ function chatMessage(s, r, msg){
     };
     q_get_recipient_id = "SELECT id, name from user_table where name = E'"+mysql_real_escape_string(r)+"' OR id = '"+s+"'";
     makeQuery(q_get_recipient_id, e, s_get_recipient_id);
+}
+
+//@leaderboard
+function sendLeaderBoard(s){
+    q_get_most_wins = "SELECT name, wins, games_played from user_table ORDER BY wins DESC LIMIT 5";
+    e = function(err){
+        sendError(sender, 202);
+    };
+    s_get_most_wins = function(result){
+        leader_string = "Top Players (by games won):";
+        for (i = 0; i < result.rows.length; i++) {
+                spot = i+1;
+                leader_string += "\n" + spot +". " + result.rows[i].name + " - " + result.rows[i].wins +" wins out of "+ result.rows[i].games_played +" games played";
+        }   
+        sendTextMessage(s, leader_string);
+    }
+    makeQuery(q_get_most_wins, e, s_get_most_wins);
 }
