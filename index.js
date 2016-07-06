@@ -25,21 +25,25 @@ var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
 var health_tiers = {0: 50, 1: 35, 2: 20, 3: 10};
 var attacks = {
-    0: {h: {miss: 0, min: 10, max: 10},
+    0: {name: "newbie",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.25, min: 9, max: 12},
         d: {miss: 0.15, min: 5, max: 7},
         c: {miss: 0.5, min: 12, max: 15}},
-    1: {h: {miss: 0, min: 10, max: 10},
+    1: {name: "knight",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.15, min: 9, max: 12},
         d: {miss: 0.05, min: 5, max: 7},
         c: {miss: 0.45, min: 12, max: 15}},
-    2: {h: {miss: 0, min: 10, max: 10},
+    2: {name: "vampire",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.3, min: 9, max: 12},
         d: {miss: 0.2, min: 5, max: 7},
         c: {miss: 0.55, min: 12, max: 15},
-        heal_chance: 0.5,
+        heal_chance: 0.75,
         heal_percentage: 0.5},
-    3: {h: {miss: 0, min: 10, max: 10},
+    3: {name: "berserker",
+        h: {miss: 0, min: 10, max: 10},
         s: {miss: 0.25,
             0: {min: 9, max: 12},
             1: {min: 9, max: 13},
@@ -1185,8 +1189,8 @@ function makeMove(move){
     }
     else {
         // vampire
-        if (move.attacker_class == 2 && Math.random() > 0.5 && attack_value) {
-            move.vampire = Math.floor(attack_value / 2);
+        if (move.attacker_class == 2 && Math.random() < attacks[2].heal_chance && attack_value) {
+            move.vampire = Math.floor(attack_value * attacks[2].heal_percentage);
             move.health_attacker += move.vampire;
         }
         move.health_defender = move.health_defender - attack_value;
@@ -1216,7 +1220,7 @@ function makeMove(move){
     // at this point, health_defender is the health after attack and poison
     // attack_value is the value of just the attack
     // move.bleed is the value of the bleed
-    if (move.health_defender <= 0) {
+    if (move.health_defender <= 0 && move.type_of_attack != 'h') {
         def_gender_noun = move.defender_gender == "male" ? "He" : "She";
         // if you're bleeding when you lose
         if (move.bleed) {
@@ -1746,8 +1750,8 @@ function sendBlast(sender, text) {
         }
     }
     if (verified) {
-        if (text.length > 200) {
-            sendTextMessage(s, "Please limit the length of your message. It will not be delivered.");
+        if (text.length > 300) {
+            sendTextMessage(sender, "Please limit the length of your message. It will not be delivered.");
             return;
         }
         q_send_blast = "select id from user_table";
