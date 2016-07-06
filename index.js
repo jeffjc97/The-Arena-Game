@@ -19,7 +19,7 @@ pg.defaults.ssl = true;
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
-var MAX_CHALLENGE_COUNT = 10;
+var MAX_CHALLENGE_COUNT = 5;
 var max_health = 50;
 var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
@@ -57,7 +57,7 @@ var attacks = {
             3: {min: 13, max: 19}}}
 };
 
-var class_cost = 300;
+var class_cost = 200;
 
 // var attacks = {
 //     h: {miss: 0, min: 10, max: 10, verb: 'healed'},
@@ -121,11 +121,12 @@ app.post('/webhook/', function (req, res) {
         sender = event.sender.id;
         if (event.message && event.message.text) {
             text = event.message.text;
+            // if (event.message.quick_reply) {
+            //     text = event.message.quick_reply.payload;
+            // }
             words = text.split(" ");
             username = words[words.length - 1];
-            console.log("1");
             getUserInfo(sender);
-            console.log("2");
             q_user_registered = "SELECT * FROM user_table where id = \'" + sender + "\'";
             e = function(err) {
                 sendError(sender, 31);
@@ -172,8 +173,14 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid challenge command. See @help for more information.");
                             }
                             break;
+                        // case "@random":
+                        //     randomChallenge(sender);
+                        //     break;
                         case "@random":
                             randomChallenge(sender);
+                            break;
+                        case "@leave":
+                            leaveRandomChallenge(sender);
                             break;
                         case "@accept":
                             if (words.length == 2) {
@@ -297,6 +304,25 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
                             }
                             break;
+                        case "@chat":
+                            if (words.length < 3) {
+                                sendTextMessage(sender, "Invalid message command. See @help for more information.")
+                            }
+                            else {
+                                username = words[1];
+                                msg = words.slice(2).join(" ");
+                                chatMessage(sender, username, msg);
+                            }
+                            break;
+                        case "@blast":
+                            if (words.length < 2) {
+                                sendTextMessage(sender, "Not a valid command. See @help for more information.");
+                            }
+                            else {
+                                msg = words.slice(1).join(" ");
+                                sendBlast(sender, msg);
+                            }
+                            break;
                         case "@stake":
                             if (words.length == 3) {
                                 username = words[words.length - 2];
@@ -362,7 +388,7 @@ function mysql_real_escape_string (str) {
     });
 }
 
-function sendTextMessage(sender, text) {
+function sendTextMessage(sender, text, cb) {
     messageData = {
         text:text
     };
@@ -380,6 +406,11 @@ function sendTextMessage(sender, text) {
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
             // console.log('Error: ', response);
+        }
+        else {
+            if (cb) {
+                cb();
+            }
         }
     });
 }
@@ -425,7 +456,7 @@ function setupChallenge(sender, username, stake_val){
     };
     s_max_challenges = function(result){
         if (result.rows[0].count >= MAX_CHALLENGE_COUNT) {
-            sendTextMessage(sender, "You already have 10 challenges pending. Please cancel some before issuing any more.");
+            sendTextMessage(sender, "You already have 5 challenges pending. Please cancel some before issuing any more.");
         }
         else {
             q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = E\''+mysql_real_escape_string(username)+'\'';
@@ -486,10 +517,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (1/2)",
-                "image_url":"http://i.imgur.com/ErlHn8m.png",
+                "image_url":"http://i.imgur.com/puZKRy9.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/ErlHn8m.png",
+                    "url":"http://i.imgur.com/puZKRy9.png",
                     "title":"Larger image"
                 }
                 ]
@@ -497,10 +528,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (2/2)",
-                "image_url":"http://i.imgur.com/QfEWIx9.png",
+                "image_url":"http://i.imgur.com/Web5aOI.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/QfEWIx9.png",
+                    "url":"http://i.imgur.com/Web5aOI.png",
                     "title":"Larger image"
                 }
                 ]
@@ -508,10 +539,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used during a duel.",
-                "image_url":"http://i.imgur.com/bvgvgir.png",
+                "image_url":"http://i.imgur.com/7RWUH4c.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/bvgvgir.png",
+                    "url":"http://i.imgur.com/7RWUH4c.png",
                     "title":"Larger image"
                 }
                 ]
@@ -519,6 +550,49 @@ function sendHelpMessage(sender) {
             ]
           }
         }
+    };
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:token},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+    });
+}
+
+function sendAttackMenu(sender) {
+    messageData = {
+    "text":"Make a move!",
+    "quick_replies":[
+        {
+            "content_type":"text",
+            "title":"Heal",
+            "payload":"@heal"
+        },
+        {
+            "content_type":"text",
+            "title":"Sword",
+            "payload":"@sword"
+        },
+        {
+            "content_type":"text",
+            "title":"Dagger",
+            "payload":"@dagger"
+        },
+        {
+            "content_type":"text",
+            "title":"Club",
+            "payload":"@club"
+        }
+        ]
     };
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -617,7 +691,7 @@ function registerUser(s, username) {
                 console.log('Error: ', response.body.error);
             } else {
                 body = JSONbig.parse(body);
-                q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                q_check_username = "SELECT id FROM user_table WHERE name ilike E'" + mysql_real_escape_string(username) + "'";
                 e = function(err) {
                     if (err.detail.indexOf("already exists") > -1) {
                         sendTextMessage(s, "Username already exists, please try another.");
@@ -626,10 +700,19 @@ function registerUser(s, username) {
                         sendError(s, 30);
                     }
                 };
+                s_check_username = function(result) {
+                    if (result.rows.length) {
+                        sendTextMessage(s, "Username already exists, please try another.");
+                    }
+                    else {
+                        q_add_username = 'INSERT INTO user_table(id, name, first_name, last_name, profile_pic, gender, current_class) VALUES (\'' + s + '\', E\'' + mysql_real_escape_string(username) + '\', \'' + body.first_name + '\', \'' + body.last_name + '\', \'' + body.profile_pic + '\', \'' + body.gender + '\', 0)';
+                        makeQuery(q_add_username, e, s_add_username);
+                    }
+                };
                 s_add_username = function(result) {
                     sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
                 };
-                makeQuery(q_add_username, e, s_add_username);
+                makeQuery(q_check_username, e, s_check_username);
             }
         });
     }
@@ -682,39 +765,104 @@ function sendChallenge(sender, challenger_name, receiver_id, username, stake_val
 }
 
 // @random
-var trials = 0;
+// var trials = 0;
+// function randomChallenge(s) {
+//     s_get_random = function(result) {
+//         if (result.rows.length > 0) {
+//             r = result.rows[0].id;
+//             ru = result.rows[0].name;
+//             sendChallenge(s, su, r, ru, 0);
+//         }
+//         else if(trials < 5){
+//             trials+=1;
+//             randomChallenge(s);
+//         }
+//         else{
+//             sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
+//         }
+//     };
+//     s_get_sender = function(result) {
+//         su = result.rows[0].name;
+//         s_in_duel = result.rows[0].in_duel;
+//         if (s_in_duel) {
+//             sendTextMessage(sender, "You are currently in a duel!");
+//         }
+//         else {
+//             q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' AND u.in_duel = 0 OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
+//             makeQuery(q_get_random, e, s_get_random);
+//         }
+//     };
+//     e = function(err) {
+//         sendError(s, 110);
+//     };
+//     var rid, ru, su;
+//     q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
+//     makeQuery(q_get_sender, e, s_get_sender);
+// }
+
 function randomChallenge(s) {
-    s_get_random = function(result) {
-        if (result.rows.length > 0) {
-            r = result.rows[0].id;
-            ru = result.rows[0].name;
-            sendChallenge(s, su, r, ru, 0);
-        }
-        else if(trials < 5){
-            trials+=1;
-            randomChallenge(s);
-        }
-        else{
-            sendTextMessage(s, "Could not find a random challenge at this time. Please try again later.");
-        }
+    // only gets called if they are the only one in random pool
+    s_insert_pool = function(result) {
+        sendTextMessage(s, "Successfully joined the random pool. We'll find you a duel as soon as possible! To leave the pool, use @leave.");
     };
-    s_get_sender = function(result) {
-        su = result.rows[0].name;
-        s_in_duel = result.rows[0].in_duel;
-        if (s_in_duel) {
-            sendTextMessage(sender, "You are currently in a duel!");
+    s_get_pool_user = function(result) {
+        if (result.rows.length) {
+            opponent_id = result.rows[0].id;
+            sendTextMessage(s, "We've found you a match! Starting the duel...");
+            sendTextMessage(opponent_id, "We've found you a match! Starting the duel...");
+            setupDuel(s, opponent_id, 0);
         }
         else {
-            q_get_random = "SELECT u.id, u.name, c.sender FROM user_table u LEFT OUTER JOIN challenge_table c ON (u.id = c.recipient) WHERE (c.sender IS NULL OR c.sender != \'"+s+"\') AND u.id != \'"+s+"\' OFFSET FLOOR(RANDOM() * (SELECT COUNT(*) FROM user_table)) LIMIT 1";
-            makeQuery(q_get_random, e, s_get_random);
+            // only need to insert into db if there wasn't anything in there before
+            q_insert_pool = "insert into random_pool(id, entry_time) values ('" + s + "', default)";
+            makeQuery(q_insert_pool, e, s_insert_pool);
+        }
+    };
+    s_check_pool = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(sender, "You are already in the random pool! We'll find you a duel as soon as possible.");
+        }
+        else {
+            // get the oldest row in random_pool and delete it & return it
+            // if there's no rows, it won't return anything
+            q_get_pool_user = "delete from random_pool where id = (select id from random_pool order by entry_time ASC limit 1) returning id";
+            makeQuery(q_get_pool_user, e, s_get_pool_user);
+        }
+    };
+    s_check_sender = function(result) {
+        if (result.rows[0].in_duel) {
+            sendTextMessage(sender, "You can't do that during a duel.");
+        }
+        else {
+            // check if person already in pool
+            q_check_pool = "select * from random_pool where id = '" + s + "'";
+            makeQuery(q_check_pool, e, s_check_pool);
         }
     };
     e = function(err) {
-        sendError(s, 110);
+        console.log(err);
+        sendError(s, 200);
     };
-    var rid, ru, su;
-    q_get_sender = "select name, in_duel from user_table where id = '" + s + "'";
-    makeQuery(q_get_sender, e, s_get_sender);
+    // check if person already in duel
+    q_check_sender = "select in_duel from user_table where id = '" + s + "'";
+    makeQuery(q_check_sender, e, s_check_sender);
+
+}
+
+function leaveRandomChallenge(s) {
+    s_leave_challenge = function(result) {
+        if (result.rows.length) {
+            sendTextMessage(s, "Successfully left the random pool.");
+        }
+        else {
+            sendTextMessage(s, "You are not currently in the random pool!");
+        }
+    };
+    e = function(err) {
+        sendError(s, 201);
+    };
+    q_leave_challenge = "delete from random_pool where id = '" + s + "' returning *";
+    makeQuery(q_leave_challenge, e, s_leave_challenge);
 }
 
 // @accept <username>, @reject <username>
@@ -757,6 +905,11 @@ function respondToChallenge(su, r, response) {
         }
     };
 
+    s_delete_from_random = function(result) {
+        q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
+        makeQuery(q_get_challenge, e, s_get_challenge);
+    };
+
     s_get_sender = function(result) {
         if (result.rows.length === 0) {
             sendTextMessage(r, "Username " + su + " does not exist.");
@@ -766,13 +919,13 @@ function respondToChallenge(su, r, response) {
         }
         else {
             if(result.rows[0].in_duel !== 0){
-                sendTextMessage(r,su + " is currently in a duel. Please try accepting again soon.");
+                sendTextMessage(r,su + " is currently in a duel. Please try again soon.");
             }
             else {
                 s = result.rows[0].id;
                 sp = result.rows[0].points;
-                q_get_challenge = 'SELECT * FROM challenge_table WHERE sender = \'' + s + '\' AND recipient = \'' + r + '\'';
-                makeQuery(q_get_challenge, e, s_get_challenge);
+                q_delete_from_random = "delete from random_pool where id = '" + s + "' or id = '" + r + "'";
+                makeQuery(q_delete_from_random, e, s_delete_from_random);
             }
         }
     };
@@ -861,10 +1014,12 @@ function startDuel(s, r, f_id) {
         if (first_player == s_index) {
             sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+            // sendAttackMenu(s);
         }
         else {
             sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+            // sendAttackMenu(r);
         }
     };
     makeQuery(q_duel, e, s_duel);
@@ -986,7 +1141,7 @@ function getDamage(attack, user_class, health) {
 // called by makeMoveSetup
 //invariant: it is currently the attacker's turn
 // move: type_of_attack, attacker/defender/duel_id, attacker/defender_name
-// attacker/defender_health, attacker_is_sender, potions_attacker/defender
+// health_attacker/defender, attacker_is_sender, potions_attacker/defender
 // bleed_attacker/defender, stun_attacker/defender, attacker_gender, attacker/defender_class
 function makeMove(move){
     move.bleed = 0;
@@ -997,7 +1152,7 @@ function makeMove(move){
     // attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
     // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
     
-    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.attacker_health) : 0;
+    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.health_attacker) : 0;
 
     // dealing with heal
     if (move.type_of_attack == "h") {
@@ -1026,7 +1181,6 @@ function makeMove(move){
         if (move.attacker_class == 2 && Math.random() > 0.5 && attack_value) {
             move.vampire = Math.floor(attack_value / 2);
             move.health_attacker += move.vampire;
-
         }
         move.health_defender = move.health_defender - attack_value;
         // update the duel
@@ -1098,19 +1252,22 @@ function makeMove(move){
             sendTextMessage(move.attacker_id, health);
         }
         else {
+            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             if (attack_value === 0) {
                 sendTextMessage(move.defender_id, move.attacker_name + " missed!");
                 sendTextMessage(move.attacker_id, "You missed!");
+                // sendAttackMenu(move.defender_id);
             }
             else {
                 sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
                 sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
+                // sendAttackMenu(move.defender_id);
             }
             if (move.stun) {
                 sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + "!");
+                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
+                // sendAttackMenu(move.attacker_id);
             }
-            health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             sendTextMessage(move.defender_id, health);
             sendTextMessage(move.attacker_id, health);
         }
@@ -1165,8 +1322,8 @@ function forfeitDuel(lid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
-    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 5 seconds...");
-    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 5 seconds...");
+    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 10 seconds...");
+    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 10 seconds...");
     setTimeout(function(){
         var stake = 0;
         e = function(err) {
@@ -1191,7 +1348,7 @@ function loseDuel(lid, wid, lname, wname, did) {
         };
         q_update_d = "UPDATE duel_table SET winner_id = \'" + wid + "\' WHERE duel_id = \'" + did + "\' RETURNING stake";
         makeQuery(q_update_d, e, s_update_d);
-    }, 5000);
+    }, 9000);
 }
 
 function sendNormalMessage(s, text) {
@@ -1251,7 +1408,7 @@ function listFriends(s) {
     e = function(err) {
         sendError(s, 112);
     };
-    q_get_friends = "select u.name as \"name\", u.first_name as \"fname\" from friend_table f join user_table u on (f.friend_id = u.id)";
+    q_get_friends = "select u.name as \"name\", u.first_name as \"fname\" from friend_table f join user_table u on (f.friend_id = u.id) where owner_id = '" + s + "'";
     makeQuery(q_get_friends, e, s_get_friends);
 }
 
@@ -1262,8 +1419,13 @@ function addFriend(s, fu) {
     s_validate_fu = function(result) {
         if (result.rows.length) {
             fid = result.rows[0].id;
-            q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
-            makeQuery(q_add_friend, e, s_add_friend);
+            if (fid == s) {
+                sendTextMessage(s, "You can't add yourself to your own friends list!");
+            }
+            else {
+                q_add_friend = "insert into friend_table(owner_id, friend_id) VALUES (" + s + ", " + fid + ")";
+                makeQuery(q_add_friend, e, s_add_friend);
+            }
         }
         else {
             sendTextMessage(s, "Username not found. Please try again.");
@@ -1561,4 +1723,84 @@ function validClass(text){
         }
     }
     return -1;
+}
+
+//@blast
+function sendBlast(sender, text) {
+    verified = false;
+    if (!debug) {
+        if (sender == '10206557582650156' || sender == '10205320360242528') {
+            verified = true;
+        }
+    }
+    else {
+        if (sender == '1115352495195167' || sender == '1122723541134914') {
+            verified = true;
+        }
+    }
+    if (verified) {
+        if (text.length > 200) {
+            sendTextMessage(s, "Please limit the length of your message. It will not be delivered.");
+            return;
+        }
+        q_send_blast = "select id from user_table";
+        e = function(err) {
+            sendError(sender, 999);
+        };
+        s_send_blast = function(result) {
+            result.rows.forEach(function(u) {
+                sendTextMessage(u.id, text);
+            });
+        };
+        makeQuery(q_send_blast, e, s_send_blast);
+    }
+    else {
+        sendTextMessage(sender, "Not a valid command. See @help for more information");
+    }
+}
+
+
+//@chat
+function chatMessage(s, r, msg){
+    e = function(err){
+        sendError(sender, 201);
+    };
+    if (msg.length > 200) {
+        sendTextMessage(s, "Please limit the length of your message. It will not be delivered.");
+        return;
+    }
+    s_get_recipient_id = function(result){
+        if (result.rows.length != 2) {
+            sendTextMessage(s, "Username not found. Please try again.");
+        }else{
+            recipient_id = result.rows[0].id;
+            sender_name = result.rows[1].name;
+            if (s == result.rows[0].id) {
+                recipient_id = result.rows[1].id;
+                sender_name = result.rows[0].name;
+            }
+            q_check_friends = "SELECT * from friend_table where owner_id in ('"+s+"','"+recipient_id+"') AND friend_id in ('"+s+"', '"+recipient_id+"')";
+            s_check_friends = function(result){
+                if (result.rows.length == 2) {
+                    sendTextMessage(recipient_id, sender_name+": "+msg);
+                }else{
+                    //determine whether s doesn't have r as friend or r doesn't have s as friend
+                    if (result.rows.length === 0) {
+                        sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
+                    }else if(result.rows.length == 1){
+                        if (result.rows[0].owner_id == s) {
+                            sendTextMessage(s, "You are not on " + r + "'s friend list. Hopefully they'll add you soon!");
+                        }else{
+                            sendTextMessage(s, r + " is not on your friends list. Please add them with @" + r + " to directly message them.");
+                        }
+                    }else{
+                        e();
+                    }
+                }
+            };
+            makeQuery(q_check_friends, e, s_check_friends);
+        }
+    };
+    q_get_recipient_id = "SELECT id, name from user_table where name = E'"+mysql_real_escape_string(r)+"' OR id = '"+s+"'";
+    makeQuery(q_get_recipient_id, e, s_get_recipient_id);
 }
