@@ -1,4 +1,4 @@
-var debug = false;
+var debug = true;
 
 var express = require('express');
 var bodyParser = require('body-parser');
