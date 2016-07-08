@@ -20,6 +20,7 @@ app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
 var MAX_CHALLENGE_COUNT = 5;
+var referral_bonus = 50;
 var max_health = 50;
 var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
@@ -166,6 +167,13 @@ app.post('/webhook/', function (req, res) {
                         case "@register":
                             sendTextMessage(sender, "You are already registered!");
                             break;
+                        case "@referral":
+                            if (words.length == 2) {
+                                referFriend(sender, username);
+                            }
+                            else {
+                                sendTextMessage(sender, "Invalid referral command. See @help for more information.");
+                            }
                         case "@me":
                             getPersonalInfo(sender);
                             break;
@@ -721,12 +729,58 @@ function registerUser(s, username) {
                     }
                 };
                 s_add_username = function(result) {
-                    sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game.");
+                    sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game. If a friend referred you, use the @referral <user> command and both of you will receive an extra reward!");
                 };
                 makeQuery(q_check_username, e, s_check_username);
             }
         });
     }
+}
+
+function referFriend(s, referrer) {
+    var referrer_id;
+    s_get_username = function(result) {
+        if (result.rows.length) {
+            s_username = result.rows[0].name;
+            sendTextMessage(s, "Thanks for letting us know who referred you! We've given you both " + referral_bonus + " coins as a welcoming present. " + referrer + " has also been added to your friends list - to message them, use @chat " + referrer + " followed by your message. We hope you enjoy The Arena!");
+            sendTextMessage(referrer_id, "Thanks for referring " + s_username + "! We've given you both " + referral_bonus + " coins as a welcoming present. " + s_username + " has also been added to your friends list - feel free to welcome them to The Arena!");
+        }
+        else {
+            sendError(s, 223);
+        }
+    };
+    s_update_friends = function(result) {
+        q_get_username = "select name from user_table where id = '" + s + "'";
+        makeQuery(q_get_username, e, s_get_username);
+    };
+    s_add_bonuses = function(result) {
+        q_update_friends = "insert into friend_table values (" + s + ", " + referrer_id + "), (" + referrer_id + ", " + s + ")";
+        makeQuery(q_update_friends, e, s_update_friends);
+    };
+    s_verify_referrer = function(result) {
+        if (result.rows.length == 1) {
+            referrer_id = result.rows[0].id;
+            q_add_bonuses = "update user_table set points = points + " + referral_bonus + " where id = '" + s + "' or id = '" + referrer_id + "'";
+            makeQuery(q_add_bonuses, e, s_add_bonuses);
+        }
+        else {
+            sendTextMessage(s, "Username does not exist. Please try again.");
+        }
+    };
+    s_check_status = function(result) {
+        if (!result.rows.length) {
+            q_verify_referrer = "select id from user_table where name = '" + referrer + "'";
+            makeQuery(q_verify_referrer, e, s_verify_referrer);
+        }
+        else {
+            sendTextMessage(s, "You have already been referred!");
+        }
+    };
+    e = function(err) {
+        sendError(s, 222);
+    };
+    q_check_status = "select * from referral_table where referee = '" + s + "'";
+    makeQuery(q_check_status, s_check_status);
 }
 
 // @me
