@@ -665,6 +665,10 @@ function presentShop(sender) {
                 "image_url":"http://i.imgur.com/IqJuSKr.png",
               }
         };
+        if (result.rows.length == Object.keys(classes).length) {
+            sendTextMessage(sender, "You've unlocked all of the classes - check back soon when we release more!");
+            return;
+        }
         result.rows.forEach(function(c) {
             delete class_data[c.class];
         });
