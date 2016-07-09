@@ -811,7 +811,7 @@ function referFriend(s, referrer) {
         sendError(s, 222);
     };
     q_check_status = "select * from referral_table where referee = '" + s + "'";
-    makeQuery(q_check_status, s_check_status);
+    makeQuery(q_check_status, e, s_check_status);
 }
 
 // @me
