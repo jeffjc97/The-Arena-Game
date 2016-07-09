@@ -175,6 +175,7 @@ app.post('/webhook/', function (req, res) {
                             else {
                                 sendTextMessage(sender, "Invalid referral command. See @help for more information.");
                             }
+                            break;
                         case "@me":
                             getPersonalInfo(sender);
                             break;
