@@ -20,6 +20,7 @@ app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
 var MAX_CHALLENGE_COUNT = 5;
+var BOT_NAME = "TrainingDummy";
 var referrer_bonus = 30;
 var referee_bonus = 50;
 var max_health = 50;
@@ -1104,34 +1105,51 @@ function setupDuel(s, r, stake_val) {
 // starts the duel, called from setupDuel
 function startDuel(s, r, f_id) {
     // q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
-    q_duel = 'SELECT id, name, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
+    q_duel = 'SELECT id, name, duel_id, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
     e = function(err) {
         sendError(s, 25);
         sendError(r, 25);
     };
     s_duel = function(result) {
-        s_index = s == result.rows[0].id ? 0 : 1;
-        r_index = s_index ? 0 : 1;
-        first_player = f_id == s ? s_index : r_index;
-        s_class = result.rows[s_index].current_class ? " (" + classes[result.rows[s_index].current_class] + ")" : "";
-        r_class = result.rows[r_index].current_class ? " (" + classes[result.rows[r_index].current_class] + ")" : "";
-        // s goes first
-        if (first_player == s_index) {
-            sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
-            sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
-            // sendAttackMenu(s);
-        }
-        else {
-            sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
-            sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
-            // sendAttackMenu(r);
+        if (result.rows[0].name == BOT_NAME || result.rows[1].name == BOT_NAME) {
+            //this is a special case of the bot duel
+            user_index = s == result.rows[0].id ? 0 : 1;
+            bot_index = user_index ? 0 : 1;
+            first_player = f_id == s ? user_index : bot_index;
+            duel_id = result.rows[user_index].duel_id;
+            user_class = result.rows[user_index].current_class ? " (" + classes[result.rows[user_index].current_class] + ")" : "";
+            if (first_player == user_index) {
+                sendTextMessage(s, "The duel with " + result.rows[bot_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+            }
+            else {
+                sendTextMessage(s, "The duel with " + result.rows[bot_index].name + r_class + " has begun! " + result.rows[bot_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                makeMoveBot(duel_id);
+            }
+        }else{
+            //regular duel between two users
+            s_index = s == result.rows[0].id ? 0 : 1;
+            r_index = s_index ? 0 : 1;
+            first_player = f_id == s ? s_index : r_index;
+            s_class = result.rows[s_index].current_class ? " (" + classes[result.rows[s_index].current_class] + ")" : "";
+            r_class = result.rows[r_index].current_class ? " (" + classes[result.rows[r_index].current_class] + ")" : "";
+            // s goes first
+            if (first_player == s_index) {
+                sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+                sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                // sendAttackMenu(s);
+            }
+            else {
+                sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+                sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                // sendAttackMenu(r);
+            }
         }
     };
     makeQuery(q_duel, e, s_duel);
 }
 
 // followed by makeMove
-function makeMoveSetup(s, type){
+function makeMoveSetup(s, type, duel_id){
     s_get_defender = function(result) {
         if (result.rows.length !== 1) {
             sendError(s, 34);
@@ -1140,6 +1158,7 @@ function makeMoveSetup(s, type){
             move.defender_name = result.rows[0].name;
             move.defender_gender = result.rows[0].gender;
             move.defender_class = result.rows[0].current_class;
+            move.bot_is_defender = result.rows[0].name == BOT_NAME;
             makeMove(move);
         }
     };
@@ -1182,8 +1201,9 @@ function makeMoveSetup(s, type){
            sendError(s, 27);
         }
         else {
-            move.duel_id = result.rows[0].in_duel;
+            move.duel_id = duel_id || result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
+            move.attacker_is_bot = result.rows[0].name == BOT_NAME;
             move.attacker_gender = result.rows[0].gender;
             move.attacker_class = result.rows[0].current_class;
             if (move.duel_id === 0) {
@@ -1318,8 +1338,12 @@ function makeMove(move){
         def_gender_noun = move.defender_gender == "male" ? "He" : "She";
         // if you're bleeding when you lose
         if (move.bleed) {
-            sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
-            sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            }
         }
         // if the bleed killed you
         if (move.health_defender + attack_value < 0) {
@@ -1328,8 +1352,12 @@ function makeMove(move){
         // either you're not bleeding or the bleed didn't kill you
         else {
             attack_value = attack_value + move.health_defender;
-            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
-            sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " hp!");
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " hp!");
+            }
             loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
         }
         return;
@@ -1341,43 +1369,92 @@ function makeMove(move){
     s_update_duel = function(result){
         def_gender_noun = move.defender_gender == "male" ? "He" : "She";
         if (move.bleed) {
-            sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
-            sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            }
         }
         if (move.vampire) {
-            sendTextMessage(move.defender_id,  move.attacker_name + " regenerated " + move.vampire + " health.");
-            sendTextMessage(move.attacker_id,  "You drained " + move.defender_name + " for " + move.vampire + " health!");
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id,  move.attacker_name + " regenerated " + move.vampire + " health.");
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id,  "You drained " + move.defender_name + " for " + move.vampire + " health!");
+            }
         }
         if (move.type_of_attack === "h") {
             att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
-            sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "!");
-            sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "!");
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
+            }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
-            sendTextMessage(move.defender_id, health);
-            sendTextMessage(move.attacker_id, health);
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id, health);
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id, health);
+            }
         }
         else {
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             if (attack_value === 0) {
-                sendTextMessage(move.defender_id, move.attacker_name + " missed!");
-                sendTextMessage(move.attacker_id, "You missed!");
+                if (!move.bot_is_defender) {  
+                   sendTextMessage(move.defender_id, move.attacker_name + " missed!");
+                }
+                if (!move.bot_is_attacker) {  
+                    sendTextMessage(move.attacker_id, "You missed!");
+                }
                 // sendAttackMenu(move.defender_id);
             }
             else {
-                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
-                sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
+                if (!move.bot_is_defender) {  
+                    sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " you for " + attack_value + " health!");
+                }
+                if (!move.bot_is_attacker) {  
+                    sendTextMessage(move.attacker_id, "You " + verb + " " + move.defender_name + " for " + attack_value + " health!");
+                }
                 // sendAttackMenu(move.defender_id);
             }
             if (move.stun) {
-                sendTextMessage(move.defender_id, "You've been stunned!");
-                sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
+                if (!move.bot_is_defender) {  
+                    sendTextMessage(move.defender_id, "You've been stunned!");
+                }
+                if (!move.bot_is_attacker) {  
+                    sendTextMessage(move.attacker_id, "You stunned " + move.defender_name + " - strike again!");
+                }
                 // sendAttackMenu(move.attacker_id);
             }
-            sendTextMessage(move.defender_id, health);
-            sendTextMessage(move.attacker_id, health);
+            if (!move.bot_is_defender) {  
+                sendTextMessage(move.defender_id, health);
+            }
+            if (!move.bot_is_attacker) {  
+                sendTextMessage(move.attacker_id, health);
+            }
+        }
+
+        //if bot is defender and isn't stunned, automatically make bot return a move
+        if (move.bot_is_defender && !move.stun) {
+            makeMoveBot(move.duel_id);
         }
     };
     makeQuery(q_update_duel, e, s_update_duel);
+}
+
+function makeMoveBot(duel_id){
+    q_get_bot_id = "SELECT id FROM user_table WHERE name = '"+BOT_NAME+"'";
+    e = function(err){
+        return;
+    }
+    s_get_bot_id = function(result){
+        bot_id = result.rows[0].id;
+        makeMoveSetup(bot_id, "s", duel_id);
+    }
+    makeQuery(q_get_bot_id, e, s_get_bot_id);
 }
 
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
@@ -1929,5 +2006,28 @@ function sendLeaderBoard(s){
 
 //@train
 function setupBotDuel(s){
-    return;
+    q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"'";
+    e = function(err){
+        sendError(s, 203);
+    }
+    s_in_duel = function(result){
+        if (result.rows.length != 2) {
+            sendError(s, 203);
+        }else{
+            bot_id = result.rows[0].id;
+            user_id = result.rows[1].id;
+            user_induel = result.rows[1].in_duel;
+            if (result.rows[1].name == BOT_NAME) {
+                bot_id = result.rows[1].id;
+                user_id = result.rows[0].id;
+                user_induel = result.rows[0].in_duel;
+            }
+            if (user_induel) {
+                sendTextMessage(s, "You are currently in a duel. Please finish it before starting a new one.");
+            }else{
+                setupDuel(s, bot_id, 0);
+            }
+        }
+    }
+    makeQuery(q_in_duel, e, s_in_duel);
 }
