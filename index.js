@@ -667,31 +667,32 @@ function presentShop(sender) {
         };
         if (result.rows.length == Object.keys(classes).length) {
             sendTextMessage(sender, "You've unlocked all of the classes - check back soon when we release more!");
-            return;
         }
-        result.rows.forEach(function(c) {
-            delete class_data[c.class];
-        });
-        for (var c in class_data) {
-            if (class_data.hasOwnProperty(c)) {
-                messageData.attachment.payload.elements.push(class_data[c]);
+        else {
+            result.rows.forEach(function(c) {
+                delete class_data[c.class];
+            });
+            for (var c in class_data) {
+                if (class_data.hasOwnProperty(c)) {
+                    messageData.attachment.payload.elements.push(class_data[c]);
+                }
             }
+            request({
+                url: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: {access_token:token},
+                method: 'POST',
+                json: {
+                    recipient: {id:sender},
+                    message: messageData,
+                }
+            }, function(error, response, body) {
+                if (error) {
+                    console.log('Error sending messages: ', error);
+                } else if (response.body.error) {
+                    console.log('Error: ', response.body.error);
+                }
+            });
         }
-        request({
-            url: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {access_token:token},
-            method: 'POST',
-            json: {
-                recipient: {id:sender},
-                message: messageData,
-            }
-        }, function(error, response, body) {
-            if (error) {
-                console.log('Error sending messages: ', error);
-            } else if (response.body.error) {
-                console.log('Error: ', response.body.error);
-            }
-        });
     };
     makeQuery(q_get_unlocked, e, s_get_unlocked);
 }
