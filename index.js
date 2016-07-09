@@ -668,13 +668,11 @@ function presentShop(sender) {
         result.rows.forEach(function(c) {
             delete class_data[c.class];
         });
-        data = [];
         for (var c in class_data) {
             if (class_data.hasOwnProperty(c)) {
-                data.push(class_data[c]);
+                messageData.attachment.payload.elements.push(class_data[c]);
             }
         }
-        messageData.attachment.payload.elements = data;
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token:token},
