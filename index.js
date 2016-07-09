@@ -633,46 +633,62 @@ function sendAttackMenu(sender) {
 
 // @shop
 function presentShop(sender) {
-    messageData = {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements":[
-              {
-                "title":"Unlock Knight Class: " + class_cost + " coins",
-                "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
-                "image_url":"http://i.imgur.com/qNq4v4i.png",
-              },
-              {
-                "title":"Unlock Berserker Class: " + class_cost + " coins",
-                "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
-                "image_url":"http://i.imgur.com/IqJuSKr.png",
-              },
-              {
-                "title":"Unlock Vampire Class: " + class_cost + " coins",
-                "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
-                "image_url":"http://i.imgur.com/A50KhEF.png",
-              },
-            ]
-          }
-        }
+    var classes = [];
+    q_get_unlocked = "select class from user_classes where id = '" + sender + "'";
+    e = function(err) {
+        sendError(sender, 224);
+    }
+    s_get_unlocked = function(result) {
+        messageData = {
+            "attachment":{
+              "type":"template",
+              "payload":{
+                "template_type":"generic",
+                "elements":[]
+              }
+            }
+        };
+        full_classes = [
+          {
+            "title":"Unlock Knight Class: " + class_cost + " coins",
+            "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
+            "image_url":"http://i.imgur.com/qNq4v4i.png",
+          },
+          {
+            "title":"Unlock Berserker Class: " + class_cost + " coins",
+            "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
+            "image_url":"http://i.imgur.com/IqJuSKr.png",
+          },
+          {
+            "title":"Unlock Vampire Class: " + class_cost + " coins",
+            "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
+            "image_url":"http://i.imgur.com/A50KhEF.png",
+          },
+        ];
+        locked_full_classes = [];
+        locked_classes = [1,2,3].filter(function(c) {
+            return result.indexOf(c) == -1;
+        });
+        locked_classes.forEach(function(c) {
+            locked_full_classes.push(full_classes[c]);
+        });
+        messageData.attachment.payload.elements = locked_full_classes;
+        request({
+            url: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {access_token:token},
+            method: 'POST',
+            json: {
+                recipient: {id:sender},
+                message: messageData,
+            }
+        }, function(error, response, body) {
+            if (error) {
+                console.log('Error sending messages: ', error);
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+            }
+        });
     };
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-        }
-    });
 }
 
 // Function used on register to get the user's personal information
