@@ -667,7 +667,7 @@ function presentShop(sender) {
         ];
         locked_full_classes = [];
         locked_classes = [1,2,3].filter(function(c) {
-            return result.indexOf(c) == -1;
+            return result.rows.indexOf(c) == -1;
         });
         locked_classes.forEach(function(c) {
             locked_full_classes.push(full_classes[c]);
