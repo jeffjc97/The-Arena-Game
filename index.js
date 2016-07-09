@@ -639,36 +639,36 @@ function presentShop(sender) {
         sendError(sender, 224);
     };
     s_get_unlocked = function(result) {
-        messageData = {
-            "attachment":{
-              "type":"template",
-              "payload":{
-                "template_type":"generic",
-                "elements":[]
-              }
-            }
-        };
-        class_data = {
-            1: {
-                "title":"Unlock Knight Class: " + class_cost + " coins",
-                "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
-                "image_url":"http://i.imgur.com/qNq4v4i.png",
-              },
-            2: {
-                "title":"Unlock Vampire Class: " + class_cost + " coins",
-                "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
-                "image_url":"http://i.imgur.com/A50KhEF.png",
-              },
-            3: {
-                "title":"Unlock Berserker Class: " + class_cost + " coins",
-                "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
-                "image_url":"http://i.imgur.com/IqJuSKr.png",
-              }
-        };
         if (result.rows.length == Object.keys(classes).length) {
             sendTextMessage(sender, "You've unlocked all of the classes - check back soon when we release more!");
         }
         else {
+            messageData = {
+                "attachment":{
+                  "type":"template",
+                  "payload":{
+                    "template_type":"generic",
+                    "elements":[]
+                  }
+                }
+            };
+            class_data = {
+                1: {
+                    "title":"Unlock Knight Class: " + class_cost + " coins",
+                    "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
+                    "image_url":"http://i.imgur.com/qNq4v4i.png",
+                  },
+                2: {
+                    "title":"Unlock Vampire Class: " + class_cost + " coins",
+                    "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
+                    "image_url":"http://i.imgur.com/A50KhEF.png",
+                  },
+                3: {
+                    "title":"Unlock Berserker Class: " + class_cost + " coins",
+                    "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
+                    "image_url":"http://i.imgur.com/IqJuSKr.png",
+                  }
+            };
             result.rows.forEach(function(c) {
                 delete class_data[c.class];
             });
