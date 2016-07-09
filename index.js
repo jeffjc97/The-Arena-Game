@@ -633,7 +633,6 @@ function sendAttackMenu(sender) {
 
 // @shop
 function presentShop(sender) {
-    var classes = [];
     q_get_unlocked = "select class from user_classes where id = '" + sender + "'";
     e = function(err) {
         sendError(sender, 224);
