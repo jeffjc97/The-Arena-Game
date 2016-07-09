@@ -48,8 +48,8 @@ var ClearChallenges = function(){
     q_delete_expired_challenges = "DELETE FROM challenge_table c WHERE issued < NOW()- interval \'7 minute\'";
     q_get_expired_challenges = "SELECT u.name, c.sender FROM challenge_table c left join user_table u ON (u.id = c.recipient) WHERE issued < NOW()- interval \'10 minute\'";
     e = function(err){
-        sendError(10206557582650156, "Challenge Clearer has failed");
-        sendError(10205320360242528, "Challenge Clearer has failed");
+        // sendError(10206557582650156, "Challenge Clearer has failed");
+        // sendError(10205320360242528, "Challenge Clearer has failed");
     };
     s_get_expired_challenges = function(result){
       for (var i = 0; i < result.rows.length; i++){
@@ -68,8 +68,8 @@ var ClearChallenges = function(){
 var CheckMovesExpire = function(){
     q_get_stale_duels = "SELECT d.duel_id, d.sender_id, d.recipient_id, u1.name as sender_name, u2.name recipient_name, d.user_turn FROM duel_table d LEFT JOIN user_table u1 ON (u1.id = d.sender_id) LEFT JOIN user_table u2 ON (u2.id = d.recipient_id) WHERE winner_id=\'none\' AND d.pressure_time < NOW()- interval \'30 second\'";
     e = function(err){
-        sendError(10206557582650156, "CheckMovesExpire has failed");
-        sendError(10205320360242528, "CheckMovesExpire has failed");
+        // sendError(10206557582650156, "CheckMovesExpire has failed");
+        // sendError(10205320360242528, "CheckMovesExpire has failed");
     };
     s_get_stale_duels = function(result){
         for (var i = 0; i < result.rows.length; i++) {
@@ -91,8 +91,8 @@ var CheckMovesExpire = function(){
 var CheckRandomExpire = function(){
     q_get_stale_random = "SELECT id FROM random_pool WHERE entry_time < NOW()- interval \'7 minute\'";
     e = function(err){
-        sendError(10206557582650156, "CheckRandomExpire has failed");
-        sendError(10205320360242528, "CheckRandomExpire has failed");
+        // sendError(10206557582650156, "CheckRandomExpire has failed");
+        // sendError(10205320360242528, "CheckRandomExpire has failed");
     };
     s_get_stale_random = function(result){
         for (var i = 0; i < result.rows.length; i++) {
