@@ -4,7 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
 var pg = require('pg');
-var JSONbig = require('json-bigint');
+var JSONbig = require('json-bigint' );
 var escape = require('pg-escape');
 var app = express();
 
@@ -314,6 +314,14 @@ app.post('/webhook/', function (req, res) {
                             }
                             else {
                                 sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
+                            }
+                            break;
+                        case "@train":
+                            if (words.length == 1) {
+                                setupBotDuel(sender);
+                            }
+                            else{
+                                sendTextMessage(sender, "Invalid train command. See @help for more information.");
                             }
                             break;
                         case "@leaderboard":
@@ -1885,4 +1893,9 @@ function sendLeaderBoard(s){
         sendTextMessage(s, leader_string);
     }
     makeQuery(q_get_most_wins, e, s_get_most_wins);
+}
+
+//@train
+function setupBotDuel(s){
+    return;
 }
