@@ -758,8 +758,8 @@ function referFriend(s, referrer) {
         console.log(7);
         if (result.rows.length) {
             s_username = result.rows[0].name;
-            sendTextMessage(s, "Thanks for letting us know who referred you! We've given you both " + referral_bonus + " coins as a welcoming present. " + referrer + " has also been added to your friends list - to message them, use @chat " + referrer + " followed by your message. We hope you enjoy The Arena!");
-            sendTextMessage(referrer_id, "Thanks for referring " + s_username + "! We've given you both " + referral_bonus + " coins as a welcoming present. " + s_username + " has also been added to your friends list - feel free to welcome them to The Arena!");
+            sendTextMessage(s, "Thanks for letting us know who referred you! We've given you " + referee_bonus + " coins as a welcoming present. " + referrer + " has also been added to your friends list - to message them, use @chat " + referrer + " followed by your message. We hope you enjoy The Arena!");
+            sendTextMessage(referrer_id, "Thanks for referring " + s_username + "! We've given you both " + referrer_bonus + " coins as a welcoming present. " + s_username + " has also been added to your friends list - feel free to welcome them to The Arena!");
             q_check_referrer_stats = "select count(*) from referral_table where referrer = '" + referrer_id + "'";
             makeQuery(q_check_referrer_stats, e, s_check_referrer_stats);
         }
