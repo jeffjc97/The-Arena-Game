@@ -648,32 +648,33 @@ function presentShop(sender) {
               }
             }
         };
-        full_classes = [
-          {
-            "title":"Unlock Knight Class: " + class_cost + " coins",
-            "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
-            "image_url":"http://i.imgur.com/qNq4v4i.png",
-          },
-          {
-            "title":"Unlock Vampire Class: " + class_cost + " coins",
-            "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
-            "image_url":"http://i.imgur.com/A50KhEF.png",
-          },
-          {
-            "title":"Unlock Berserker Class: " + class_cost + " coins",
-            "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
-            "image_url":"http://i.imgur.com/IqJuSKr.png",
-          }
-        ];
-        locked_full_classes = [];
-        locked_classes = [1,2,3].filter(function(c) {
-            return result.rows.indexOf(c) == -1;
+        class_data = {
+            1: {
+                "title":"Unlock Knight Class: " + class_cost + " coins",
+                "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
+                "image_url":"http://i.imgur.com/qNq4v4i.png",
+              },
+            2: {
+                "title":"Unlock Vampire Class: " + class_cost + " coins",
+                "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
+                "image_url":"http://i.imgur.com/A50KhEF.png",
+              },
+            3: {
+                "title":"Unlock Berserker Class: " + class_cost + " coins",
+                "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
+                "image_url":"http://i.imgur.com/IqJuSKr.png",
+              }
+        };
+        result.rows.forEach(function(c) {
+            delete class_data[c.class];
         });
-        locked_classes.forEach(function(c) {
-            console.log(c);
-            locked_full_classes.push(full_classes[c - 1]);
-        });
-        messageData.attachment.payload.elements = locked_full_classes;
+        data = [];
+        for (var c in class_data) {
+            if (class_data.hasOwnProperty(c)) {
+                data.push(class_data[c]);
+            }
+        }
+        messageData.attachment.payload.elements = data;
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token:token},
