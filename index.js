@@ -445,7 +445,6 @@ function makeQuery(q, error, success) {
             }
             else {
                 success(result);
-
             }
         });
     });
@@ -743,9 +742,11 @@ function referFriend(s, referrer) {
     var referrer_id;
     var num_referrals;
     s_add_extra_bonus = function(result) {
+        console.log(9);
         sendTextMessage(referrer_id, "Thanks for bringing so many new people to the game! As a token of our appreciation for referring " + num_referrals + " new users, we've given you 50 more coins!");
-    }
+    };
     s_check_referrer_stats = function(result) {
+        console.log(8);
         num_referrals = result.rows[0].count;
         if (num_referrals % 5 === 0) {
             q_add_extra_bonus = "update user_table set points = points + 50 where id = '" + referrer_id + "'";
@@ -753,6 +754,7 @@ function referFriend(s, referrer) {
         }
     };
     s_get_username = function(result) {
+        console.log(7);
         if (result.rows.length) {
             s_username = result.rows[0].name;
             sendTextMessage(s, "Thanks for letting us know who referred you! We've given you both " + referral_bonus + " coins as a welcoming present. " + referrer + " has also been added to your friends list - to message them, use @chat " + referrer + " followed by your message. We hope you enjoy The Arena!");
@@ -765,22 +767,27 @@ function referFriend(s, referrer) {
         }
     };
     s_update_friends = function(result) {
+        console.log(6);
         q_get_username = "select name from user_table where id = '" + s + "'";
         makeQuery(q_get_username, e, s_get_username);
     };
     s_add_bonuses_referrer = function(result) {
+        console.log(5);
         q_update_friends = "insert into friend_table values (" + s + ", " + referrer_id + "), (" + referrer_id + ", " + s + ")";
         makeQuery(q_update_friends, e, s_update_friends);
     };
     s_add_bonuses_referee = function(result) {
+        console.log(4);
         q_add_bonuses_referrer = "update user_table set points = points + " + referrer_bonus + " where id = '" + referrer_id + "'";
         makeQuery(q_add_bonuses_referrer, e, s_add_bonuses_referrer);
     };
     s_add_referral_table = function(result) {
+        console.log(3);
         q_add_bonuses_referee = "update user_table set points = points + " + referee_bonus + " where id = '" + s + "'";
         makeQuery(q_add_bonuses_referee, e, s_add_bonuses_referee);
     };
     s_verify_referrer = function(result) {
+        console.log(2);
         if (result.rows.length == 1) {
             referrer_id = result.rows[0].id;
             q_add_referral_table = "insert into referral_table values ('" + referrer_id + "', '" + s + "')";
@@ -791,6 +798,7 @@ function referFriend(s, referrer) {
         }
     };
     s_check_status = function(result) {
+        console.log(1);
         if (!result.rows.length) {
             q_verify_referrer = "select id from user_table where name = '" + referrer + "'";
             makeQuery(q_verify_referrer, e, s_verify_referrer);
