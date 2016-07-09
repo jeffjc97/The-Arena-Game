@@ -5,7 +5,7 @@ var pg = require('pg');
 var JSONbig = require('json-bigint');
 var app = express();
 
-debug = false;
+debug = true;
 var token = "EAADO0pQrRbsBAD8aZB2wCeI1zwFlCVS9W1HGQJQVSQj3Qk837u5agR0Gphg7zaZBOyhkVrRVloP2uZAsNXcZCqDXqc49aP26h1IgZBZCTAEhkIiksjxtx2j895suRIbZBGZB3tZChW4J0lNdNMc8jGGNWSayIR8RQru1CnP9sk3ZCC0gZDZD";
 if (debug) {
     token = "EAAIrIlaiok0BAMltmAAL9rrXYdi7EymNA135BZCjddqjXQUBSNyxEZCaSQJdiucnRsoofUIfZATDqeizPQDtZBQElB96PeMKRuJk2rj9PEM4206QxWuQ40i7myOzwbZAi9Xsn4AKrzlaMlrnIKd0ZAXmWjnsZCWE0OSVLQUqeBJUAZDZD";
@@ -60,8 +60,8 @@ var ClearChallenges = function(){
       makeQuery(q_delete_expired_challenges, e, s_delete_expired_challenges);
     };
     s_delete_expired_challenges = function(result){
-      // sendTextMessage(10206557582650156, "Challenge Clearer has worked");
-      // sendTextMessage(10205320360242528, "Challenge Clearer has worked");
+      sendTextMessage(10206557582650156, "Challenge Clearer has worked");
+      sendTextMessage(10205320360242528, "Challenge Clearer has worked");
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
