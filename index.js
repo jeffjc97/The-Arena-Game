@@ -637,7 +637,7 @@ function presentShop(sender) {
     q_get_unlocked = "select class from user_classes where id = '" + sender + "'";
     e = function(err) {
         sendError(sender, 224);
-    }
+    };
     s_get_unlocked = function(result) {
         messageData = {
             "attachment":{
@@ -655,15 +655,15 @@ function presentShop(sender) {
             "image_url":"http://i.imgur.com/qNq4v4i.png",
           },
           {
-            "title":"Unlock Berserker Class: " + class_cost + " coins",
-            "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
-            "image_url":"http://i.imgur.com/IqJuSKr.png",
-          },
-          {
             "title":"Unlock Vampire Class: " + class_cost + " coins",
             "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
             "image_url":"http://i.imgur.com/A50KhEF.png",
           },
+          {
+            "title":"Unlock Berserker Class: " + class_cost + " coins",
+            "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
+            "image_url":"http://i.imgur.com/IqJuSKr.png",
+          }
         ];
         locked_full_classes = [];
         locked_classes = [1,2,3].filter(function(c) {
