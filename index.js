@@ -689,6 +689,7 @@ function presentShop(sender) {
             }
         });
     };
+    makeQuery(q_get_unlocked, e, s_get_unlocked);
 }
 
 // Function used on register to get the user's personal information
