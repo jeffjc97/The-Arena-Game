@@ -1130,7 +1130,7 @@ function startDuel(s, r, f_id) {
     q_duel = 'SELECT id, name, duel_id, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
     console.log(r);
     e = function(err) {
-        sendError(s, 25);
+        sendError(s, 25, JSON.stringify(err).substring(0,300));
         sendError(r, 25);
     };
     s_duel = function(result) {
