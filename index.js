@@ -1348,6 +1348,13 @@ function makeMove(move){
         }
         return;
     }
+    else if (move.health_defender <= 0 && move.type_of_attack == 'h') {
+        if (move.bleed) {
+            sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
+        }
+    }
 
     e = function(err){
         sendError(move.attacker_id, 60, JSON.stringify(err).substring(0,300));
