@@ -2035,7 +2035,7 @@ function sendLeaderBoard(s){
 
 //@train
 function setupBotDuel(s){
-    q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"'";
+    q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME+"'";
     e = function(err){
         sendError(s, 203);
     }
