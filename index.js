@@ -670,7 +670,7 @@ function presentShop(sender) {
             return result.rows.indexOf(c) == -1;
         });
         locked_classes.forEach(function(c) {
-            locked_full_classes.push(full_classes[c]);
+            locked_full_classes.push(full_classes[c - 1]);
         });
         messageData.attachment.payload.elements = locked_full_classes;
         request({
