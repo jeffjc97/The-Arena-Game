@@ -642,46 +642,68 @@ function sendAttackMenu(sender) {
 
 // @shop
 function presentShop(sender) {
-    messageData = {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements":[
-              {
-                "title":"Unlock Knight Class: " + class_cost + " coins",
-                "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
-                "image_url":"http://i.imgur.com/qNq4v4i.png",
-              },
-              {
-                "title":"Unlock Berserker Class: " + class_cost + " coins",
-                "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
-                "image_url":"http://i.imgur.com/IqJuSKr.png",
-              },
-              {
-                "title":"Unlock Vampire Class: " + class_cost + " coins",
-                "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
-                "image_url":"http://i.imgur.com/A50KhEF.png",
-              },
-            ]
-          }
+    q_get_unlocked = "select class from user_classes where id = '" + sender + "'";
+    e = function(err) {
+        sendError(sender, 224);
+    };
+    s_get_unlocked = function(result) {
+        console.log(result.rows.length);
+        if (result.rows.length == Object.keys(classes).length) {
+            sendTextMessage(sender, "You've unlocked all of the classes - check back soon when we release more!");
+        }
+        else {
+            messageData = {
+                "attachment":{
+                  "type":"template",
+                  "payload":{
+                    "template_type":"generic",
+                    "elements":[]
+                  }
+                }
+            };
+            class_data = {
+                1: {
+                    "title":"Unlock Knight Class: " + class_cost + " coins",
+                    "subtitle":"[@buy knight] Knights deal attacks with greater accuracy.",
+                    "image_url":"http://i.imgur.com/qNq4v4i.png",
+                  },
+                2: {
+                    "title":"Unlock Vampire Class: " + class_cost + " coins",
+                    "subtitle":"[@buy vampire] Vampires often drain their opponent's health, healing themselves.",
+                    "image_url":"http://i.imgur.com/A50KhEF.png",
+                  },
+                3: {
+                    "title":"Unlock Berserker Class: " + class_cost + " coins",
+                    "subtitle":"[@buy berserker] Berkserkers deal more damage the lower their health gets.",
+                    "image_url":"http://i.imgur.com/IqJuSKr.png",
+                  }
+            };
+            result.rows.forEach(function(c) {
+                delete class_data[c.class];
+            });
+            for (var c in class_data) {
+                if (class_data.hasOwnProperty(c)) {
+                    messageData.attachment.payload.elements.push(class_data[c]);
+                }
+            }
+            request({
+                url: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: {access_token:token},
+                method: 'POST',
+                json: {
+                    recipient: {id:sender},
+                    message: messageData,
+                }
+            }, function(error, response, body) {
+                if (error) {
+                    console.log('Error sending messages: ', error);
+                } else if (response.body.error) {
+                    console.log('Error: ', response.body.error);
+                }
+            });
         }
     };
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-        }
-    });
+    makeQuery(q_get_unlocked, e, s_get_unlocked);
 }
 
 // Function used on register to get the user's personal information
@@ -1361,6 +1383,13 @@ function makeMove(move){
             loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
         }
         return;
+    }
+    else if (move.health_defender <= 0 && move.type_of_attack == 'h') {
+        if (move.bleed) {
+            sendTextMessage(move.defender_id, "You're bleeding! You lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            sendTextMessage(move.attacker_id, move.defender_name + " is bleeding! " + def_gender_noun + " lost " + move.bleed + " health. (" + move.bleed_defender + " turn(s) remaining)");
+            loseDuel(move.defender_id, move.attacker_id, move.defender_name, move.attacker_name, move.duel_id);
+        }
     }
 
     e = function(err){
