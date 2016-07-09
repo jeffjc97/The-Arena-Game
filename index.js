@@ -639,6 +639,7 @@ function presentShop(sender) {
         sendError(sender, 224);
     };
     s_get_unlocked = function(result) {
+        console.log(result.rows.length);
         if (result.rows.length == Object.keys(classes).length) {
             sendTextMessage(sender, "You've unlocked all of the classes - check back soon when we release more!");
         }
