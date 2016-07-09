@@ -20,7 +20,8 @@ app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
 
 var MAX_CHALLENGE_COUNT = 5;
-var referral_bonus = 50;
+var referrer_bonus = 30;
+var referee_bonus = 50;
 var max_health = 50;
 var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
@@ -737,13 +738,27 @@ function registerUser(s, username) {
     }
 }
 
+// @referral
 function referFriend(s, referrer) {
     var referrer_id;
+    var num_referrals;
+    s_add_extra_bonus = function(result) {
+        sendTextMessage(referrer_id, "Thanks for bringing so many new people to the game! As a token of our appreciation for referring " + num_referrals + " new users, we've given you 50 more coins!");
+    }
+    s_check_referrer_stats = function(result) {
+        num_referrals = result.rows[0].count;
+        if (num_referrals % 5 === 0) {
+            q_add_extra_bonus = "update user_table set points = points + 50 where id = '" + referrer_id + "'";
+            makeQuery(q_add_extra_bonus, e, s_add_extra_bonus);
+        }
+    };
     s_get_username = function(result) {
         if (result.rows.length) {
             s_username = result.rows[0].name;
             sendTextMessage(s, "Thanks for letting us know who referred you! We've given you both " + referral_bonus + " coins as a welcoming present. " + referrer + " has also been added to your friends list - to message them, use @chat " + referrer + " followed by your message. We hope you enjoy The Arena!");
             sendTextMessage(referrer_id, "Thanks for referring " + s_username + "! We've given you both " + referral_bonus + " coins as a welcoming present. " + s_username + " has also been added to your friends list - feel free to welcome them to The Arena!");
+            q_check_referrer_stats = "select count(*) from referral_table where referrer = '" + referrer_id + "'";
+            makeQuery(q_check_referrer_stats, e, s_check_referrer_stats);
         }
         else {
             sendError(s, 223);
@@ -753,15 +768,23 @@ function referFriend(s, referrer) {
         q_get_username = "select name from user_table where id = '" + s + "'";
         makeQuery(q_get_username, e, s_get_username);
     };
-    s_add_bonuses = function(result) {
+    s_add_bonuses_referrer = function(result) {
         q_update_friends = "insert into friend_table values (" + s + ", " + referrer_id + "), (" + referrer_id + ", " + s + ")";
         makeQuery(q_update_friends, e, s_update_friends);
+    };
+    s_add_bonuses_referee = function(result) {
+        q_add_bonuses_referrer = "update user_table set points = points + " + referrer_bonus + " where id = '" + referrer_id + "'";
+        makeQuery(q_add_bonuses_referrer, e, s_add_bonuses_referrer);
+    };
+    s_add_referral_table = function(result) {
+        q_add_bonuses_referee = "update user_table set points = points + " + referee_bonus + " where id = '" + s + "'";
+        makeQuery(q_add_bonuses_referee, e, s_add_bonuses_referee);
     };
     s_verify_referrer = function(result) {
         if (result.rows.length == 1) {
             referrer_id = result.rows[0].id;
-            q_add_bonuses = "update user_table set points = points + " + referral_bonus + " where id = '" + s + "' or id = '" + referrer_id + "'";
-            makeQuery(q_add_bonuses, e, s_add_bonuses);
+            q_add_referral_table = "insert into referral_table values ('" + referrer_id + "', '" + s + "')";
+            makeQuery(q_add_referral_table, e, s_add_referral_table);
         }
         else {
             sendTextMessage(s, "Username does not exist. Please try again.");
