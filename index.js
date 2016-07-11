@@ -1107,6 +1107,7 @@ function cancelChallenge(s, u){
 // invariant: neither party is in a duel
 function setupDuel(s, r, stake_val) {
     s_update_s = function(result) {
+        console.log("Success setting up duel between "+s+" and "+ r);
         startDuel(s,r, first);
     };
     s_insert_duel = function(result) {
@@ -2054,6 +2055,7 @@ function setupBotDuel(s){
             if (user_induel) {
                 sendTextMessage(s, "You are currently in a duel. Please finish it before starting a new one.");
             }else{
+                console.log("Setting up bot duel. Bot id"+bot_id+".");
                 setupDuel(s, bot_id, 0);
             }
         }
