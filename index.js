@@ -1129,7 +1129,7 @@ function setupDuel(s, r, stake_val) {
 function startDuel(s, r, f_id) {
     // q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
     q_duel = 'SELECT id, name, duel_id, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
-    console.log(r);
+    console.log("shit wtf " + r);
     e = function(err) {
         sendError(s, 25, JSON.stringify(err).substring(0,300));
         sendError(r, 25);
@@ -2055,7 +2055,7 @@ function setupBotDuel(s){
             if (user_induel) {
                 sendTextMessage(s, "You are currently in a duel. Please finish it before starting a new one.");
             }else{
-                console.log("Setting up bot duel. Bot id"+bot_id+".");
+                console.log("Setting up bot duel. Bot id: "+bot_id+".");
                 setupDuel(s, bot_id, 0);
             }
         }
