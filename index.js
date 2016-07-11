@@ -1128,7 +1128,7 @@ function setupDuel(s, r, stake_val) {
 // starts the duel, called from setupDuel
 function startDuel(s, r, f_id) {
     // q_duel = 'SELECT id, name FROM user_table where id= \'' + f_id + '\'';
-    q_duel = 'SELECT id, name, duel_id, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
+    q_duel = 'SELECT id, name, in_duel, current_class FROM user_table where id= \'' + s + '\' or id= \'' + r + '\'';
     console.log("shit wtf " + r);
     e = function(err) {
         sendError(s, 25, JSON.stringify(err).substring(0,300));
