@@ -2019,7 +2019,7 @@ function chatMessage(s, r, msg){
 
 //@leaderboard
 function sendLeaderBoard(s){
-    q_get_most_wins = "SELECT name, wins, games_played from user_table WHERE name <> "+BOT_NAME+"ORDER BY wins DESC LIMIT 5";
+    q_get_most_wins = "SELECT name, wins, games_played from user_table WHERE name <> "+BOT_NAME+" ORDER BY wins DESC LIMIT 5";
     e = function(err){
         sendError(sender, 202);
     };
