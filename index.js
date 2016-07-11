@@ -761,7 +761,8 @@ function registerUser(s, username) {
                     }
                 };
                 s_add_username = function(result) {
-                    sendTextMessage(s, "Username successfully registered! Type @help to learn more about the game. If a friend referred you, use the @referral <user> command and both of you will receive an extra reward!");
+                    sendTextMessage(s, "Username successfully registered! If a friend referred you, use the @referral <user> command and both of you will receive an extra reward! If you need to be refreshed on the instructions, type @help.");
+                    sendHelpMessage(s);
                 };
                 makeQuery(q_check_username, e, s_check_username);
             }
@@ -1141,11 +1142,12 @@ function startDuel(s, r, f_id) {
             bot_index = user_index ? 0 : 1;
             first_player = f_id == s ? user_index : bot_index;
             duel_id = result.rows[user_index].duel_id;
+            bot_class = result.rows[r_index].current_class ? " (" + classes[result.rows[bot_index].current_class] + ")" : "";
             if (first_player == user_index) {
-                sendTextMessage(s, "The duel with " + result.rows[bot_index].name + result.rows[bot_index].class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
+                sendTextMessage(s, "The duel with " + result.rows[bot_index].name + bot_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             }
             else {
-                sendTextMessage(s, "The duel with " + result.rows[bot_index].name + result.rows[bot_index].class + " has begun! " + result.rows[bot_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                sendTextMessage(s, "The duel with " + result.rows[bot_index].name + bot_class + " has begun! " + result.rows[bot_index].name + " has the first move. To message your opponent, just type normally in the chat.");
                 makeMoveBot(duel_id);
             }
         }else{
