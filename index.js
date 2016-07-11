@@ -1142,7 +1142,7 @@ function startDuel(s, r, f_id) {
             bot_index = user_index ? 0 : 1;
             first_player = f_id == s ? user_index : bot_index;
             duel_id = result.rows[user_index].duel_id;
-            bot_class = result.rows[r_index].current_class ? " (" + classes[result.rows[bot_index].current_class] + ")" : "";
+            bot_class = result.rows[bot_index].current_class ? " (" + classes[result.rows[bot_index].current_class] + ")" : "";
             if (first_player == user_index) {
                 sendTextMessage(s, "The duel with " + result.rows[bot_index].name + bot_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
             }
