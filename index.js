@@ -1487,6 +1487,7 @@ function makeMoveBot(duel_id){
         makeQuery(q_get_duel, e, s_get_duel);
     }
     s_get_duel = function(result){
+        console.log("getting here with " + result.rows[0].duel_id);
         if (result.rows.length != 1) {
             console.log("shitshitshit in makeMoveBot there was bad row count on duel id this is horrible");
         }else{
