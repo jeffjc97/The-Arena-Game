@@ -1522,7 +1522,7 @@ function makeMoveBot(duel_id){
                         break;
                 }
             }
-            makeMoveSetup(bot_id, move, duel_id);
+            makeMoveSetup(bot_id, "c", duel_id);
         }
     }
     makeQuery(q_get_bot_id, e, s_get_bot_id);
