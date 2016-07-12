@@ -1473,6 +1473,9 @@ function makeMove(move){
         if (move.bot_is_defender && !move.stun) {
             makeMoveBot(move.duel_id);
         }
+        else if (move.bot_is_attacker && move.stun) {
+            makeMoveBot(move.duel_id);
+        }
     };
     makeQuery(q_update_duel, e, s_update_duel);
 }
