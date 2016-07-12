@@ -1228,7 +1228,7 @@ function makeMoveSetup(s, type, duel_id){
         else {
             move.duel_id = duel_id || result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
-            move.attacker_is_bot = result.rows[0].name == BOT_NAME;
+            move.bot_is_attacker = result.rows[0].name == BOT_NAME;
             move.attacker_gender = result.rows[0].gender;
             move.attacker_class = result.rows[0].current_class;
             if (move.duel_id === 0) {
