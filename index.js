@@ -1484,9 +1484,11 @@ function makeMoveBot(duel_id){
     s_get_bot_id = function(result){
         bot_id = result.rows[0].id;
         q_get_duel = "SELECT * FROM duel_table WHERE id = "+duel_id;
+        console.log("we good here");
         makeQuery(q_get_duel, e, s_get_duel);
     }
     s_get_duel = function(result){
+        console.log("even better here");
         if (result.rows.length != 1) {
             console.log("shitshitshit in makeMoveBot there was bad row count on duel id this is horrible");
         }else{
@@ -1518,7 +1520,6 @@ function makeMoveBot(duel_id){
             }
             makeMoveSetup(bot_id, move, duel_id);
         }
-
     }
     console.log("herehere");
     makeQuery(q_get_bot_id, e, s_get_bot_id);
