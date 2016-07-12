@@ -1474,7 +1474,7 @@ function makeMove(move){
             makeMoveBot(move.duel_id);
         }
         console.log(move.bot_is_attacker +" "+ move.stun);
-        else if (move.bot_is_attacker && move.stun) {
+        if (move.bot_is_attacker && move.stun) {
             console.log("bot is attacking and user is stunned");
             makeMoveBot(move.duel_id);
         }
