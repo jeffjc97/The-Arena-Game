@@ -1147,6 +1147,7 @@ function startDuel(s, r, f_id) {
             }
             else {
                 sendTextMessage(s, "The duel with " + result.rows[bot_index].name + bot_class + " has begun! " + result.rows[bot_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                console.log(duel_id);
                 makeMoveBot(duel_id);
             }
         }else{
