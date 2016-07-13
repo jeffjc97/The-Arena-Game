@@ -21,6 +21,9 @@ app.set('view engine', 'ejs');
 
 var MAX_CHALLENGE_COUNT = 5;
 var BOT_NAME = "TrainingDummy";
+var BOT_NAME_VAMP = "TrainingVampire";
+var BOT_NAME_KNIGHT = "TrainingKnight";
+var BOT_NAME_BER = "TrainingBerserker";
 var referrer_bonus = 30;
 var referee_bonus = 50;
 var max_health = 50;
@@ -321,6 +324,23 @@ app.post('/webhook/', function (req, res) {
                         case "@train":
                             if (words.length == 1) {
                                 setupBotDuel(sender);
+                            }else if(words.length == 2){
+                                switch(words[1]){
+                                    case 'vampire':
+                                    case 'Vampire':
+                                        setupBotDuel(sender, "v");
+                                        break;
+                                    case 'berserker':
+                                    case 'Berserker':
+                                        setupBotDuel(sender, "b");
+                                        break;
+                                    case 'knight':
+                                    case 'Knight':
+                                        setupBotDuel(sender, "k");
+                                        break;
+                                    default:
+                                        setupBotDuel(sender, "n");
+                                }
                             }
                             else{
                                 sendTextMessage(sender, "Invalid train command. See @help for more information.");
@@ -2046,7 +2066,7 @@ function chatMessage(s, r, msg){
 
 //@leaderboard
 function sendLeaderBoard(s){
-    q_get_most_wins = "SELECT name, wins, games_played from user_table WHERE name <> '"+BOT_NAME+"' ORDER BY wins DESC LIMIT 5";
+    q_get_most_wins = "SELECT name, wins, games_played from user_table WHERE (name <> '"+BOT_NAME+"' AND name <> '"+BOT_NAME_VAMP+"' AND name <> '"+BOT_NAME_BER+"' AND name <> '"+BOT_NAME_KNIGHT+"') ORDER BY wins DESC LIMIT 5";
     e = function(err){
         sendError(sender, 202);
     };
@@ -2062,8 +2082,20 @@ function sendLeaderBoard(s){
 }
 
 //@train
-function setupBotDuel(s){
-    q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME+"'";
+function setupBotDuel(s, class){
+    switch(words[1]){
+        case 'v':
+            q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME_VAMP+"'";
+            break;
+        case 'b':
+            q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME_BER+"'";
+            break;
+        case 'k':
+            q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME_KNIGHT+"'";
+            break;
+        default:
+            q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME+"'";
+    }
     e = function(err){
         sendError(s, 203);
     }
