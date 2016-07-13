@@ -513,13 +513,13 @@ function muteUser(s) {
     };
     s_get_mute = function(result) {
         is_muted = result.rows[0].mute;
-        if (mute) {
+        if (is_muted) {
             sendTextMessage(s, "You will no longer receive messages from The Arena. To unmute your account, use @mute again.");
         }
         else {
             sendTextMessage(s, "Welcome back! You will now be able to receive messages from The Arena.");
         }
-        q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "' returning mute";
+        q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "'";
         makeQuery(q_toggle_mute, e, s_toggle_mute);
     };
     s_toggle_mute = function(result) {
