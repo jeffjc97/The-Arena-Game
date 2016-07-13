@@ -443,7 +443,7 @@ function mysql_real_escape_string (str) {
 function sendTextMessage(sender, text, cb) {
     q_check_mute = "select mute from user_table where id = '" + sender + "'";
     e = function(err) {
-        sendError(sender, 225);
+        sendError(sender, 225, err.toString());
     };
     s_check_mute = function(result) {
         if (!result.rows.length || result.rows[0].mute == 'f') {
