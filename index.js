@@ -426,7 +426,7 @@ function sendTextMessage(sender, text, cb) {
         sendError(sender, 225);
     };
     s_check_mute = function(result) {
-        if (!result.rows.length || result.row[0].mute == 'f') {
+        if (!result.rows.length || result.rows[0].mute == 'f') {
             messageData = {
                 text:text
             };
