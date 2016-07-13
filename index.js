@@ -484,7 +484,7 @@ function setupChallenge(sender, username, stake_val){
     };
     s_max_challenges = function(result){
         if (result.rows[0].count >= MAX_CHALLENGE_COUNT) {
-            sendTextMessage(sender, "You already have 5 challenges pending. Please cancel some before issuing any more..");
+            sendTextMessage(sender, "You already have 5 challenges pending. Please cancel some before issuing any more.");
         }
         else {
             q_validate_val = 'SELECT id, name, points, in_duel FROM user_table WHERE id = \'' + sender + '\' OR name = E\''+mysql_real_escape_string(username)+'\'';
