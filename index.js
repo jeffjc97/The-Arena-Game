@@ -486,11 +486,12 @@ function sendError(uid, eid, msg) {
 }
 
 function muteUser(s) {
-    q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "' returning mute";
+    q_get_mute = "select mute from user_table where id = '" + s + "'";
+    
     e = function(err) {
         sendError(s, 226);
     };
-    s_toggle_mute = function(result) {
+    s_get_mute = function(result) {
         is_muted = result.rows[0].mute;
         if (mute) {
             sendTextMessage(s, "You will no longer receive messages from The Arena. To unmute your account, use @mute again.");
@@ -498,7 +499,13 @@ function muteUser(s) {
         else {
             sendTextMessage(s, "Welcome back! You will now be able to receive messages from The Arena.");
         }
+        q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "' returning mute";
+        makeQuery(q_toggle_mute, e, s_toggle_mute);
     };
+    s_toggle_mute = function(result) {
+        return;
+    };
+    makeQuery(q_get_mute, e, s_get_mute);
 }
 
 // First function that gets called when someone sends a challenge
