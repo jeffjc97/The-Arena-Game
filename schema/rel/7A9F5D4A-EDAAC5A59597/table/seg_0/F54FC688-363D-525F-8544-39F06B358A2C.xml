@@ -175,6 +175,21 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="mute" id="80FB4F43-F4D1-3676-A867-110E524E2045">
+<createdBy>Roy</createdBy>
+<createdTime>2016-07-13 04:52:56 UTC</createdTime>
+<generatorID>3FA56152-7CA0-1CAD-DCFD-FCE246364F8C</generatorID>
+<ownerDesignName>schema</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1</dataTypeSize>
+<usesDefaultValue>true</usesDefaultValue>
+<defaultValue>f</defaultValue>
+<ownDataTypeParameters>1,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="B840F81D-A1C0-994B-7A79-CB5F9F9945CC" name="user_table_PK">
