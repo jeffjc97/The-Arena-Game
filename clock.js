@@ -102,7 +102,7 @@ var CheckRandomExpire = function(){
         }
     };
     s_delete_random = function(result) {
-        sendTextMessage(result.rows[0].id, "Unfortunately, we couldn't find you a random match at this time. Please try again!");
+        sendTextMessage(result.rows[0].id, "Unfortunately, we couldn't find you a random match at this time. Please try again! In the meantime, use @train to duel a bot and sharpen your skills.");
     };
     makeQuery(q_get_stale_random, e, s_get_stale_random);
 };
