@@ -253,6 +253,9 @@ app.post('/webhook/', function (req, res) {
                                 sendTextMessage(sender, "Invalid friends command. See @help for more information.");
                             }
                             break;
+                        case "@mute":
+                            muteUser(sender);
+                            break;
                         case "@d":
                         case "@dagger":
                             makeMoveSetup(sender, 'd');
@@ -438,30 +441,40 @@ function mysql_real_escape_string (str) {
 }
 
 function sendTextMessage(sender, text, cb) {
-    messageData = {
-        text:text
+    q_check_mute = "select mute from user_table where id = '" + sender + "'";
+    e = function(err) {
+        sendError(sender, 225);
     };
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
+    s_check_mute = function(result) {
+        if (!result.rows.length || result.rows[0].mute == 'f') {
+            messageData = {
+                text:text
+            };
+            request({
+                url: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: {access_token:token},
+                method: 'POST',
+                json: {
+                    recipient: {id:sender},
+                    message: messageData,
+                }
+            }, function(error, response, body) {
+                if (error) {
+                    console.log('Error sending messages: ', error);
+                } else if (response.body.error) {
+                    console.log('Error: ', response.body.error);
+                    // console.log('Error: ', response);
+                }
+                else {
+                    if (cb) {
+                        cb();
+                    }
+                }
+            });
         }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-            // console.log('Error: ', response);
-        }
-        else {
-            if (cb) {
-                cb();
-            }
-        }
-    });
+    };
+    makeQuery(q_check_mute, e, s_check_mute);
+    
 }
 
 // Function used to query the database
@@ -490,6 +503,22 @@ function sendError(uid, eid, msg) {
         sendTextMessage(uid, msg);
     };
     makeQuery(q_insert_error, e, s_insert_error);
+}
+
+function muteUser(s) {
+    q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "' returning mute";
+    e = function(err) {
+        sendError(s, 226);
+    };
+    s_toggle_mute = function(result) {
+        is_muted = result.rows[0].mute;
+        if (mute) {
+            sendTextMessage(s, "You will no longer receive messages from The Arena. To unmute your account, use @mute again.");
+        }
+        else {
+            sendTextMessage(s, "Welcome back! You will now be able to receive messages from The Arena.");
+        }
+    };
 }
 
 // First function that gets called when someone sends a challenge
