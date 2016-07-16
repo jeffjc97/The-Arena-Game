@@ -1157,7 +1157,7 @@ function cancelChallenge(s, u){
 function upgradePotions(s) {
     var in_duel;
     s_subtract_points = function(result) {
-        sendTextMessage(s, "Potions upgraded! Good luck on the duel.");
+        sendTextMessage(s, "Potions upgraded!");
     };
     s_upgrade_potions = function(result) {
         q_subtract_points = "update user_table set points = points - " + potion_upgrade_cost + " where id = '" + s + "'";
@@ -1421,6 +1421,7 @@ function makeMove(move){
     // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
     
     attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.health_attacker, move.upgrade_attacker) : 0;
+    move.attack_value = attack_value;
 
     // dealing with heal
     if (move.type_of_attack == "h") {
@@ -1538,7 +1539,7 @@ function makeMove(move){
         if (move.type_of_attack === "h") {
             att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
             if (!move.bot_is_defender) {  
-                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "!");
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "for " + move.attack_value + " health!");
             }
             if (!move.bot_is_attacker) {  
                 sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
