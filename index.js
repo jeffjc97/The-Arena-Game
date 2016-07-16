@@ -1792,6 +1792,10 @@ function listFriends(s) {
 }
 
 function addFriend(s, fu) {
+    if (isBot(fu)) {
+        sendTextMessage(s, "This vicious fighter does not want to be your friend.");
+        return;
+    };
     s_add_friend = function(result) {
         sendTextMessage(s, fu + " added to your friends list! Type @friends to see all friends.");
     };
