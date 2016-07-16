@@ -1175,7 +1175,7 @@ function upgradePotions(s) {
     };
     s_validate_duel = function(result) {
         in_duel = result.rows[0].in_duel;
-        points = result.row[0].points;
+        points = result.rows[0].points;
         if (in_duel > 0 && points > potion_upgrade_cost) {
             q_validate_moves = "select user_turn, moves_in_duel, sender_id from duel_table where duel_id = " + in_duel;
             makeQuery(q_validate_moves, e, s_validate_moves);
