@@ -2126,6 +2126,9 @@ function sendLeaderBoard(s){
 
 //@train
 function setupBotDuel(s, c){
+    if (!c) {
+        c = "shit";
+    }
     switch(c){
         case 'v':
             q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME_VAMP+"'";
