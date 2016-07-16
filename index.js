@@ -1539,10 +1539,10 @@ function makeMove(move){
         if (move.type_of_attack === "h") {
             att_gender_noun = move.attacker_gender == "male" ? "himself" : "herself";
             if (!move.bot_is_defender) {  
-                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + "for " + move.attack_value + " health!");
+                sendTextMessage(move.defender_id, move.attacker_name + " " + verb + " " + att_gender_noun + " for " + move.attack_value + " health!");
             }
             if (!move.bot_is_attacker) {  
-                sendTextMessage(move.attacker_id, "You " + verb + " yourself!");
+                sendTextMessage(move.attacker_id, "You " + verb + " yourself for " + move.attack_value + " health!");
             }
             health = makeHealthBars(move.attacker_name, move.health_attacker, move.defender_name, move.health_defender, max_health);
             if (!move.bot_is_defender) {  
