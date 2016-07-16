@@ -450,7 +450,7 @@ function sendTextMessage(sender, text, cb) {
         sendError(sender, 225, err.toString());
     };
     s_check_mute = function(result) {
-        if (!result.rows.length || result.rows[0].mute == 'f') {
+        if (!result.rows.length || !result.rows[0].mute) {
             messageData = {
                 text:text
             };
@@ -1227,7 +1227,14 @@ function startDuel(s, r, f_id) {
         sendError(r, 25);
     };
     s_duel = function(result) {
-        if (result.rows[0].name == BOT_NAME || result.rows[1].name == BOT_NAME) {
+        if (result.rows[0].name == BOT_NAME
+            ||result.rows[0].name == BOT_NAME_VAMP
+            ||result.rows[0].name == BOT_NAME_BER
+            ||result.rows[0].name == BOT_NAME_KNIGHT
+            ||result.rows[1].name == BOT_NAME
+            ||result.rows[1].name == BOT_NAME_VAMP
+            ||result.rows[1].name == BOT_NAME_BER
+            ||result.rows[1].name == BOT_NAME_KNIGHT) {
             //this is a special case of the bot duel
             user_index = s == result.rows[0].id ? 0 : 1;
             bot_index = user_index ? 0 : 1;
@@ -1268,6 +1275,13 @@ function startDuel(s, r, f_id) {
     makeQuery(q_duel, e, s_duel);
 }
 
+function isBot(str){
+    return (str == BOT_NAME_VAMP
+            ||str== BOT_NAME_BER
+            ||str == BOT_NAME_KNIGHT
+            ||str == BOT_NAME);
+}
+
 // followed by makeMove
 function makeMoveSetup(s, type, duel_id){
     s_get_defender = function(result) {
@@ -1278,7 +1292,7 @@ function makeMoveSetup(s, type, duel_id){
             move.defender_name = result.rows[0].name;
             move.defender_gender = result.rows[0].gender;
             move.defender_class = result.rows[0].current_class;
-            move.bot_is_defender = result.rows[0].name == BOT_NAME;
+            move.bot_is_defender = isBot(result.rows[0].name);
             makeMove(move);
         }
     };
@@ -1327,7 +1341,7 @@ function makeMoveSetup(s, type, duel_id){
         else {
             move.duel_id = duel_id || result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
-            move.bot_is_attacker = result.rows[0].name == BOT_NAME;
+            move.bot_is_attacker = isBot(result.rows[0].name);
             move.attacker_gender = result.rows[0].gender;
             move.attacker_class = result.rows[0].current_class;
             if (move.duel_id === 0) {
@@ -1586,19 +1600,15 @@ function makeMove(move){
 }
 
 function makeMoveBot(duel_id){
-    q_get_bot_id = "SELECT id FROM user_table WHERE name = '"+BOT_NAME+"'";
+    q_get_duel = "SELECT * FROM duel_table WHERE duel_id = "+duel_id;
     e = function(err){
         return;
-    }
-    s_get_bot_id = function(result){
-        bot_id = result.rows[0].id;
-        q_get_duel = "SELECT * FROM duel_table WHERE duel_id = "+duel_id;
-        makeQuery(q_get_duel, e, s_get_duel);
     }
     s_get_duel = function(result){
         if (result.rows.length != 1) {
             console.log("shitshitshit in makeMoveBot there was bad row count on duel id this is horrible");
         }else{
+            bot_id = result.rows[0].recipient_id;
             user_health = result.rows[0].health_sender;
             bot_health = result.rows[0].health_recipient;
             bot_heals_left = result.rows[0].recipient_heal;
@@ -1609,7 +1619,7 @@ function makeMoveBot(duel_id){
             }else if(bot_health < 23){
                 move = "c";
             }else{
-                move_id = Math.floor(Math.random() * (3) + 1);
+                move_id = Math.floor(Math.random() * 3 + 1);
                 switch(move_id){
                     case 1:
                         move = "s";
@@ -1628,7 +1638,7 @@ function makeMoveBot(duel_id){
             makeMoveSetup(bot_id, move, duel_id);
         }
     }
-    makeQuery(q_get_bot_id, e, s_get_bot_id);
+    makeQuery(q_get_duel, e, s_get_duel);
 }
 
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
@@ -2180,6 +2190,9 @@ function sendLeaderBoard(s){
 
 //@train
 function setupBotDuel(s, c){
+    if (!c) {
+        c = "shit";
+    }
     switch(c){
         case 'v':
             q_in_duel = "SELECT id, name, in_duel FROM user_table WHERE id = '"+s+"' OR name = '"+BOT_NAME_VAMP+"'";
@@ -2203,7 +2216,10 @@ function setupBotDuel(s, c){
             bot_id = result.rows[0].id;
             user_id = result.rows[1].id;
             user_induel = result.rows[1].in_duel;
-            if (result.rows[1].name == BOT_NAME) {
+            if (result.rows[1].name == BOT_NAME
+                ||result.rows[1].name == BOT_NAME_VAMP
+                ||result.rows[1].name == BOT_NAME_BER
+                ||result.rows[1].name == BOT_NAME_KNIGHT) {
                 bot_id = result.rows[1].id;
                 user_id = result.rows[0].id;
                 user_induel = result.rows[0].in_duel;
