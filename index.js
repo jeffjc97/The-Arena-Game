@@ -517,7 +517,7 @@ function muteUser(s) {
     };
     s_get_mute = function(result) {
         is_muted = result.rows[0].mute;
-        if (is_muted) {
+        if (!is_muted) {
             sendTextMessage(s, "You will no longer receive messages from The Arena. To unmute your account, use @mute again.");
         }
         else {
@@ -1792,6 +1792,10 @@ function listFriends(s) {
 }
 
 function addFriend(s, fu) {
+    if (isBot(fu)) {
+        sendTextMessage(s, "This vicious fighter does not want to be your friend.");
+        return;
+    };
     s_add_friend = function(result) {
         sendTextMessage(s, fu + " added to your friends list! Type @friends to see all friends.");
     };
