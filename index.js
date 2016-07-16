@@ -1558,7 +1558,7 @@ function makeMoveBot(duel_id){
             }else if(bot_health < 23){
                 move = "c";
             }else{
-                move_id = Math.floor(Math.random() * (3) + 1);
+                move_id = Math.floor(Math.random() * 3 + 1);
                 switch(move_id){
                     case 1:
                         move = "s";
