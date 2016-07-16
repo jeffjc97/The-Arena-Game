@@ -605,10 +605,10 @@ function sendHelpMessage(sender) {
               {
                 "title":"The Arena: Help",
                 "subtitle":"Commands that can be used outside of a duel. (1/2)",
-                "image_url":"http://i.imgur.com/axJTYwI.png",
+                "image_url":"http://i.imgur.com/2jPxUuS.png",
                 "buttons":[{
                     "type":"web_url",
-                    "url":"http://i.imgur.com/axJTYwI.png",
+                    "url":"http://i.imgur.com/2jPxUuS.png",
                     "title":"Larger image"
                 }
                 ]
