@@ -1688,8 +1688,14 @@ function forfeitDuel(lid) {
 }
 
 function loseDuel(lid, wid, lname, wname, did) {
-    sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 10 seconds...");
-    sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 10 seconds...");
+    if (!isBot(lname) && !isBot(wname)) {
+        sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 10 seconds...");
+        sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 10 seconds...");           
+    }else if(isBot(lname)){
+        sendTextMessage(wid, "You have defeated " + lname + "! Duel ending in 10 seconds...");           
+    }else{
+        sendTextMessage(lid, "You were defeated by " + wname + ". Duel ending in 10 seconds...");
+    }
     setTimeout(function(){
         var stake = 0;
         e = function(err) {
@@ -1697,8 +1703,14 @@ function loseDuel(lid, wid, lname, wname, did) {
             sendError(wid, 27);
         };
         s_update_w = function(result) {
-            sendTextMessage(lid, "The duel has ended. To remember your opponent, add them to your friends list with '@friend " + wname + "'.");
-            sendTextMessage(wid, "The duel has ended. To remember your opponent, add them to your friends list with '@friend " + lname + "'.");
+            if (!isBot(lname) && !isBot(wname)) {
+                sendTextMessage(lid, "The duel has ended. To remember your opponent, add them to your friends list with '@friend " + wname + "'.");
+                sendTextMessage(wid, "The duel has ended. To remember your opponent, add them to your friends list with '@friend " + lname + "'.");
+            }else if(isBot(lname)){
+                sendTextMessage(wid, "The duel has ended.");
+            }else{
+                sendTextMessage(lid, "The duel has ended.");
+            }
         };
         s_update_l = function(result) {
             if (!stake) {
