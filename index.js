@@ -1539,19 +1539,15 @@ function makeMove(move){
 }
 
 function makeMoveBot(duel_id){
-    q_get_bot_id = "SELECT id FROM user_table WHERE name = '"+BOT_NAME+"'";
+    q_get_duel = "SELECT * FROM duel_table WHERE duel_id = "+duel_id;
     e = function(err){
         return;
-    }
-    s_get_bot_id = function(result){
-        bot_id = result.rows[0].id;
-        q_get_duel = "SELECT * FROM duel_table WHERE duel_id = "+duel_id;
-        makeQuery(q_get_duel, e, s_get_duel);
     }
     s_get_duel = function(result){
         if (result.rows.length != 1) {
             console.log("shitshitshit in makeMoveBot there was bad row count on duel id this is horrible");
         }else{
+            bot_id = result.rows[0].recipient_id;
             user_health = result.rows[0].health_sender;
             bot_health = result.rows[0].health_recipient;
             bot_heals_left = result.rows[0].recipient_heal;
@@ -1581,7 +1577,7 @@ function makeMoveBot(duel_id){
             makeMoveSetup(bot_id, move, duel_id);
         }
     }
-    makeQuery(q_get_bot_id, e, s_get_bot_id);
+    makeQuery(q_get_duel, e, s_get_duel);
 }
 
 function makeHealthBars(aname, ahp, dname, dhp, maxhp) {
