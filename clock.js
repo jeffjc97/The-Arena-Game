@@ -60,8 +60,9 @@ var ClearChallenges = function(){
       makeQuery(q_delete_expired_challenges, e, s_delete_expired_challenges);
     };
     s_delete_expired_challenges = function(result){
-      sendTextMessage(10206557582650156, "Challenge Clearer has worked");
-      sendTextMessage(10205320360242528, "Challenge Clearer has worked");
+        return;
+      // sendTextMessage(10206557582650156, "Challenge Clearer has worked");
+      // sendTextMessage(10205320360242528, "Challenge Clearer has worked");
     };
     makeQuery(q_get_expired_challenges, e, s_get_expired_challenges);
 };
