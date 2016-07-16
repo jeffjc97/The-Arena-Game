@@ -26,6 +26,7 @@ var BOT_NAME_KNIGHT = "TrainingKnight";
 var BOT_NAME_BER = "TrainingBerserker";
 var referrer_bonus = 30;
 var referee_bonus = 50;
+var potion_upgrade_cost = 30;
 var max_health = 50;
 var classes = {0: 'Newbie', 1: 'Knight', 2: 'Vampire', 3: 'Berserker'};
 var verbs = {h: 'healed', s: 'slashed', d: 'stabbed', c: 'crushed'};
@@ -220,6 +221,9 @@ app.post('/webhook/', function (req, res) {
                             else {
                                 sendTextMessage(sender, "Invalid reject command. See @help for more information.");
                             }
+                            break;
+                        case "@upgrade":
+                            upgradePotions(sender);
                             break;
                         case "@feedback":
                             if (words.length > 1) {
@@ -1150,6 +1154,49 @@ function cancelChallenge(s, u){
     makeQuery(q_cancel, e, s_cancel);
 }
 
+function upgradePotions(s) {
+    var in_duel;
+    s_subtract_points = function(result) {
+        sendTextMessage(s, "Potions upgraded! Good luck on the duel.");
+    };
+    s_upgrade_potions = function(result) {
+        q_subtract_points = "update user_table set points = points - " + potion_upgrade_cost + " where id = '" + s + "'";
+        makeQuery(q_subtract_points, e, s_subtract_points);
+    };
+    s_validate_moves = function(result) {
+        if (result.rows[0].moves_in_duel === 0 || (result.rows[0].moves_in_duel == 1 && result.rows[0].user_turn == s)) {
+            who_upgraded = s == result.rows[0].sender_id ? "sender_upgrade" : "recipient_upgrade";
+            q_upgrade_potions = "update duel_table set " + who_upgraded + " = true where duel_id = " + in_duel;
+            makeQuery(q_upgrade_potions, e, s_upgrade_potions);
+        }
+        else {
+            sendTextMessage(s, "You can only upgrade your potions before you make your first move!");
+        }
+    };
+    s_validate_duel = function(result) {
+        in_duel = result.rows[0].in_duel;
+        points = result.row[0].points;
+        if (in_duel > 0 && points > potion_upgrade_cost) {
+            q_validate_moves = "select user_turn, moves_in_duel, sender_id from duel_table where duel_id = " + in_duel;
+            makeQuery(q_validate_moves, e, s_validate_moves);
+        }
+        else if (in_duel === 0) {
+            sendTextMessage(s, "You can only do this in a duel!");
+        }
+        else {
+            sendTextMessage(s, "You do not have enough coins to do this!");
+        }
+    };
+    q_validate_duel = "select in_duel, points from user_table where id ='" + s + "'";
+    e = function(err) {
+        sendError(s, 227);
+    };
+    makeQuery(q_validate_duel, e, s_validate_duel);
+    // check if in duel
+    // check if enough coins
+    // update duel table
+}
+
 // called from respondToDuel, on accept, followed by startDuel
 // invariant: neither party is in a duel
 function setupDuel(s, r, stake_val) {
@@ -1205,11 +1252,15 @@ function startDuel(s, r, f_id) {
             if (first_player == s_index) {
                 sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
                 sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! " + result.rows[s_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                sendTextMessage(s, "You may also @upgrade your potions for 30 coins, increasing the heal of each of your potions to 12-15 during the duel. This can only be done before you make your first move, so think quickly!");
+                sendTextMessage(r, "You may also @upgrade your potions for 30 coins, increasing the heal of each of your potions to 12-15 during the duel. This can only be done before you make your first move, so think quickly!");
                 // sendAttackMenu(s);
             }
             else {
                 sendTextMessage(r, "The duel with " + result.rows[s_index].name + s_class + " has begun! You have the first move. To message your opponent, just type normally in the chat.");
                 sendTextMessage(s, "The duel with " + result.rows[r_index].name + r_class + " has begun! " + result.rows[r_index].name + " has the first move. To message your opponent, just type normally in the chat.");
+                sendTextMessage(s, "You may also @upgrade your potions for 30 coins, increasing the heal of each of your potions to 12-15 during the duel. This can only be done before you make your first move, so think quickly!");
+                sendTextMessage(r, "You may also @upgrade your potions for 30 coins, increasing the heal of each of your potions to 12-15 during the duel. This can only be done before you make your first move, so think quickly!");
                 // sendAttackMenu(r);
             }
         }
@@ -1249,6 +1300,8 @@ function makeMoveSetup(s, type, duel_id){
             move.bleed_attacker = data.bleed_recipient;
             move.stun_defender = data.stun_sender;
             move.stun_attacker = data.stun_recipient;
+            move.upgrade_defender = data.sender_upgrade;
+            move.upgrade_attacker = data.recipient_upgrade;
             if (move.attacker_is_sender) {
                 move.defender_id = data.recipient_id;
                 move.health_defender = data.health_recipient;
@@ -1259,6 +1312,8 @@ function makeMoveSetup(s, type, duel_id){
                 move.bleed_attacker = data.bleed_sender;
                 move.stun_defender = data.stun_recipient;
                 move.stun_attacker = data.stun_sender;
+                move.upgrade_defender = data.recipient_upgrade;
+                move.upgrade_attacker = data.sender_upgrade;
             }
             //query for defender's name
             q_get_defender = 'SELECT name, gender, current_class FROM user_table WHERE id= \'' + move.defender_id + '\'';
@@ -1298,7 +1353,7 @@ function makeMoveSetup(s, type, duel_id){
 
 // assumes a hit, not miss
 // returns move damage, given user attack style, class, and health (for berserker)
-function getDamage(attack, user_class, health) {
+function getDamage(attack, user_class, health, upgrade) {
     var damage;
     function getTier(health) {
         for (var i = 0; i < 4; i++) {
@@ -1311,7 +1366,12 @@ function getDamage(attack, user_class, health) {
 
     // heal
     if (attack == "h") {
-        return 10;
+        if (upgrade) {
+            return Math.floor(Math.random() * (15 - 12)) + 12;
+        }
+        else {
+            return 10;
+        }
     }
 
     // berserker
@@ -1346,7 +1406,7 @@ function makeMove(move){
     // attack_value = Math.random() > miss ? (Math.floor(Math.random() * (max - min)) + min) : 0;
     // attack_value = move.type_of_attack == "h" ? 10 : getDamage(move.type_of_attack, move.attacker_class, move.attacker_health);
     
-    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.health_attacker) : 0;
+    attack_value = Math.random() > attacks[move.attacker_class][move.type_of_attack].miss ? getDamage(move.type_of_attack, move.attacker_class, move.health_attacker, move.upgrade_attacker) : 0;
 
     // dealing with heal
     if (move.type_of_attack == "h") {
@@ -1393,9 +1453,10 @@ function makeMove(move){
             move.health_defender -= move.bleed;
             move.bleed_defender -= 1;
         }
-        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = ' + move.health_attacker + ', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+        moves_increase = move.stun ? 0 : 1;
+        q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_recipient = ' + move.health_attacker + ', health_sender = '+ move.health_defender +', moves_in_duel = moves_in_duel + ' + moves_increase + ', pressure_time = null, bleed_sender = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         if (move.attacker_is_sender) {
-            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = ' + move.health_attacker + ', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + 1, pressure_time = null, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
+            q_update_duel = 'UPDATE duel_table SET user_turn = \'' + next + '\', health_sender = ' + move.health_attacker + ', health_recipient = '+ move.health_defender +', moves_in_duel = moves_in_duel + ' + moves_increase + ', pressure_time = null, bleed_recipient = ' + move.bleed_defender + ' WHERE duel_id = '+ move.duel_id;
         }
     }
 
