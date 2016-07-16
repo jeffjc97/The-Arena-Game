@@ -1173,7 +1173,14 @@ function startDuel(s, r, f_id) {
         sendError(r, 25);
     };
     s_duel = function(result) {
-        if (result.rows[0].name == BOT_NAME || result.rows[1].name == BOT_NAME) {
+        if (result.rows[0].name == BOT_NAME
+            ||result.rows[0].name == BOT_NAME_VAMP
+            ||result.rows[0].name == BOT_NAME_BER
+            ||result.rows[0].name == BOT_NAME_KNIGHT
+            ||result.rows[1].name == BOT_NAME
+            ||result.rows[1].name == BOT_NAME_VAMP
+            ||result.rows[1].name == BOT_NAME_BER
+            ||result.rows[1].name == BOT_NAME_KNIGHT) {
             //this is a special case of the bot duel
             user_index = s == result.rows[0].id ? 0 : 1;
             bot_index = user_index ? 0 : 1;
@@ -1210,6 +1217,13 @@ function startDuel(s, r, f_id) {
     makeQuery(q_duel, e, s_duel);
 }
 
+function isBot(str){
+    return (str == BOT_NAME_VAMP
+            ||str== BOT_NAME_BER
+            ||str == BOT_NAME_KNIGHT
+            ||str == BOT_NAME);
+}
+
 // followed by makeMove
 function makeMoveSetup(s, type, duel_id){
     s_get_defender = function(result) {
@@ -1220,7 +1234,7 @@ function makeMoveSetup(s, type, duel_id){
             move.defender_name = result.rows[0].name;
             move.defender_gender = result.rows[0].gender;
             move.defender_class = result.rows[0].current_class;
-            move.bot_is_defender = result.rows[0].name == BOT_NAME;
+            move.bot_is_defender = isBot(result.rows[0].name);
             makeMove(move);
         }
     };
@@ -1265,7 +1279,7 @@ function makeMoveSetup(s, type, duel_id){
         else {
             move.duel_id = duel_id || result.rows[0].in_duel;
             move.attacker_name = result.rows[0].name;
-            move.bot_is_attacker = result.rows[0].name == BOT_NAME;
+            move.bot_is_attacker = isBot(result.rows[0].name);
             move.attacker_gender = result.rows[0].gender;
             move.attacker_class = result.rows[0].current_class;
             if (move.duel_id === 0) {
@@ -2135,7 +2149,10 @@ function setupBotDuel(s, c){
             bot_id = result.rows[0].id;
             user_id = result.rows[1].id;
             user_induel = result.rows[1].in_duel;
-            if (result.rows[1].name == BOT_NAME) {
+            if (result.rows[1].name == BOT_NAME
+                ||result.rows[1].name == BOT_NAME_VAMP
+                ||result.rows[1].name == BOT_NAME_BER
+                ||result.rows[1].name == BOT_NAME_KNIGHT) {
                 bot_id = result.rows[1].id;
                 user_id = result.rows[0].id;
                 user_induel = result.rows[0].in_duel;

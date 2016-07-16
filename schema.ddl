@@ -121,7 +121,7 @@ CREATE TABLE user_table
     gender        VARCHAR (10) NOT NULL ,
     points        INTEGER DEFAULT 100 NOT NULL ,
     current_class INTEGER DEFAULT 0 NOT NULL ,
-    mute          CHAR (1) DEFAULT 'f'
+    mute          BOOLEAN DEFAULT false
   ) ;
 ALTER TABLE user_table ADD CONSTRAINT user_table_PK PRIMARY KEY ( id ) ;
 ALTER TABLE user_table ADD CONSTRAINT unique_name UNIQUE ( name ) ;
