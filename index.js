@@ -1166,6 +1166,10 @@ function upgradePotions(s) {
     s_validate_moves = function(result) {
         if (result.rows[0].moves_in_duel === 0 || (result.rows[0].moves_in_duel == 1 && result.rows[0].user_turn == s)) {
             who_upgraded = s == result.rows[0].sender_id ? "sender_upgrade" : "recipient_upgrade";
+            if (result.rows[0][who_upgraded]) {
+                sendTextMessage(s, "You have already upgraded your potions!");
+                return;
+            }
             q_upgrade_potions = "update duel_table set " + who_upgraded + " = true where duel_id = " + in_duel;
             makeQuery(q_upgrade_potions, e, s_upgrade_potions);
         }
@@ -1177,7 +1181,7 @@ function upgradePotions(s) {
         in_duel = result.rows[0].in_duel;
         points = result.rows[0].points;
         if (in_duel > 0 && points > potion_upgrade_cost) {
-            q_validate_moves = "select user_turn, moves_in_duel, sender_id from duel_table where duel_id = " + in_duel;
+            q_validate_moves = "select user_turn, moves_in_duel, sender_id, sender_upgrade, recipient_upgrade from duel_table where duel_id = " + in_duel;
             makeQuery(q_validate_moves, e, s_validate_moves);
         }
         else if (in_duel === 0) {
