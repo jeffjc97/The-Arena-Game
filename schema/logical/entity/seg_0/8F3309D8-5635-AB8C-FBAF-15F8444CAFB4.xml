@@ -192,7 +192,7 @@
 <defaultValue>0</defaultValue>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="stun_sender" id="2ACFC2F1-529E-32C6-0E5C-2092A31CC326">
+<Attribute name="sender_upgrade" id="2ACFC2F1-529E-32C6-0E5C-2092A31CC326">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-17 17:52:33 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
@@ -201,11 +201,12 @@
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
-<logicalDatatype>LOGDT011</logicalDatatype>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1</dataTypeSize>
 <defaultValue>0</defaultValue>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>1,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="stun_recipient" id="D720851C-73EF-0504-538F-6202CDF9D531">
+<Attribute name="recipient_upgrade" id="D720851C-73EF-0504-538F-6202CDF9D531">
 <createdBy>Roy</createdBy>
 <createdTime>2016-05-17 17:52:41 UTC</createdTime>
 <ownerDesignName>schema</ownerDesignName>
@@ -214,9 +215,10 @@
 </engineerTo>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
-<logicalDatatype>LOGDT011</logicalDatatype>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1</dataTypeSize>
 <defaultValue>0</defaultValue>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
+<ownDataTypeParameters>1,,</ownDataTypeParameters>
 </Attribute>
 <Attribute name="stake" id="39764E46-E5FE-0A18-E4CB-DFA4FEC9000A">
 <createdBy>Roy</createdBy>
