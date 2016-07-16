@@ -443,7 +443,7 @@ function mysql_real_escape_string (str) {
 function sendTextMessage(sender, text, cb) {
     q_check_mute = "select mute from user_table where id = '" + sender + "'";
     e = function(err) {
-        sendError(sender, 225);
+        sendError(sender, 225, err.toString());
     };
     s_check_mute = function(result) {
         if (!result.rows.length || result.rows[0].mute == 'f') {
@@ -506,19 +506,26 @@ function sendError(uid, eid, msg) {
 }
 
 function muteUser(s) {
-    q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "' returning mute";
+    q_get_mute = "select mute from user_table where id = '" + s + "'";
+    
     e = function(err) {
         sendError(s, 226);
     };
-    s_toggle_mute = function(result) {
+    s_get_mute = function(result) {
         is_muted = result.rows[0].mute;
-        if (mute) {
+        if (is_muted) {
             sendTextMessage(s, "You will no longer receive messages from The Arena. To unmute your account, use @mute again.");
         }
         else {
             sendTextMessage(s, "Welcome back! You will now be able to receive messages from The Arena.");
         }
+        q_toggle_mute = "update user_table set mute = NOT mute where id = '" + s + "'";
+        makeQuery(q_toggle_mute, e, s_toggle_mute);
     };
+    s_toggle_mute = function(result) {
+        return;
+    };
+    makeQuery(q_get_mute, e, s_get_mute);
 }
 
 // First function that gets called when someone sends a challenge
