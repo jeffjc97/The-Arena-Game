@@ -162,249 +162,255 @@ app.post('/webhook/', function (req, res) {
                     if (Math.floor((Math.random() * 100)) == 42) {
                         sendTextMessage(sender, "We'd love to know what you think of the game! Please use the @feedback command to leave us your thoughts.");
                     }
-                    switch(words[0]){
-                        case "@help":
-                            sendHelpMessage(sender);
-                            break;
-                        case "@about":
-                            sendTextMessage(sender, "The Arena - a text based game by Jeff Chang and Roy Falik.");
-                            break;
-                        case "@register":
-                            sendTextMessage(sender, "You are already registered!");
-                            break;
-                        case "@referral":
-                            if (words.length == 2) {
-                                referFriend(sender, username);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid referral command. See @help for more information.");
-                            }
-                            break;
-                        case "@me":
-                            getPersonalInfo(sender);
-                            break;
-                        case "@challenge":
-                            if (words.length == 2) {
-                                setupChallenge(sender, username);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid challenge command. See @help for more information.");
-                            }
-                            break;
-                        // case "@random":
-                        //     randomChallenge(sender);
-                        //     break;
-                        case "@random":
-                            randomChallenge(sender);
-                            break;
-                        case "@leave":
-                            leaveRandomChallenge(sender);
-                            break;
-                        case "@accept":
-                            if (words.length == 2) {
-                                respondToChallenge(username, sender, true);
-                            }
-                            else if (words.length == 1) {
-                                sendTextMessage(sender, "Make sure to include the challenger's username (ex. @accept jeff).");
-                            }
-                            else {
-                                sendTextMessage(sender,"Invalid accept command. See @help for more information.");
-                            }
-                            break;
-                        case "@reject":
-                            if (words.length == 2) {
-                                respondToChallenge(username, sender, false);
-                            }
-                            else if (words.length == 1) {
-                                sendTextMessage(sender, "Make sure to include the challenger's username (ex. @reject jeff).");
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid reject command. See @help for more information.");
-                            }
-                            break;
-                        case "@upgrade":
-                            upgradePotions(sender);
-                            break;
-                        case "@feedback":
-                            if (words.length > 1) {
-                                userFeedback(sender, text.substr(text.indexOf(" ") + 1));
-                            }
-                            else {
-                                sendTextMessage(sender, "Please include your feedback after the command.");
-                            }
-                            break;
-                        case "@friend":
-                            if (words.length == 2) {
-                                addFriend(sender, username);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid friend command. See @help for more information.");
-                            }
-                            break;
-                        case "@unfriend":
-                            if (words.length == 2) {
-                                removeFriend(sender, username);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid unfriend command. See @help for more information.");
-                            }
-                            break;
-                        case "@friends":
-                            if (words.length == 1) {
-                                listFriends(sender);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid friends command. See @help for more information.");
-                            }
-                            break;
-                        case "@mute":
-                            muteUser(sender);
-                            break;
-                        case "@d":
-                        case "@dagger":
-                            makeMoveSetup(sender, 'd');
-                            break;
-                        case "@s":
-                        case "@sword":
-                            makeMoveSetup(sender, 's');
-                            break;
-                        case "@c":
-                        case "@club":
-                            makeMoveSetup(sender, 'c');
-                            break;
-                        case "@h":
-                        case "@heal":
-                            makeMoveSetup(sender, 'h');
-                            break;
-                        case "@forfeit":
-                            forfeitDuel(sender);
-                            break;
-                        case "@stats":
-                            if (words.length == 2) {
-                                getStats(username, sender);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid stats command. See @help for more information.");
-                            }
-                            break;
-                        case "@challenges":
-                            getPendingChallenges(sender);
-                            break;
-                        case "@pressure":
-                            setPressure(sender);
-                            break;
-                        case "@shop":
-                            presentShop(sender);
-                            break;
-                        case "@buy":
-                            if (words.length == 2) {
-                                purchase(sender, username);
-                            }
-                            else{
-                                sendTextMessage(sender, "Invalid buy command. See @shop for more information.");
-                            }
-                            break;
-                        case "@class":
-                            if (words.length == 2) {
-                                changeClass(sender, username);
-                            }
-                            else{
-                                sendTextMessage(sender, "Invalid class command. See @help for more information.");
-                            }
-                            break;
-                        case "@classes":
-                            if (words.length == 1) {
-                                displayClasses(sender);
-                            }
-                            else{
-                                sendTextMessage(sender, "Invalid classes command. See @help for more information.");
-                            }
-                            break;
-                        case "@cancel":
-                            if (words.length == 2) {
-                                cancelChallenge(sender, username);
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
-                            }
-                            break;
-                        case "@train":
-                            if (words.length == 1) {
-                                setupBotDuel(sender);
-                            }else if(words.length == 2){
-                                switch(words[1]){
-                                    case 'vampire':
-                                    case 'Vampire':
-                                        setupBotDuel(sender, "v");
-                                        break;
-                                    case 'berserker':
-                                    case 'Berserker':
-                                        setupBotDuel(sender, "b");
-                                        break;
-                                    case 'knight':
-                                    case 'Knight':
-                                        setupBotDuel(sender, "k");
-                                        break;
-                                    default:
-                                        setupBotDuel(sender, "n");
-                                }
-                            }
-                            else{
-                                sendTextMessage(sender, "Invalid train command. See @help for more information.");
-                            }
-                            break;
-                        case "@leaderboard":
-                            if (words.length > 1) {
-                                sendTextMessage(sender, "Invalid leaderboard command. See @help for more information.");
-                            }else{
-                                sendLeaderBoard(sender);
-                            }
-                            break;
-                        case "@chat":
-                            if (words.length < 3) {
-                                sendTextMessage(sender, "Invalid message command. See @help for more information.")
-                            }
-                            else {
-                                username = words[1];
-                                msg = words.slice(2).join(" ");
-                                chatMessage(sender, username, msg);
-                            }
-                            break;
-                        case "@blast":
-                            if (words.length < 2) {
-                                sendTextMessage(sender, "Not a valid command. See @help for more information.");
-                            }
-                            else {
-                                msg = words.slice(1).join(" ");
-                                sendBlast(sender, msg);
-                            }
-                            break;
-                        case "@stake":
-                            if (words.length == 3) {
-                                username = words[words.length - 2];
-                                val = words[words.length - 1];
-                                if (isNaN(parseInt(val))) {
-                                    sendTextMessage(sender, "Invalid stake command. See @help for more information.");
-                                }
-                                else if (val < 1) {
-                                    sendTextMessage(sender, "Stake value must be greater than 0.");
-                                }
-                                else {
-                                    setupChallenge(sender, username, val);
-                                }
-                            }
-                            else {
-                                sendTextMessage(sender, "Invalid stake command. See @help for more information.");
-                            }
-                            break;
-                        default:
-                            if (words[0].charAt(0) == "@") {
-                                sendTextMessage(sender, "Not a valid command. See @help for more information.");
-                            }
-                            else {
-                                sendNormalMessage(sender, text);
-                            }
-                            break;
+                    switch (words[0]) {
+                      case "@help":
+                        sendHelpMessage(sender);
+                        break;
+                      case "@helptext":
+                        sendTextMessage(sender, `🔎 GENERAL COMMANDS (1/2) 🔎
+⚪ @challenge<user>: Sends a friendly duel request.
+⚪ @stake <user> <amount>: Sends a duel request for the specified
+    amount.
+⚪ @random: Joins the random match waiting pool.
+⚪ @train <class>: Begin a training duel with a bot.
+⚪ @accept/@reject <user>: Accepts/Rejects a duel request.            
+⚪ @cancel <user>: Cancels a pending duel request.
+⚪ @stats <user>/@me: Shows stats for a specified user/you.
+⚪ @leaderboard: Displays The Arena’s top players.
+🔎 GENERAL COMMANDS (2/2) 🔎
+⚪ @friend/@unfriend <username>: Add/remove a user to/from your
+    friends list.
+⚪ @friends: Display your friends list.
+⚪ @chat <user> <message>: Sends a direct message.
+⚪ @shop: Opens the shop.
+⚪ @buy <item>: Buys the specified item.
+⚪ @class <class>: Switch to another class.
+⚪ @classes: Displays all of your unlocked classes.
+⚪ @feedback <feedback>: Feel free to leave us feedback!
+🔎 DUEL COMMANDS 🔎                            
+⚪ @d/@dagger : Chance to bleed at 2-5 damage for 3 turns
+⚪ @s/@sword
+⚪ @c/@club : Chance to stun for 1 turn
+⚪ @h/@heal : Heal 10, 3 times
+⚪@forfeit`);
+                        break;
+                      case "@about":
+                        sendTextMessage(sender, "The Arena - a text based game by Jeff Chang and Roy Falik.");
+                        break;
+                      case "@register":
+                        sendTextMessage(sender, "You are already registered!");
+                        break;
+                      case "@referral":
+                        if (words.length == 2) {
+                            referFriend(sender, username);
+                        } else {
+                            sendTextMessage(sender, "Invalid referral command. See @help for more information.");
+                        }
+                        break;
+                      case "@me":
+                        getPersonalInfo(sender);
+                        break;
+                      case "@challenge":
+                        if (words.length == 2) {
+                          setupChallenge(sender, username);
+                        } else {
+                          sendTextMessage(sender, "Invalid challenge command. See @help for more information.");
+                        }
+                        break;
+                      // case "@random":
+                      //     randomChallenge(sender);
+                      //     break;
+                      case "@random":
+                        randomChallenge(sender);
+                        break;
+                      case "@leave":
+                        leaveRandomChallenge(sender);
+                        break;
+                      case "@accept":
+                        if (words.length == 2) {
+                          respondToChallenge(username, sender, true);
+                        } else if (words.length == 1) {
+                          sendTextMessage(sender, "Make sure to include the challenger's username (ex. @accept jeff).");
+                        } else {
+                          sendTextMessage(sender, "Invalid accept command. See @help for more information.");
+                        }
+                        break;
+                      case "@reject":
+                        if (words.length == 2) {
+                          respondToChallenge(username, sender, false);
+                        } else if (words.length == 1) {
+                          sendTextMessage(sender, "Make sure to include the challenger's username (ex. @reject jeff).");
+                        } else {
+                          sendTextMessage(sender, "Invalid reject command. See @help for more information.");
+                        }
+                        break;
+                      case "@upgrade":
+                        upgradePotions(sender);
+                        break;
+                      case "@feedback":
+                        if (words.length > 1) {
+                          userFeedback(sender, text.substr(text.indexOf(" ") + 1));
+                        } else {
+                          sendTextMessage(sender, "Please include your feedback after the command.");
+                        }
+                        break;
+                      case "@friend":
+                        if (words.length == 2) {
+                          addFriend(sender, username);
+                        } else {
+                          sendTextMessage(sender, "Invalid friend command. See @help for more information.");
+                        }
+                        break;
+                      case "@unfriend":
+                        if (words.length == 2) {
+                          removeFriend(sender, username);
+                        } else {
+                          sendTextMessage(sender, "Invalid unfriend command. See @help for more information.");
+                        }
+                        break;
+                      case "@friends":
+                        if (words.length == 1) {
+                          listFriends(sender);
+                        } else {
+                          sendTextMessage(sender, "Invalid friends command. See @help for more information.");
+                        }
+                        break;
+                      case "@mute":
+                        muteUser(sender);
+                        break;
+                      case "@d":
+                      case "@dagger":
+                        makeMoveSetup(sender, "d");
+                        break;
+                      case "@s":
+                      case "@sword":
+                        makeMoveSetup(sender, "s");
+                        break;
+                      case "@c":
+                      case "@club":
+                        makeMoveSetup(sender, "c");
+                        break;
+                      case "@h":
+                      case "@heal":
+                        makeMoveSetup(sender, "h");
+                        break;
+                      case "@forfeit":
+                        forfeitDuel(sender);
+                        break;
+                      case "@stats":
+                        if (words.length == 2) {
+                          getStats(username, sender);
+                        } else {
+                          sendTextMessage(sender, "Invalid stats command. See @help for more information.");
+                        }
+                        break;
+                      case "@challenges":
+                        getPendingChallenges(sender);
+                        break;
+                      case "@pressure":
+                        setPressure(sender);
+                        break;
+                      case "@shop":
+                        presentShop(sender);
+                        break;
+                      case "@buy":
+                        if (words.length == 2) {
+                          purchase(sender, username);
+                        } else {
+                          sendTextMessage(sender, "Invalid buy command. See @shop for more information.");
+                        }
+                        break;
+                      case "@class":
+                        if (words.length == 2) {
+                          changeClass(sender, username);
+                        } else {
+                          sendTextMessage(sender, "Invalid class command. See @help for more information.");
+                        }
+                        break;
+                      case "@classes":
+                        if (words.length == 1) {
+                          displayClasses(sender);
+                        } else {
+                          sendTextMessage(sender, "Invalid classes command. See @help for more information.");
+                        }
+                        break;
+                      case "@cancel":
+                        if (words.length == 2) {
+                          cancelChallenge(sender, username);
+                        } else {
+                          sendTextMessage(sender, "Invalid cancel command. See @help for more information.");
+                        }
+                        break;
+                      case "@train":
+                        if (words.length == 1) {
+                          setupBotDuel(sender);
+                        } else if (words.length == 2) {
+                          switch (words[1]) {
+                            case "vampire":
+                            case "Vampire":
+                              setupBotDuel(sender, "v");
+                              break;
+                            case "berserker":
+                            case "Berserker":
+                              setupBotDuel(sender, "b");
+                              break;
+                            case "knight":
+                            case "Knight":
+                              setupBotDuel(sender, "k");
+                              break;
+                            default:
+                              setupBotDuel(sender, "n");
+                          }
+                        } else {
+                          sendTextMessage(sender, "Invalid train command. See @help for more information.");
+                        }
+                        break;
+                      case "@leaderboard":
+                        if (words.length > 1) {
+                          sendTextMessage(sender, "Invalid leaderboard command. See @help for more information.");
+                        } else {
+                          sendLeaderBoard(sender);
+                        }
+                        break;
+                      case "@chat":
+                        if (words.length < 3) {
+                          sendTextMessage(sender, "Invalid message command. See @help for more information.");
+                        } else {
+                          username = words[1];
+                          msg = words.slice(2).join(" ");
+                          chatMessage(sender, username, msg);
+                        }
+                        break;
+                      case "@blast":
+                        if (words.length < 2) {
+                          sendTextMessage(sender, "Not a valid command. See @help for more information.");
+                        } else {
+                          msg = words.slice(1).join(" ");
+                          sendBlast(sender, msg);
+                        }
+                        break;
+                      case "@stake":
+                        if (words.length == 3) {
+                          username = words[words.length - 2];
+                          val = words[words.length - 1];
+                          if (isNaN(parseInt(val))) {
+                            sendTextMessage(sender, "Invalid stake command. See @help for more information.");
+                          } else if (val < 1) {
+                            sendTextMessage(sender, "Stake value must be greater than 0.");
+                          } else {
+                            setupChallenge(sender, username, val);
+                          }
+                        } else {
+                          sendTextMessage(sender, "Invalid stake command. See @help for more information.");
+                        }
+                        break;
+                      default:
+                        if (words[0].charAt(0) == "@") {
+                          sendTextMessage(sender, "Not a valid command. See @help for more information.");
+                        } else {
+                          sendNormalMessage(sender, text);
+                        }
+                        break;
                     }
                 }
             };
